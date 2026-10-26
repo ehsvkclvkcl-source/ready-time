@@ -4,699 +4,828 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>준비시간 계산기</title>
+  <!-- 웹폰트 불러오기 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
   <style>
-    :root {
-      --bg: #f4f6f8;
-      --card: #ffffff;
-      --text: #191f28;
-      --sub: #6b7684;
-      --border: #e5e8eb;
-      --primary: #3182f6;
-      --primary-light: #e8f3ff;
-      --danger: #f04452;
-      --bus-green: #37b24d;
-      --bus-blue: #1c7ed6;
-      --bus-red: #e03131;
-      --subway: #0052A4;
+    @font-face {
+      font-family: 'GmarketSansMedium';
+      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+      font-weight: normal; font-style: normal;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Pretendard", Roboto, sans-serif; }
+    @font-face {
+      font-family: 'S-CoreDream-4Regular';
+      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-4Regular.woff') format('woff');
+      font-weight: normal; font-style: normal;
+    }
+    @font-face {
+      font-family: 'RIDIBatang';
+      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff');
+      font-weight: normal; font-style: normal;
+    }
+
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --text: #111111;
+      --sub: #555555;
+      --border: #222222;
+      --light-border: #d0d4d9;
+      --primary: #1d5cff;
+      --primary-light: #edf2ff;
+      --danger: #e02020;
+      --bus-green: #2ca03c;
+      --bus-blue: #2962eb;
+      --subway: #004999;
+      --font-main: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-main);
+      border-radius: 0 !important; /* 모든 모서리를 각지게 고정 */
+    }
+
     body { background: var(--bg); color: var(--text); padding: 16px 14px 60px; line-height: 1.45; }
     .container { max-width: 480px; margin: 0 auto; }
 
-    /* 상단 헤더 */
-    .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .top-title { font-size: 18px; font-weight: 700; }
-    .btn-sm { background: var(--card); border: 1px solid var(--border); padding: 6px 11px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--sub); cursor: pointer; }
+    /* 상단바 & 폰트 선택 */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; }
+    .top-bar h1 { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+    .top-controls { display: flex; gap: 6px; align-items: center; }
+    .font-select { background: var(--card); border: 1.5px solid var(--border); padding: 5px 8px; font-size: 12px; font-weight: 600; color: var(--text); cursor: pointer; outline: none; }
+    .btn-sm { background: var(--card); border: 1.5px solid var(--border); padding: 5px 10px; font-size: 12px; font-weight: 700; color: var(--text); cursor: pointer; }
 
-    /* 공통 박스 & 카드 */
-    .box-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+    /* 공통 사각 카드 */
+    .box-card { background: var(--card); border: 2px solid var(--border); padding: 16px; margin-bottom: 12px; }
 
-    /* UI (1) : 도착해야 하는 시간 박스 */
-    .arrival-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .arrival-label { font-size: 17px; font-weight: 700; white-space: nowrap; }
-    .arrival-input { border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 17px; font-weight: 700; color: var(--primary); background: #f8fbff; outline: none; cursor: pointer; }
+    /* UI(1) 상단: 도착해야하는 시간 */
+    .arrival-box { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .arrival-label { font-size: 17px; font-weight: 800; white-space: nowrap; }
+    .arrival-input { border: 1.5px solid var(--border); padding: 7px 10px; font-size: 16px; font-weight: 800; color: var(--primary); background: #fff; outline: none; cursor: pointer; }
 
-    /* UI (1) : 기상시간 & 현관문 시간 메인 박스 */
-    .hero-box { background: var(--primary); color: #fff; border-radius: 16px; padding: 22px 20px; margin-bottom: 14px; box-shadow: 0 6px 16px rgba(49,130,246,0.22); }
-    .hero-wakeup { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 16px; word-break: keep-all; }
-    .hero-door { background: rgba(0,0,0,0.16); padding: 12px 14px; border-radius: 12px; font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-    .hero-door-sub { font-size: 12px; font-weight: 400; opacity: 0.9; margin-top: 6px; padding-left: 2px; }
+    /* UI(1) 메인 결과 박스 */
+    .hero-box { background: var(--card); border: 2px solid var(--border); padding: 22px 18px; margin-bottom: 12px; }
+    .wake-title { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; margin-bottom: 18px; word-break: keep-all; }
+    .wake-title span { color: var(--primary); text-decoration: underline; text-underline-offset: 4px; }
+    .door-title { font-size: 17px; font-weight: 700; color: var(--text); padding-top: 14px; border-top: 1.5px solid var(--light-border); display: flex; justify-content: space-between; align-items: center; }
+    .door-title span { color: var(--danger); font-weight: 800; }
+    .bus-sync-badge { margin-top: 10px; font-size: 12px; color: var(--primary); background: var(--primary-light); border: 1px solid var(--primary); padding: 7px 10px; font-weight: 600; display: none; }
 
-    /* UI (1) : 요약바 + 시간 설정 버튼 */
-    .summary-bar { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; }
-    .summary-list { display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--text); }
-    .summary-list span strong { color: var(--primary); margin-left: 4px; }
-    .btn-go-setting { background: var(--text); color: #fff; border: none; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    /* UI(1) 중간 요약 영역 + 시간 설정 버튼 */
+    .summary-strip { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 2px solid var(--border); padding: 14px 16px; margin-bottom: 12px; }
+    .summary-lines { display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--text); }
+    .summary-lines strong { font-weight: 800; margin-left: 4px; }
+    .btn-goto-set { background: var(--text); color: #fff; border: 2px solid var(--text); padding: 12px 18px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .btn-goto-set:hover { background: #333; }
 
-    /* 검색 입력창 및 드롭다운 */
+    /* 검색 영역 */
     .loc-wrap { position: relative; margin-bottom: 8px; }
-    .loc-row { display: flex; gap: 6px; }
-    .loc-row input { flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px; outline: none; }
-    .loc-row input:focus { border-color: var(--primary); }
-    .btn-find { background: #f2f4f6; border: 1px solid var(--border); border-radius: 8px; padding: 0 12px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; white-space: nowrap; }
-    .dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--primary); border-radius: 8px; margin-top: 4px; max-height: 180px; overflow-y: auto; z-index: 60; box-shadow: 0 6px 16px rgba(0,0,0,0.12); display: none; }
-    .drop-item { padding: 9px 12px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; }
-    .drop-item:hover { background: var(--primary-light); }
-    .drop-name { font-weight: 600; }
-    .drop-addr { font-size: 11px; color: var(--sub); margin-top: 2px; }
+    .loc-input-row { display: flex; gap: 6px; }
+    .loc-input-row input { flex: 1; border: 1.5px solid var(--light-border); padding: 10px 12px; font-size: 14px; outline: none; }
+    .loc-input-row input:focus { border-color: var(--border); }
+    .btn-find { background: #f0f2f5; border: 1.5px solid var(--border); padding: 0 14px; font-size: 13px; font-weight: 700; color: var(--text); cursor: pointer; white-space: nowrap; }
+    .place-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 2px solid var(--border); margin-top: 2px; max-height: 180px; overflow-y: auto; z-index: 50; display: none; }
+    .place-item { padding: 9px 12px; border-bottom: 1px solid var(--light-border); cursor: pointer; font-size: 13px; }
+    .place-item:hover { background: var(--primary-light); }
+    .place-name { font-weight: 700; }
+    .place-addr { font-size: 11px; color: var(--sub); margin-top: 2px; }
 
-    /* 이동수단 탭 (전체 / 버스 / 지하철 / 버스+지하철 / 자동차) */
-    .mode-tabs { display: flex; gap: 4px; margin: 10px 0; overflow-x: auto; padding-bottom: 2px; }
-    .mode-tab { flex: 1; min-width: max-content; padding: 8px 10px; border: 1px solid var(--border); background: #f9fafb; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--sub); cursor: pointer; text-align: center; }
-    .mode-tab.active { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+    /* 이동수단 상단 탭 */
+    .mode-tabs { display: flex; border: 1.5px solid var(--border); margin: 12px 0 10px; overflow-x: auto; background: #f8f9fa; }
+    .mode-tab { flex: 1; text-align: center; padding: 9px 6px; font-size: 13px; font-weight: 600; color: var(--sub); background: none; border: none; border-right: 1px solid var(--light-border); cursor: pointer; white-space: nowrap; }
+    .mode-tab:last-child { border-right: none; }
+    .mode-tab.active { background: var(--text); color: #fff; font-weight: 800; }
+    .mode-tab .cnt { font-size: 11px; margin-left: 2px; opacity: 0.85; }
 
-    .btn-search { width: 100%; background: var(--primary); color: #fff; border: none; border-radius: 10px; padding: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px; }
-    #map { width: 100%; height: 170px; border-radius: 10px; margin-bottom: 12px; display: none; border: 1px solid var(--border); }
+    .btn-primary { width: 100%; background: var(--primary); color: #fff; border: 2px solid var(--border); padding: 12px; font-size: 15px; font-weight: 800; cursor: pointer; margin-bottom: 10px; }
+
+    #map { width: 100%; height: 170px; margin-bottom: 12px; display: none; border: 1.5px solid var(--border); }
     .status-msg { font-size: 12px; color: var(--sub); margin-bottom: 8px; display: none; }
 
-    /* 사진 1 스타일: 대중교통 상세 경로 카드 리스트 */
-    .route-list { display: none; flex-direction: column; gap: 12px; margin-top: 8px; }
-    .route-item { border: 1px solid var(--border); border-radius: 14px; padding: 16px; background: #fff; cursor: pointer; transition: 0.15s; }
-    .route-item.selected { border: 2px solid var(--primary); background: #fcfdff; box-shadow: 0 3px 10px rgba(49,130,246,0.1); }
-    
-    .r-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
-    .r-big-time { font-size: 22px; font-weight: 800; color: var(--text); }
-    .r-big-time small { font-size: 14px; font-weight: 600; margin-left: 1px; }
-    .r-meta { font-size: 12px; color: var(--sub); }
+    /* 버스 도착시간 / 배차 동기화 박스 */
+    .bus-arrival-panel { background: var(--primary-light); border: 1.5px solid var(--primary); padding: 12px; margin-bottom: 12px; display: none; }
+    .bus-panel-title { font-size: 13px; font-weight: 800; color: var(--primary); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .bus-panel-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; }
+    .bus-panel-row select, .bus-panel-row input { border: 1.5px solid var(--border); padding: 5px 8px; font-size: 13px; background: #fff; }
+    .bus-panel-help { font-size: 11px; color: var(--sub); margin-top: 6px; }
 
-    /* 가로 진행 막대바 (사진 1 스타일) */
-    .r-bar { display: flex; width: 100%; height: 20px; border-radius: 10px; overflow: hidden; background: #e9ecef; margin-bottom: 14px; font-size: 11px; font-weight: 700; color: #fff; }
-    .r-seg { display: flex; align-items: center; justify-content: center; min-width: 28px; white-space: nowrap; overflow: hidden; padding: 0 4px; }
-    .seg-walk { background: #adb5bd; color: #495057; }
-    .seg-bus-g { background: var(--bus-green); }
-    .seg-bus-b { background: var(--bus-blue); }
-    .seg-sub { background: var(--subway); }
+    /* 자동차 전용 패널 */
+    .car-panel { background: #f8f9fa; border: 1.5px solid var(--border); padding: 14px; margin-bottom: 12px; display: none; }
+    .car-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .car-input { width: 80px; text-align: right; font-weight: 800; padding: 6px 8px; border: 1.5px solid var(--border); }
 
-    /* 세로 타임라인 상세 (지선/간선/정류장/버스도착예정) */
-    .r-timeline { border-left: 2px solid #dee2e6; margin-left: 8px; padding-left: 14px; display: flex; flex-direction: column; gap: 12px; }
-    .tl-node { position: relative; font-size: 13px; }
-    .tl-node::before { content: ''; position: absolute; left: -19px; top: 4px; width: 8px; height: 8px; border-radius: 50%; background: #fff; border: 2px solid var(--sub); }
-    .tl-header { display: flex; align-items: center; gap: 6px; font-weight: 700; margin-bottom: 4px; }
-    .type-label { font-size: 12px; font-weight: 700; }
-    .c-green { color: var(--bus-green); }
-    .c-blue { color: var(--bus-blue); }
-    .c-sub { color: var(--subway); }
-    .bus-box { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: 700; border: 1px solid; }
-    .box-green { color: var(--bus-green); border-color: var(--bus-green); background: #ebfbee; }
-    .box-blue { color: var(--bus-blue); border-color: var(--bus-blue); background: #e7f5ff; }
-    .box-sub { color: var(--subway); border-color: var(--subway); background: #e8f3ff; }
-    .arrival-badge { display: inline-block; font-size: 12px; color: #e03131; font-weight: 700; background: #fff5f5; border: 1px solid #ffc9c9; padding: 2px 7px; border-radius: 6px; margin-top: 3px; }
+    /* 경로 리스트 (직각 스타일) */
+    .route-list { display: none; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+    .route-card { border: 1.5px solid var(--light-border); padding: 14px; background: #fff; cursor: pointer; }
+    .route-card.selected { border: 2px solid var(--primary); background: #fcfdff; }
 
-    /* 버스 도착 대기시간 및 직접 수정 바 */
-    .manual-adjust { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-    .adj-box { background: #f8f9fa; padding: 8px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
-    .adj-box label { display: block; font-size: 11px; color: var(--sub); margin-bottom: 3px; }
-    .adj-box input { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 4px; text-align: center; font-size: 13px; font-weight: 700; }
+    .rc-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+    .rc-big-time { font-size: 22px; font-weight: 800; color: var(--text); }
+    .rc-big-time small { font-size: 14px; font-weight: 700; }
+    .rc-sub-info { font-size: 12px; color: var(--sub); }
 
-    /* UI (2) : 설정 화면 전용 스타일 */
+    /* 수평 비율 바 (직각) */
+    .rc-bar { display: flex; width: 100%; height: 18px; overflow: hidden; background: #e9ecef; margin-bottom: 14px; font-size: 10px; font-weight: 700; color: #fff; border: 1px solid var(--border); }
+    .rc-seg { display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; }
+    .seg-walk { background: #d0d5dd; color: #222; }
+    .seg-bus-green { background: var(--bus-green); }
+    .seg-bus-blue { background: var(--bus-blue); }
+    .seg-subway { background: var(--subway); }
+
+    /* 세로 타임라인 스텝 */
+    .rc-timeline { display: flex; flex-direction: column; gap: 10px; padding-left: 2px; }
+    .rc-step { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; }
+    .rc-type-col { width: 54px; font-weight: 800; font-size: 12px; flex-shrink: 0; padding-top: 1px; }
+    .type-green { color: var(--bus-green); }
+    .type-blue { color: var(--bus-blue); }
+    .type-subway { color: var(--subway); }
+    .type-end { color: var(--sub); }
+
+    .rc-detail-col { flex: 1; }
+    .rc-station { font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .rc-badges { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+    .bus-num-box { display: inline-block; padding: 1px 6px; font-size: 12px; font-weight: 800; border: 1.5px solid var(--bus-blue); color: var(--bus-blue); background: #fff; }
+    .bus-num-box.green { border-color: var(--bus-green); color: var(--bus-green); }
+    .bus-num-box.subway { border-color: var(--subway); color: #fff; background: var(--subway); }
+    .rc-interval-tag { font-size: 11px; color: var(--text); background: #eaecef; padding: 2px 6px; border: 1px solid #ccc; }
+
+    /* 직접 입력 칸 */
+    .manual-row { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1.5px solid var(--light-border); font-size: 13px; color: var(--sub); }
+    .manual-row input { width: 64px; text-align: right; padding: 5px 8px; border: 1.5px solid var(--border); font-weight: 800; color: var(--text); }
+
+    /* ==================== UI(2): 설정 화면 ==================== */
     #settingsView { display: none; }
-    .sec-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .sec-title { font-size: 16px; font-weight: 700; }
-    .sec-sum { font-size: 15px; font-weight: 700; color: var(--primary); }
+    .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .settings-header h2 { font-size: 22px; font-weight: 800; }
+    .btn-back-main { background: var(--text); color: #fff; border: 2px solid var(--text); padding: 9px 14px; font-size: 13px; font-weight: 700; cursor: pointer; }
 
-    .item-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-    .item-row input[type="text"] { flex: 1; min-width: 0; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 14px; }
-    .item-row input[type="number"] { width: 60px; border: 1px solid var(--border); border-radius: 8px; padding: 8px; text-align: right; font-size: 14px; font-weight: 600; }
+    .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1.5px solid var(--border); }
+    .section-title { font-size: 16px; font-weight: 800; }
+    .section-sum { font-size: 15px; font-weight: 800; color: var(--primary); }
+
+    .prep-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .prep-row input[type="text"] { flex: 1; min-width: 0; border: 1.5px solid var(--light-border); padding: 8px 10px; font-size: 14px; }
+    .prep-row input[type="number"] { width: 64px; text-align: right; border: 1.5px solid var(--light-border); padding: 8px; font-size: 14px; font-weight: 700; }
+    .prep-row input:focus { border-color: var(--border); outline: none; }
     .unit { font-size: 13px; color: var(--sub); }
-    .btn-keep { background: #f2f4f6; border: none; border-radius: 8px; padding: 8px 10px; font-size: 12px; color: var(--sub); cursor: pointer; white-space: nowrap; }
-    .btn-del { background: #fff0f1; border: none; border-radius: 8px; padding: 8px 10px; font-size: 12px; color: var(--danger); cursor: pointer; white-space: nowrap; }
-    .btn-add-row { width: 100%; background: #f2f4f6; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--text); cursor: pointer; margin-top: 4px; }
+    .btn-icon { background: #f0f2f5; border: 1px solid var(--border); padding: 8px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--text); white-space: nowrap; }
+    .btn-del { color: var(--danger); background: #fff5f5; border-color: var(--danger); }
+    .btn-add { width: 100%; background: #f0f2f5; border: 1.5px solid var(--border); padding: 10px; font-size: 14px; font-weight: 800; color: var(--text); cursor: pointer; margin-top: 4px; }
 
-    .preset-area { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
-    .preset-title { font-size: 12px; color: var(--sub); margin-bottom: 8px; }
+    .saved-section { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--light-border); }
+    .saved-label { font-size: 12px; color: var(--sub); margin-bottom: 8px; }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-    .chip { display: inline-flex; align-items: center; background: var(--primary-light); color: var(--primary); border-radius: 16px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
-    .chip-x { margin-left: 6px; color: #8b95a1; font-size: 13px; }
+    .chip { display: inline-flex; align-items: center; background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); padding: 5px 10px; font-size: 13px; font-weight: 700; cursor: pointer; user-select: none; }
+    .chip-del { margin-left: 6px; font-size: 14px; color: var(--text); padding: 0 2px; }
 
-    /* 세트 1, 2, 3 관리 영역 */
+    /* 세트 1, 2, 3 저장 및 불러오기 */
+    .set-box { background: var(--card); border: 2px solid var(--border); padding: 16px; margin-bottom: 16px; }
+    .set-title { font-size: 15px; font-weight: 800; margin-bottom: 10px; }
     .set-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-    .set-name-input { flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px; font-weight: 600; }
-    .btn-set-load { background: var(--primary-light); color: var(--primary); border: 1px solid #bfd8ff; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
-    .btn-set-save { background: #f2f4f6; color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .set-row:last-child { margin-bottom: 0; }
+    .set-name-input { flex: 1; border: 1.5px solid var(--light-border); padding: 8px 10px; font-size: 13px; font-weight: 700; }
+    .btn-set-load { background: var(--primary-light); color: var(--primary); border: 1.5px solid var(--primary); padding: 8px 12px; font-size: 13px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+    .btn-set-save { background: #f0f2f5; color: var(--text); border: 1.5px solid var(--border); padding: 8px 12px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 
-    .btn-save-done { width: 100%; background: var(--primary); color: #fff; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+    .bottom-save-btn { width: 100%; background: var(--text); color: #fff; border: 2px solid var(--text); padding: 15px; font-size: 16px; font-weight: 800; cursor: pointer; }
 
-    /* 모달 */
-    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
-    .modal { background: #fff; width: 100%; max-width: 400px; border-radius: 16px; padding: 20px; }
-    .modal h2 { font-size: 16px; margin-bottom: 12px; }
-    .m-field { margin-bottom: 12px; }
-    .m-field label { display: block; font-size: 12px; color: var(--sub); margin-bottom: 4px; }
-    .m-field input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px; font-size: 13px; }
-    .m-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+    /* API 모달 */
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
+    .modal { background: #fff; width: 100%; max-width: 400px; border: 2px solid var(--border); padding: 20px; }
+    .modal h2 { font-size: 17px; margin-bottom: 12px; }
+    .modal-field { margin-bottom: 12px; }
+    .modal-field label { display: block; font-size: 13px; color: var(--sub); margin-bottom: 4px; }
+    .modal-field input { width: 100%; border: 1.5px solid var(--border); padding: 9px 10px; font-size: 14px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
   </style>
 </head>
 <body>
 
 <div class="container">
 
-  <!-- ==================== [화면 1 : 메인 화면 (UI 1)] ==================== -->
+  <!-- ==================== [화면 1] 메인 화면 (UI 1) ==================== -->
   <div id="mainView">
-    <div class="top-nav">
-      <span class="top-title">준비시간 계산기</span>
-      <button class="btn-sm" onclick="openApiModal()">API 키 설정</button>
-    </div>
-
-    <!-- 1. 도착해야 하는 시간 박스 -->
-    <div class="box-card">
-      <div class="arrival-row">
-        <span class="arrival-label">도착해야 하는 시간 :</span>
-        <input type="time" id="arrivalTime" class="arrival-input" value="09:00" onchange="saveAll()">
+    <div class="top-bar">
+      <h1>준비시간 계산기</h1>
+      <div class="top-controls">
+        <select id="fontSelector" class="font-select" onchange="changeFont(this.value)">
+          <option value="'Pretendard', sans-serif">폰트: 프리텐다드</option>
+          <option value="'GmarketSansMedium', sans-serif">폰트: 지마켓 산스 (각진)</option>
+          <option value="'S-CoreDream-4Regular', sans-serif">폰트: 에스코어 드림</option>
+          <option value="'NanumSquareNeo', sans-serif">폰트: 나눔스퀘어네오</option>
+          <option value="'RIDIBatang', serif">폰트: 리디바탕 (명조)</option>
+        </select>
+        <button class="btn-sm" onclick="openModal()">API 키</button>
       </div>
     </div>
 
-    <!-- 2. 당신은 00시에 일어나야 합니다 & 현관문 시간 -->
+    <!-- 도착해야 하는 시간 -->
+    <div class="box-card arrival-box">
+      <span class="arrival-label">도착해야하는 시간 :</span>
+      <input type="time" id="arrivalTime" class="arrival-input" value="09:00" onchange="saveCurrentState()">
+    </div>
+
+    <!-- 메인 결과 박스 -->
     <div class="hero-box">
-      <div class="hero-wakeup" id="wakeUpDisplay">당신은 오전 07시 30분에 일어나야 합니다</div>
-      <div class="hero-door">
-        <span>현관문을 열어야 하는 시간 :</span>
-        <span id="doorTimeDisplay">오전 08시 10분</span>
+      <div class="wake-title" id="wakeUpText">당신은 <span>오전 07시 30분</span>에 일어나야합니다</div>
+      <div class="door-title">
+        <span>현관문을 열어야하는 시간:</span>
+        <span id="doorTimeText">오전 08시 10분</span>
       </div>
-      <div class="hero-door-sub" id="busScheduleHint">이동시간과 준비시간이 합산된 결과입니다.</div>
+      <div class="bus-sync-badge" id="busSyncBadge"></div>
     </div>
 
-    <!-- 3. 이동시간 / 준비시간 / 그외 요약 & [시간 설정] 버튼 -->
-    <div class="summary-bar">
-      <div class="summary-list">
-        <span>이동시간 : <strong id="sumTransit">0분</strong> <small id="sumWaitSub" style="color:#6b7684;"></small></span>
-        <span>준비시간 : <strong id="sumPrep">0분</strong></span>
-        <span>그외 : <strong id="sumOther">0분</strong></span>
+    <!-- 이동/준비/그외 요약 & 시간 설정 버튼 -->
+    <div class="summary-strip">
+      <div class="summary-lines">
+        <div>이동시간: <strong id="sumTransit">0분</strong></div>
+        <div>준비시간: <strong id="sumPrep">30분</strong></div>
+        <div>그외: <strong id="sumOther">10분</strong></div>
       </div>
-      <button class="btn-go-setting" onclick="switchView('settings')">시간 설정</button>
+      <button class="btn-goto-set" onclick="showSettingsView()">시간 설정</button>
     </div>
 
-    <!-- 4. 출발지/도착지 검색 및 경로 리스트 (사진 1 스타일 + 자동차) -->
+    <!-- 길찾기 & 이동 수단 카드 -->
     <div class="box-card">
+      <!-- 출발지 -->
       <div class="loc-wrap">
-        <div class="loc-row">
-          <input type="text" id="startLoc" placeholder="출발지 주소 또는 장소 입력" onkeydown="if(event.key==='Enter') findLocation('start')">
-          <button class="btn-find" onclick="findLocation('start')">장소 찾기</button>
+        <div class="loc-input-row">
+          <input type="text" id="startLoc" placeholder="출발지 주소 또는 장소 입력" onkeydown="if(event.key==='Enter') findAddress('start')">
+          <button class="btn-find" onclick="findAddress('start')">장소 찾기</button>
         </div>
-        <div class="dropdown" id="startDrop"></div>
+        <div class="place-dropdown" id="startDropdown"></div>
       </div>
 
+      <!-- 도착지 -->
       <div class="loc-wrap">
-        <div class="loc-row">
-          <input type="text" id="endLoc" placeholder="도착지 주소 또는 장소 입력" onkeydown="if(event.key==='Enter') findLocation('end')">
-          <button class="btn-find" onclick="findLocation('end')">장소 찾기</button>
+        <div class="loc-input-row">
+          <input type="text" id="endLoc" placeholder="도착지 주소 또는 장소 입력" onkeydown="if(event.key==='Enter') findAddress('end')">
+          <button class="btn-find" onclick="findAddress('end')">장소 찾기</button>
         </div>
-        <div class="dropdown" id="endDrop"></div>
+        <div class="place-dropdown" id="endDropdown"></div>
       </div>
 
-      <!-- 이동수단 탭 (버스/지하철 통합 뷰 + 자동차) -->
+      <!-- 상단 이동수단 탭 -->
       <div class="mode-tabs">
-        <button class="mode-tab active" onclick="selectMode(0, this)" id="tabAll">전체</button>
-        <button class="mode-tab" onclick="selectMode(2, this)" id="tabBus">버스</button>
-        <button class="mode-tab" onclick="selectMode(1, this)" id="tabSub">지하철</button>
-        <button class="mode-tab" onclick="selectMode(3, this)" id="tabBusSub">버스+지하철</button>
-        <button class="mode-tab" onclick="selectMode(4, this)" id="tabCar">🚗 자동차</button>
+        <button class="mode-tab active" onclick="switchTab('all', this)">전체 <span class="cnt" id="cntAll"></span></button>
+        <button class="mode-tab" onclick="switchTab('bus', this)">버스 <span class="cnt" id="cntBus"></span></button>
+        <button class="mode-tab" onclick="switchTab('subway', this)">지하철 <span class="cnt" id="cntSub"></span></button>
+        <button class="mode-tab" onclick="switchTab('bus_sub', this)">버스+지하철 <span class="cnt" id="cntBusSub"></span></button>
+        <button class="mode-tab" onclick="switchTab('car', this)">자동차</button>
       </div>
 
-      <button class="btn-search" onclick="searchRoutes()">경로 검색하기</button>
+      <button class="btn-primary" onclick="searchRoute()">경로 검색하기</button>
 
       <div class="status-msg" id="statusMsg"></div>
       <div id="map"></div>
 
-      <!-- 사진 1 스타일 경로 카드 출력 영역 -->
+      <!-- 버스 도착시간 / 배차 맞춤 설정창 -->
+      <div class="bus-arrival-panel" id="busArrivalPanel">
+        <div class="bus-panel-title">
+          <span id="firstBusTitle">🚌 첫 번째 버스 도착시간 맞춤</span>
+          <label style="font-size:12px; font-weight:700; color:var(--text); cursor:pointer;">
+            <input type="checkbox" id="useBusSync" onchange="calculate()"> 출발시간에 반영
+          </label>
+        </div>
+        <div class="bus-panel-row">
+          <select id="busSyncMode" onchange="toggleBusSyncInput()">
+            <option value="wait">배차/대기 시간 추가</option>
+            <option value="clock">정류장 버스 도착 시각 지정</option>
+          </select>
+          <div id="busWaitWrap" style="display:flex; align-items:center; gap:4px;">
+            <input type="number" id="busWaitMin" value="5" min="0" style="width:60px; text-align:right;" oninput="calculate()">
+            <span>분 대기</span>
+          </div>
+          <div id="busClockWrap" style="display:none; align-items:center; gap:4px;">
+            <input type="time" id="busTargetClock" value="08:15" onchange="calculate()">
+            <span>버스가 정류장 도착</span>
+          </div>
+        </div>
+        <div class="bus-panel-help" id="busPanelHelp">정류장까지 도보 시간을 고려해 현관문 나가는 시간을 자동 조절합니다.</div>
+      </div>
+
+      <!-- 자동차 전용 패널 -->
+      <div class="car-panel" id="carPanel">
+        <div class="car-row">
+          <span style="font-size:14px; font-weight:800;">🚗 자동차 예상 이동 시간</span>
+          <div>
+            <input type="number" id="carTimeInput" class="car-input" value="30" min="0" oninput="applyCarTime()">
+            <span class="unit">분</span>
+          </div>
+        </div>
+        <div style="font-size:12px; color:var(--sub);" id="carDistInfo">출발지와 도착지를 검색하면 도로 주행 예상 시간이 자동 계산됩니다.</div>
+      </div>
+
+      <!-- 대중교통 경로 리스트 -->
       <div class="route-list" id="routeList"></div>
 
-      <!-- 세부 이동시간 & 버스 대기시간 직접 조정 칸 -->
-      <div class="manual-adjust">
-        <div class="adj-box">
-          <label id="lblMainMove">버스/차량(분)</label>
-          <input type="number" id="inBus" value="0" min="0" oninput="saveAll()">
-        </div>
-        <div class="adj-box">
-          <label>지하철(분)</label>
-          <input type="number" id="inSubway" value="0" min="0" oninput="saveAll()">
-        </div>
-        <div class="adj-box">
-          <label>도보(분)</label>
-          <input type="number" id="inWalk" value="0" min="0" oninput="saveAll()">
-        </div>
-        <div class="adj-box">
-          <label style="color:#e03131; font-weight:700;">버스대기(분)</label>
-          <input type="number" id="inWait" value="0" min="0" oninput="saveAll()">
+      <!-- 이동시간 직접 수정 칸 -->
+      <div class="manual-row">
+        <span>선택된 총 이동시간 (직접 수정 가능)</span>
+        <div>
+          <input type="number" id="totalTransitInput" value="0" min="0" oninput="saveCurrentState()">
+          <span class="unit">분</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ==================== [화면 2 : 시간 설정 화면 (UI 2)] ==================== -->
+  <!-- ==================== [화면 2] 시간 설정 화면 (UI 2) ==================== -->
   <div id="settingsView">
-    <div class="top-nav">
-      <span class="top-title">설정</span>
-      <button class="btn-sm" onclick="switchView('main')">← 메인화면으로 가기</button>
+    <div class="settings-header">
+      <h2>설정</h2>
+      <button class="btn-back-main" onclick="showMainView()">메인화면으로 가기</button>
     </div>
 
-    <!-- 1. 내 준비 시간 카드 -->
+    <!-- 내 준비 시간 카드 -->
     <div class="box-card">
-      <div class="sec-head">
-        <span class="sec-title">내 준비 시간</span>
-        <span class="sec-sum" id="prepTotalSetting">0분</span>
+      <div class="section-head">
+        <span class="section-title">내 준비 시간</span>
+        <span class="section-sum" id="prepSumText">0분</span>
       </div>
       <div id="prepList"></div>
-      <button class="btn-add-row" onclick="addItem('prep', '', 10)">+ 준비 항목 추가</button>
+      <button class="btn-add" onclick="addItem('prep', '', 10)">+ 준비 항목 추가</button>
 
-      <div class="preset-area">
-        <div class="preset-title">저장해둔 항목 (누르면 위 목록에 추가됩니다)</div>
-        <div class="chips" id="prepChips"></div>
+      <div class="saved-section">
+        <div class="saved-label">저장해둔 항목 (누르면 위 목록에 추가됩니다)</div>
+        <div class="chips" id="prepSavedChips"></div>
       </div>
     </div>
 
-    <!-- 2. 그 외 시간 카드 -->
+    <!-- 그 외 시간 카드 -->
     <div class="box-card">
-      <div class="sec-head">
-        <span class="sec-title">그 외 시간</span>
-        <span class="sec-sum" id="otherTotalSetting">0분</span>
+      <div class="section-head">
+        <span class="section-title">그 외 시간</span>
+        <span class="section-sum" id="otherSumText">0분</span>
       </div>
       <div id="otherList"></div>
-      <button class="btn-add-row" onclick="addItem('other', '', 10)">+ 그 외 항목 추가</button>
+      <button class="btn-add" onclick="addItem('other', '', 10)">+ 그 외 항목 추가</button>
 
-      <div class="preset-area">
-        <div class="preset-title">저장해둔 항목 (누르면 위 목록에 추가됩니다)</div>
-        <div class="chips" id="otherChips"></div>
+      <div class="saved-section">
+        <div class="saved-label">저장해둔 항목 (누르면 위 목록에 추가됩니다)</div>
+        <div class="chips" id="otherSavedChips"></div>
       </div>
     </div>
 
-    <!-- 3. 세트 1, 2, 3 불러오기 및 이름 변경 저장 -->
-    <div class="box-card">
-      <div class="sec-head">
-        <span class="sec-title">나만의 루틴 세트 (이름 수정 가능)</span>
-      </div>
-      <div id="setRows"></div>
+    <!-- 세트 1, 2, 3 저장 및 불러오기 -->
+    <div class="set-box">
+      <div class="set-title">세트 불러오기 / 저장 (세트 이름 변경 가능)</div>
+      <div id="setListContainer"></div>
     </div>
 
-    <button class="btn-save-done" onclick="switchView('main')">설정 저장 (메인화면으로)</button>
+    <button class="bottom-save-btn" onclick="showMainView()">설정 저장 및 메인화면으로 가기</button>
   </div>
 
 </div>
 
-<!-- API 키 모달 -->
+<!-- API 키 설정 모달 -->
 <div class="modal-bg" id="apiModal">
   <div class="modal">
-    <h2>API 키 설정 (내 브라우저에만 안전 저장)</h2>
-    <div class="m-field">
+    <h2>API 키 설정 (내 기기에만 저장)</h2>
+    <div class="modal-field">
       <label>카카오 JavaScript 키</label>
-      <input type="text" id="kakaoKeyInput" placeholder="카카오 JavaScript 키 입력">
+      <input type="text" id="kakaoKeyInput" placeholder="카카오 디벨로퍼스 JavaScript 키">
     </div>
-    <div class="m-field">
+    <div class="modal-field">
       <label>ODSay 대중교통 API 키</label>
-      <input type="text" id="odsayKeyInput" placeholder="ODSay API 키 입력">
+      <input type="text" id="odsayKeyInput" placeholder="ODSay Lab API 키">
     </div>
-    <div class="m-actions">
-      <button class="btn-sm" onclick="closeApiModal()">닫기</button>
-      <button class="btn-sm" style="background:var(--primary); color:#fff; border:none;" onclick="saveApiKeys()">저장</button>
+    <div class="modal-actions">
+      <button class="btn-sm" onclick="closeModal()">닫기</button>
+      <button class="btn-primary" style="width:auto; margin:0; padding:8px 16px;" onclick="saveApiKeys()">저장</button>
     </div>
   </div>
 </div>
 
 <script>
-  // 기본 데이터 초기화
-  let prepItems = JSON.parse(localStorage.getItem('v3_prep_items')) || [
+  let prepItems = JSON.parse(localStorage.getItem('my_prep_items')) || [
     { name: '씻는 시간', min: 20 },
     { name: '옷 입는 시간', min: 10 },
     { name: '머리 말리기', min: 10 }
   ];
-  let otherItems = JSON.parse(localStorage.getItem('v3_other_items')) || [
-    { name: '가방 챙기기', min: 5 }
+  let otherItems = JSON.parse(localStorage.getItem('my_other_items')) || [
+    { name: '짐 챙기기', min: 10 }
   ];
-  let prepPresets = JSON.parse(localStorage.getItem('v3_prep_presets')) || [
+
+  let prepPresets = JSON.parse(localStorage.getItem('my_prep_presets')) || [
     { name: '씻는 시간', min: 20 },
     { name: '옷 입는 시간', min: 10 },
     { name: '머리 말리기', min: 10 },
     { name: '화장', min: 15 }
   ];
-  let otherPresets = JSON.parse(localStorage.getItem('v3_other_presets')) || [
-    { name: '가방 챙기기', min: 5 },
+  let otherPresets = JSON.parse(localStorage.getItem('my_other_presets')) || [
+    { name: '짐 챙기기', min: 10 },
     { name: '아침 식사', min: 15 },
     { name: '여유 시간', min: 10 }
   ];
 
-  // 세트 1, 2, 3 데이터
-  let routineSets = JSON.parse(localStorage.getItem('v3_routine_sets')) || [
-    { name: '세트1 (평일 기본)', prep: [{ name: '씻는 시간', min: 20 }, { name: '옷 입는 시간', min: 10 }, { name: '머리 말리기', min: 10 }], other: [{ name: '가방 챙기기', min: 5 }] },
-    { name: '세트2 (안 씻고 나갈 때)', prep: [{ name: '모자 쓰고 옷 입기', min: 10 }], other: [{ name: '가방 챙기기', min: 5 }] },
-    { name: '세트3 (풀세팅 외출)', prep: [{ name: '씻는 시간', min: 25 }, { name: '머리 스타일링', min: 20 }, { name: '화장·코디', min: 25 }], other: [{ name: '여유 시간', min: 10 }] }
+  let customSets = JSON.parse(localStorage.getItem('my_custom_sets')) || [
+    { name: '세트1', prep: [...prepItems], other: [...otherItems] },
+    { name: '세트2', prep: [{ name: '옷 입는 시간', min: 5 }], other: [{ name: '모자 챙기기', min: 3 }] },
+    { name: '세트3', prep: [{ name: '씻는 시간', min: 25 }, { name: '옷 고르기', min: 15 }], other: [{ name: '여유 시간', min: 10 }] }
   ];
 
   let selectedStart = null;
   let selectedEnd = null;
-  let currentMode = 0; // 0:전체, 2:버스, 1:지하철, 3:버스+지하철, 4:자동차
+  let currentTab = 'all';
   let fetchedPaths = [];
-  let selectedFirstBusNote = '';
+  let firstWalkMin = 3;
 
   function init() {
-    const saved = JSON.parse(localStorage.getItem('v3_transit_state'));
-    if (saved) {
-      document.getElementById('arrivalTime').value = saved.arrivalTime || '09:00';
-      document.getElementById('inBus').value = saved.bus || 0;
-      document.getElementById('inSubway').value = saved.subway || 0;
-      document.getElementById('inWalk').value = saved.walk || 0;
-      document.getElementById('inWait').value = saved.wait || 0;
+    // 저장된 폰트 불러오기
+    const savedFont = localStorage.getItem('my_selected_font');
+    if (savedFont) {
+      document.documentElement.style.setProperty('--font-main', savedFont);
+      document.getElementById('fontSelector').value = savedFont;
     }
-    renderSettingLists();
-    renderSets();
-    calculateAll();
+
+    const savedState = JSON.parse(localStorage.getItem('my_transit_state_v2'));
+    if (savedState) {
+      document.getElementById('arrivalTime').value = savedState.arrivalTime || '09:00';
+      document.getElementById('totalTransitInput').value = savedState.transitMin || 0;
+    }
+    renderAllSettings();
+    calculate();
 
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.loc-wrap')) {
-        document.getElementById('startDrop').style.display = 'none';
-        document.getElementById('endDrop').style.display = 'none';
+        document.getElementById('startDropdown').style.display = 'none';
+        document.getElementById('endDropdown').style.display = 'none';
       }
     });
   }
 
-  // 화면 전환 (UI 1 <-> UI 2)
-  function switchView(view) {
-    if (view === 'settings') {
-      document.getElementById('mainView').style.display = 'none';
-      document.getElementById('settingsView').style.display = 'block';
-      renderSettingLists();
-      window.scrollTo(0, 0);
-    } else {
-      document.getElementById('settingsView').style.display = 'none';
-      document.getElementById('mainView').style.display = 'block';
-      saveAll();
-      window.scrollTo(0, 0);
-    }
+  function changeFont(fontVal) {
+    document.documentElement.style.setProperty('--font-main', fontVal);
+    localStorage.setItem('my_selected_font', fontVal);
   }
 
-  // 준비시간 & 그외시간 렌더링
-  function renderSettingLists() {
-    renderGroup('prep', prepItems, 'prepList', 'prepChips', prepPresets);
-    renderGroup('other', otherItems, 'otherList', 'otherChips', otherPresets);
+  function showSettingsView() {
+    document.getElementById('mainView').style.display = 'none';
+    document.getElementById('settingsView').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+  function showMainView() {
+    saveCurrentState();
+    document.getElementById('settingsView').style.display = 'none';
+    document.getElementById('mainView').style.display = 'block';
+    window.scrollTo(0, 0);
   }
 
-  function renderGroup(type, items, listId, chipId, presets) {
-    const listEl = document.getElementById(listId);
-    listEl.innerHTML = '';
-    items.forEach((item, idx) => {
+  function renderAllSettings() {
+    renderItemList('prep', prepItems, 'prepList');
+    renderItemList('other', otherItems, 'otherList');
+    renderChips('prep', prepPresets, 'prepSavedChips');
+    renderChips('other', otherPresets, 'otherSavedChips');
+    renderSets();
+  }
+
+  function renderItemList(type, arr, containerId) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    arr.forEach((item, idx) => {
       const row = document.createElement('div');
-      row.className = 'item-row';
+      row.className = 'prep-row';
       row.innerHTML = `
-        <input type="text" value="${item.name}" placeholder="항목 입력" oninput="updateItem('${type}', ${idx}, 'name', this.value)">
+        <input type="text" value="${item.name}" placeholder="항목 이름 입력" oninput="updateItem('${type}', ${idx}, 'name', this.value)">
         <input type="number" value="${item.min}" min="0" oninput="updateItem('${type}', ${idx}, 'min', this.value)">
         <span class="unit">분</span>
-        <button class="btn-keep" onclick="keepPreset('${type}', ${idx})">보관</button>
-        <button class="btn-del" onclick="deleteItem('${type}', ${idx})">삭제</button>
+        <button class="btn-icon" onclick="savePreset('${type}', ${idx})">보관</button>
+        <button class="btn-icon btn-del" onclick="removeItem('${type}', ${idx})">삭제</button>
       `;
-      listEl.appendChild(row);
-    });
-
-    const chipEl = document.getElementById(chipId);
-    chipEl.innerHTML = '';
-    presets.forEach((p, idx) => {
-      const c = document.createElement('div');
-      c.className = 'chip';
-      c.innerHTML = `
-        <span onclick="addItem('${type}', '${p.name}', ${p.min})">+ ${p.name} ${p.min}분</span>
-        <span class="chip-x" onclick="deletePreset(event, '${type}', ${idx})">✕</span>
-      `;
-      chipEl.appendChild(c);
+      el.appendChild(row);
     });
   }
 
   function updateItem(type, idx, field, val) {
-    const target = type === 'prep' ? prepItems : otherItems;
-    target[idx][field] = field === 'min' ? (parseInt(val) || 0) : val;
-    saveAll();
+    const arr = type === 'prep' ? prepItems : otherItems;
+    if (field === 'min') val = parseInt(val) || 0;
+    arr[idx][field] = val;
+    saveCurrentState();
   }
 
-  function addItem(type, name, min) {
-    const target = type === 'prep' ? prepItems : otherItems;
-    target.push({ name, min });
-    renderSettingLists();
-    saveAll();
+  function addItem(type, name = '', min = 10) {
+    const arr = type === 'prep' ? prepItems : otherItems;
+    arr.push({ name, min });
+    renderAllSettings();
+    saveCurrentState();
   }
 
-  function deleteItem(type, idx) {
-    const target = type === 'prep' ? prepItems : otherItems;
-    target.splice(idx, 1);
-    renderSettingLists();
-    saveAll();
+  function removeItem(type, idx) {
+    const arr = type === 'prep' ? prepItems : otherItems;
+    arr.splice(idx, 1);
+    renderAllSettings();
+    saveCurrentState();
   }
 
-  function keepPreset(type, idx) {
-    const target = type === 'prep' ? prepItems : otherItems;
+  function savePreset(type, idx) {
+    const arr = type === 'prep' ? prepItems : otherItems;
     const presets = type === 'prep' ? prepPresets : otherPresets;
-    const item = target[idx];
-    if (!item.name.trim()) return alert('이름을 입력해주세요.');
-    const existIdx = presets.findIndex(p => p.name === item.name);
-    if (existIdx >= 0) presets[existIdx].min = item.min;
+    const item = arr[idx];
+    if (!item.name.trim()) return alert('항목 이름을 입력해주세요.');
+    const found = presets.findIndex(p => p.name === item.name);
+    if (found >= 0) presets[found].min = item.min;
     else presets.push({ name: item.name, min: item.min });
-    localStorage.setItem(type === 'prep' ? 'v3_prep_presets' : 'v3_other_presets', JSON.stringify(presets));
-    renderSettingLists();
+
+    localStorage.setItem(type === 'prep' ? 'my_prep_presets' : 'my_other_presets', JSON.stringify(presets));
+    renderAllSettings();
   }
 
-  function deletePreset(e, type, idx) {
+  function renderChips(type, presets, containerId) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    presets.forEach((p, idx) => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.innerHTML = `
+        <span onclick="addItem('${type}', '${p.name}', ${p.min})">+ ${p.name} ${p.min}분</span>
+        <span class="chip-del" onclick="removePreset(event, '${type}', ${idx})">×</span>
+      `;
+      el.appendChild(chip);
+    });
+  }
+
+  function removePreset(e, type, idx) {
     e.stopPropagation();
     const presets = type === 'prep' ? prepPresets : otherPresets;
     presets.splice(idx, 1);
-    localStorage.setItem(type === 'prep' ? 'v3_prep_presets' : 'v3_other_presets', JSON.stringify(presets));
-    renderSettingLists();
+    localStorage.setItem(type === 'prep' ? 'my_prep_presets' : 'my_other_presets', JSON.stringify(presets));
+    renderAllSettings();
   }
 
-  // 세트 1, 2, 3 렌더링 및 저장/불러오기
   function renderSets() {
-    const container = document.getElementById('setRows');
+    const container = document.getElementById('setListContainer');
     container.innerHTML = '';
-    routineSets.forEach((s, idx) => {
-      const div = document.createElement('div');
-      div.className = 'set-row';
-      div.innerHTML = `
+    customSets.forEach((s, idx) => {
+      const row = document.createElement('div');
+      row.className = 'set-row';
+      row.innerHTML = `
         <input type="text" class="set-name-input" value="${s.name}" oninput="updateSetName(${idx}, this.value)">
         <button class="btn-set-load" onclick="loadSet(${idx})">불러오기</button>
-        <button class="btn-set-save" onclick="saveToSet(${idx})">현재 설정 저장</button>
+        <button class="btn-set-save" onclick="saveToSet(${idx})">저장</button>
       `;
-      container.appendChild(div);
+      container.appendChild(row);
     });
   }
 
   function updateSetName(idx, val) {
-    routineSets[idx].name = val;
-    localStorage.setItem('v3_routine_sets', JSON.stringify(routineSets));
-  }
-
-  function loadSet(idx) {
-    prepItems = JSON.parse(JSON.stringify(routineSets[idx].prep));
-    otherItems = JSON.parse(JSON.stringify(routineSets[idx].other));
-    renderSettingLists();
-    saveAll();
-    alert(`'${routineSets[idx].name}' 구성을 불러왔습니다.`);
+    customSets[idx].name = val;
+    localStorage.setItem('my_custom_sets', JSON.stringify(customSets));
   }
 
   function saveToSet(idx) {
-    routineSets[idx].prep = JSON.parse(JSON.stringify(prepItems));
-    routineSets[idx].other = JSON.parse(JSON.stringify(otherItems));
-    localStorage.setItem('v3_routine_sets', JSON.stringify(routineSets));
-    alert(`현재 준비시간과 그 외 시간을 '${routineSets[idx].name}'에 저장했습니다.`);
+    customSets[idx].prep = JSON.parse(JSON.stringify(prepItems));
+    customSets[idx].other = JSON.parse(JSON.stringify(otherItems));
+    localStorage.setItem('my_custom_sets', JSON.stringify(customSets));
+    alert(`'${customSets[idx].name}'로 저장되었습니다.`);
   }
 
-  // 시간 포맷 및 전체 역산 계산
-  function formatTimeKor(mins) {
-    while (mins < 0) mins += 1440;
-    mins = mins % 1440;
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
-    const ampm = h < 12 ? '오전' : '오후';
-    const dispH = h % 12 === 0 ? 12 : h % 12;
-    return `${ampm} ${dispH}시 ${String(m).padStart(2, '0')}분`;
+  function loadSet(idx) {
+    prepItems = JSON.parse(JSON.stringify(customSets[idx].prep || []));
+    otherItems = JSON.parse(JSON.stringify(customSets[idx].other || []));
+    renderAllSettings();
+    saveCurrentState();
+    alert(`'${customSets[idx].name}' 설정을 불러왔습니다.`);
   }
 
-  function formatTime24(mins) {
-    while (mins < 0) mins += 1440;
-    mins = mins % 1440;
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
-    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-  }
-
-  function saveAll() {
-    localStorage.setItem('v3_prep_items', JSON.stringify(prepItems));
-    localStorage.setItem('v3_other_items', JSON.stringify(otherItems));
-    localStorage.setItem('v3_transit_state', JSON.stringify({
+  function saveCurrentState() {
+    localStorage.setItem('my_prep_items', JSON.stringify(prepItems));
+    localStorage.setItem('my_other_items', JSON.stringify(otherItems));
+    localStorage.setItem('my_transit_state_v2', JSON.stringify({
       arrivalTime: document.getElementById('arrivalTime').value,
-      bus: parseInt(document.getElementById('inBus').value) || 0,
-      subway: parseInt(document.getElementById('inSubway').value) || 0,
-      walk: parseInt(document.getElementById('inWalk').value) || 0,
-      wait: parseInt(document.getElementById('inWait').value) || 0
+      transitMin: parseInt(document.getElementById('totalTransitInput').value) || 0
     }));
-    calculateAll();
+    calculate();
   }
 
-  function calculateAll() {
-    const arrVal = document.getElementById('arrivalTime').value || '09:00';
-    const [arrH, arrM] = arrVal.split(':').map(Number);
-    const arrTotal = arrH * 60 + arrM;
+  function formatKoreanTime(totalMinutes) {
+    while (totalMinutes < 0) totalMinutes += 1440;
+    totalMinutes = totalMinutes % 1440;
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    const ampm = h < 12 ? '오전' : '오후';
+    const displayH = h % 12 === 0 ? 12 : h % 12;
+    return `${ampm} ${String(displayH).padStart(2, '0')}시 ${String(m).padStart(2, '0')}분`;
+  }
 
-    const prepSum = prepItems.reduce((a, c) => a + (parseInt(c.min) || 0), 0);
-    const otherSum = otherItems.reduce((a, c) => a + (parseInt(c.min) || 0), 0);
+  function toggleBusSyncInput() {
+    const mode = document.getElementById('busSyncMode').value;
+    document.getElementById('busWaitWrap').style.display = mode === 'wait' ? 'flex' : 'none';
+    document.getElementById('busClockWrap').style.display = mode === 'clock' ? 'flex' : 'none';
+    calculate();
+  }
 
-    const bus = parseInt(document.getElementById('inBus').value) || 0;
-    const subway = parseInt(document.getElementById('inSubway').value) || 0;
-    const walk = parseInt(document.getElementById('inWalk').value) || 0;
-    const wait = parseInt(document.getElementById('inWait').value) || 0;
+  function calculate() {
+    const arrivalVal = document.getElementById('arrivalTime').value || '09:00';
+    const [arrH, arrM] = arrivalVal.split(':').map(Number);
+    const arrivalTotal = arrH * 60 + arrM;
 
-    const transitTotal = bus + subway + walk + wait;
-    const doorOpenTime = arrTotal - transitTotal;
-    const wakeUpTime = doorOpenTime - (prepSum + otherSum);
+    const prepSum = prepItems.reduce((acc, cur) => acc + (parseInt(cur.min) || 0), 0);
+    const otherSum = otherItems.reduce((acc, cur) => acc + (parseInt(cur.min) || 0), 0);
+    let transitSum = parseInt(document.getElementById('totalTransitInput').value) || 0;
 
-    document.getElementById('wakeUpDisplay').textContent = `당신은 ${formatTimeKor(wakeUpTime)}에 일어나야 합니다`;
-    document.getElementById('doorTimeDisplay').textContent = formatTimeKor(doorOpenTime);
+    const useBusSync = document.getElementById('useBusSync').checked;
+    const syncMode = document.getElementById('busSyncMode').value;
+    const badgeEl = document.getElementById('busSyncBadge');
 
-    document.getElementById('sumTransit').textContent = `${transitTotal}분`;
-    document.getElementById('sumWaitSub').textContent = wait > 0 ? `(버스대기 ${wait}분 포함)` : '';
+    let doorTime = arrivalTotal - transitSum;
+
+    if (useBusSync && currentTab !== 'car') {
+      badgeEl.style.display = 'block';
+      if (syncMode === 'wait') {
+        const waitMin = parseInt(document.getElementById('busWaitMin').value) || 0;
+        transitSum += waitMin;
+        doorTime = arrivalTotal - transitSum;
+        badgeEl.textContent = `버스 대기 시간 ${waitMin}분 반영됨`;
+      } else {
+        const busClock = document.getElementById('busTargetClock').value || '08:15';
+        const [bH, bM] = busClock.split(':').map(Number);
+        const busClockTotal = bH * 60 + bM;
+        doorTime = busClockTotal - firstWalkMin;
+        badgeEl.textContent = `${busClock} 버스 탑승 맞춤 (정류장 도보 ${firstWalkMin}분 전 출발)`;
+      }
+    } else {
+      badgeEl.style.display = 'none';
+    }
+
+    const wakeUpTime = doorTime - (prepSum + otherSum);
+
+    document.getElementById('prepSumText').textContent = `${prepSum}분`;
+    document.getElementById('otherSumText').textContent = `${otherSum}분`;
+    document.getElementById('sumTransit').textContent = `${transitSum}분`;
     document.getElementById('sumPrep').textContent = `${prepSum}분`;
     document.getElementById('sumOther').textContent = `${otherSum}분`;
 
-    document.getElementById('prepTotalSetting').textContent = `${prepSum}분`;
-    document.getElementById('otherTotalSetting').textContent = `${otherSum}분`;
-
-    const hintEl = document.getElementById('busScheduleHint');
-    if (selectedFirstBusNote) {
-      hintEl.textContent = selectedFirstBusNote;
-    } else if (wait > 0) {
-      hintEl.textContent = `버스 도착 대기시간(${wait}분)을 고려해 현관문 나서는 시간이 앞당겨졌습니다.`;
-    } else {
-      hintEl.textContent = `총 소요시간 ${transitTotal + prepSum + otherSum}분 기준 계산 결과입니다.`;
-    }
+    document.getElementById('doorTimeText').textContent = formatKoreanTime(doorTime);
+    document.getElementById('wakeUpText').innerHTML = `당신은 <span>${formatKoreanTime(wakeUpTime)}</span>에 일어나야합니다`;
   }
 
-  // API 모달
-  function openApiModal() {
+  function openModal() {
     document.getElementById('kakaoKeyInput').value = localStorage.getItem('kakao_api_key') || '';
     document.getElementById('odsayKeyInput').value = localStorage.getItem('odsay_api_key') || '';
     document.getElementById('apiModal').style.display = 'flex';
   }
-  function closeApiModal() { document.getElementById('apiModal').style.display = 'none'; }
+  function closeModal() { document.getElementById('apiModal').style.display = 'none'; }
   function saveApiKeys() {
     localStorage.setItem('kakao_api_key', document.getElementById('kakaoKeyInput').value.trim());
     localStorage.setItem('odsay_api_key', document.getElementById('odsayKeyInput').value.trim());
-    closeApiModal();
+    closeModal();
     alert('API 키가 저장되었습니다.');
   }
 
-  // 카카오 SDK 로드 및 주소+장소 통합 검색
-  function loadKakao(key) {
+  function loadKakaoSdk(key) {
     return new Promise((resolve, reject) => {
       if (window.kakao && window.kakao.maps) return resolve();
-      const s = document.createElement('script');
-      s.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services&autoload=false`;
-      s.onload = () => kakao.maps.load(resolve);
-      s.onerror = () => reject(new Error('카카오 키나 도메인 허용 설정을 확인해주세요.'));
-      document.head.appendChild(s);
+      const script = document.createElement('script');
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services&autoload=false`;
+      script.onload = () => kakao.maps.load(resolve);
+      script.onerror = () => reject(new Error('카카오 API 키 또는 도메인 설정을 확인해주세요.'));
+      document.head.appendChild(script);
     });
   }
 
-  async function queryKakaoPlaces(query) {
+  async function searchAddressAndPlace(query) {
     const geocoder = new kakao.maps.services.Geocoder();
     const ps = new kakao.maps.services.Places();
-    const p1 = new Promise(res => {
+
+    const addrPromise = new Promise(resolve => {
       geocoder.addressSearch(query, (data, status) => {
         if (status === kakao.maps.services.Status.OK) {
-          res(data.map(d => ({
+          resolve(data.map(d => ({
             name: d.building_name ? `${d.address_name} (${d.building_name})` : d.address_name,
             addr: d.road_address ? d.road_address.address_name : d.address_name,
             x: parseFloat(d.x), y: parseFloat(d.y)
           })));
-        } else res([]);
+        } else resolve([]);
       });
     });
-    const p2 = new Promise(res => {
+
+    const placePromise = new Promise(resolve => {
       ps.keywordSearch(query, (data, status) => {
         if (status === kakao.maps.services.Status.OK) {
-          res(data.slice(0, 6).map(d => ({
+          resolve(data.slice(0, 6).map(d => ({
             name: d.place_name,
             addr: d.road_address_name || d.address_name,
             x: parseFloat(d.x), y: parseFloat(d.y)
           })));
-        } else res([]);
+        } else resolve([]);
       });
     });
-    const [r1, r2] = await Promise.all([p1, p2]);
-    return [...r1, ...r2];
+
+    const [addrRes, placeRes] = await Promise.all([addrPromise, placePromise]);
+    return [...addrRes, ...placeRes];
   }
 
-  async function findLocation(type) {
+  async function findAddress(type) {
     const kakaoKey = localStorage.getItem('kakao_api_key');
-    if (!kakaoKey) { openApiModal(); return alert('카카오 API 키를 먼저 설정해주세요.'); }
-    const input = document.getElementById(type === 'start' ? 'startLoc' : 'endLoc');
-    const drop = document.getElementById(type === 'start' ? 'startDrop' : 'endDrop');
-    if (!input.value.trim()) return alert('검색어를 입력해주세요.');
+    if (!kakaoKey) { openModal(); return alert('상단 [API 키] 설정을 먼저 완료해주세요.'); }
 
-    await loadKakao(kakaoKey);
-    const list = await queryKakaoPlaces(input.value.trim());
-    drop.innerHTML = '';
-    if (list.length === 0) {
-      drop.innerHTML = '<div class="drop-item">검색 결과가 없습니다.</div>';
+    const inputEl = document.getElementById(type === 'start' ? 'startLoc' : 'endLoc');
+    const dropEl = document.getElementById(type === 'start' ? 'startDropdown' : 'endDropdown');
+    const query = inputEl.value.trim();
+    if (!query) return alert('주소나 장소명을 입력해주세요.');
+
+    await loadKakaoSdk(kakaoKey);
+    const results = await searchAddressAndPlace(query);
+
+    dropEl.innerHTML = '';
+    if (results.length === 0) {
+      dropEl.innerHTML = '<div class="place-item">검색 결과가 없습니다.</div>';
     } else {
-      list.forEach(item => {
+      results.forEach(item => {
         const div = document.createElement('div');
-        div.className = 'drop-item';
-        div.innerHTML = `<div class="drop-name">${item.name}</div><div class="drop-addr">${item.addr}</div>`;
+        div.className = 'place-item';
+        div.innerHTML = `<div class="place-name">${item.name}</div><div class="place-addr">${item.addr}</div>`;
         div.onclick = () => {
-          input.value = item.name;
+          inputEl.value = item.name;
           if (type === 'start') selectedStart = item;
           else selectedEnd = item;
-          drop.style.display = 'none';
+          dropEl.style.display = 'none';
         };
-        drop.appendChild(div);
+        dropEl.appendChild(div);
       });
     }
-    drop.style.display = 'block';
+    dropEl.style.display = 'block';
   }
 
-  function selectMode(mode, btn) {
-    currentMode = mode;
+  function switchTab(tabName, btnEl) {
+    currentTab = tabName;
     document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    if (mode === 4 && selectedStart && selectedEnd) {
-      renderCarRoute();
-    } else if (fetchedPaths.length > 0) {
-      renderTransitRoutes();
+    btnEl.classList.add('active');
+
+    if (tabName === 'car') {
+      document.getElementById('routeList').style.display = 'none';
+      document.getElementById('busArrivalPanel').style.display = 'none';
+      document.getElementById('carPanel').style.display = 'block';
+      if (selectedStart && selectedEnd) calcCarEstimate();
+      else applyCarTime();
+    } else {
+      document.getElementById('carPanel').style.display = 'none';
+      if (fetchedPaths.length > 0) renderRouteList();
     }
   }
 
-  // 두 좌표 직선거리(km) 계산 (자동차 주행 추정용)
-  function calcDistanceKm(lat1, lon1, lat2, lon2) {
+  function getDistanceKm(lat1, lon1, lat2, lon2) {
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2)*Math.sin(dLat/2) +
-              Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
 
-  async function searchRoutes() {
-    const sVal = document.getElementById('startLoc').value.trim();
-    const eVal = document.getElementById('endLoc').value.trim();
-    if (!sVal || !eVal) return alert('출발지와 도착지를 모두 입력해주세요.');
+  function calcCarEstimate() {
+    if (!selectedStart || !selectedEnd) return;
+    const straightKm = getDistanceKm(selectedStart.y, selectedStart.x, selectedEnd.y, selectedEnd.x);
+    const roadKm = (straightKm * 1.35).toFixed(1);
+    const estMin = Math.max(5, Math.round((roadKm / 28) * 60) + 5);
+    document.getElementById('carTimeInput').value = estMin;
+    document.getElementById('carDistInfo').textContent = `예상 주행 거리 약 ${roadKm}km 기준 자동 산출 (직접 시간 수정 가능)`;
+    applyCarTime();
+  }
+
+  function applyCarTime() {
+    const carMin = parseInt(document.getElementById('carTimeInput').value) || 0;
+    document.getElementById('totalTransitInput').value = carMin;
+    saveCurrentState();
+  }
+
+  async function searchRoute() {
+    const startVal = document.getElementById('startLoc').value.trim();
+    const endVal = document.getElementById('endLoc').value.trim();
+    if (!startVal || !endVal) return alert('출발지와 도착지를 모두 입력해주세요.');
 
     const kakaoKey = localStorage.getItem('kakao_api_key');
     const odsayKey = localStorage.getItem('odsay_api_key');
-    if (!kakaoKey || !odsayKey) { openApiModal(); return alert('API 키 설정을 먼저 완료해주세요.'); }
+    if (!kakaoKey || !odsayKey) {
+      openModal();
+      return alert('상단 [API 키]에서 키를 먼저 입력해주세요.');
+    }
 
-    const msg = document.getElementById('statusMsg');
-    msg.style.display = 'block';
-    msg.textContent = '경로를 탐색하고 있습니다...';
+    const msgEl = document.getElementById('statusMsg');
+    msgEl.style.display = 'block';
+    msgEl.textContent = '경로를 검색하고 있습니다...';
 
     try {
-      await loadKakao(kakaoKey);
-      if (!selectedStart || selectedStart.name !== sVal) {
-        const sRes = await queryKakaoPlaces(sVal);
-        if (!sRes.length) throw new Error(`'${sVal}' 위치를 찾을 수 없습니다.`);
-        selectedStart = sRes[0];
+      await loadKakaoSdk(kakaoKey);
+
+      if (!selectedStart || selectedStart.name !== startVal) {
+        const sList = await searchAddressAndPlace(startVal);
+        if (sList.length === 0) throw new Error(`'${startVal}' 위치를 찾을 수 없습니다.`);
+        selectedStart = sList[0];
         document.getElementById('startLoc').value = selectedStart.name;
       }
-      if (!selectedEnd || selectedEnd.name !== eVal) {
-        const eRes = await queryKakaoPlaces(eVal);
-        if (!eRes.length) throw new Error(`'${eVal}' 위치를 찾을 수 없습니다.`);
-        selectedEnd = eRes[0];
+      if (!selectedEnd || selectedEnd.name !== endVal) {
+        const eList = await searchAddressAndPlace(endVal);
+        if (eList.length === 0) throw new Error(`'${endVal}' 위치를 찾을 수 없습니다.`);
+        selectedEnd = eList[0];
         document.getElementById('endLoc').value = selectedEnd.name;
       }
 
-      // 지도 표시
       const mapEl = document.getElementById('map');
       mapEl.style.display = 'block';
       const map = new kakao.maps.Map(mapEl, {
@@ -708,232 +837,178 @@
       const p2 = new kakao.maps.LatLng(selectedEnd.y, selectedEnd.x);
       new kakao.maps.Marker({ map, position: p1 });
       new kakao.maps.Marker({ map, position: p2 });
-      bounds.extend(p1); bounds.extend(p2);
+      bounds.extend(p1);
+      bounds.extend(p2);
       map.setBounds(bounds);
 
-      if (currentMode === 4) {
-        renderCarRoute();
-        msg.textContent = `${selectedStart.name} → ${selectedEnd.name} (자동차 주행 경로)`;
+      if (currentTab === 'car') {
+        calcCarEstimate();
+        msgEl.textContent = `${selectedStart.name} → ${selectedEnd.name} (자동차 경로 반영됨)`;
         return;
       }
 
       const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${selectedStart.x}&SY=${selectedStart.y}&EX=${selectedEnd.x}&EY=${selectedEnd.y}&apiKey=${encodeURIComponent(odsayKey)}`;
       const res = await fetch(url);
       const json = await res.json();
+
       if (json.error || !json.result || !json.result.path) {
-        throw new Error(json.error ? json.error.msg : '대중교통 경로를 찾을 수 없습니다.');
+        throw new Error(json.error ? json.error.msg : '대중교통 경로가 없습니다.');
       }
 
       fetchedPaths = json.result.path;
       updateTabCounts();
-      renderTransitRoutes();
-      msg.textContent = `${selectedStart.name} → ${selectedEnd.name} (원하는 경로를 클릭하면 시간이 반영됩니다)`;
+      msgEl.textContent = `${selectedStart.name} → ${selectedEnd.name} (원하는 경로를 클릭하세요)`;
+      renderRouteList();
+
     } catch (err) {
-      msg.textContent = '오류: ' + err.message;
+      msgEl.textContent = '오류: ' + err.message;
+      document.getElementById('routeList').style.display = 'none';
     }
   }
 
   function updateTabCounts() {
-    const cBus = fetchedPaths.filter(p => p.pathType === 2).length;
-    const cSub = fetchedPaths.filter(p => p.pathType === 1).length;
-    const cBoth = fetchedPaths.filter(p => p.pathType === 3).length;
-    document.getElementById('tabAll').textContent = `전체 ${fetchedPaths.length}`;
-    document.getElementById('tabBus').textContent = `버스 ${cBus}`;
-    document.getElementById('tabSub').textContent = `지하철 ${cSub}`;
-    document.getElementById('tabBusSub').textContent = `버스+지하철 ${cBoth}`;
+    document.getElementById('cntAll').textContent = fetchedPaths.length;
+    document.getElementById('cntBus').textContent = fetchedPaths.filter(p => p.pathType === 2).length;
+    document.getElementById('cntSub').textContent = fetchedPaths.filter(p => p.pathType === 1).length;
+    document.getElementById('cntBusSub').textContent = fetchedPaths.filter(p => p.pathType === 3).length;
   }
 
-  // 자동차 경로 렌더링
-  function renderCarRoute() {
-    const listEl = document.getElementById('routeList');
-    listEl.style.display = 'flex';
-    listEl.innerHTML = '';
-
-    const straightKm = calcDistanceKm(selectedStart.y, selectedStart.x, selectedEnd.y, selectedEnd.x);
-    const roadKm = (straightKm * 1.35).toFixed(1);
-    // 도심 평균 주행(시속 26km 기준) + 기본 주차/신호 여유 7분
-    const driveMin = Math.max(8, Math.round((roadKm / 26) * 60));
-    const parkWalkMin = 5;
-    const taxiFare = Math.round(4800 + Math.max(0, roadKm - 1.6) * 1000);
-
-    const card = document.createElement('div');
-    card.className = 'route-item selected';
-    card.innerHTML = `
-      <div class="r-head">
-        <div class="r-big-time">🚗 자동차 약 ${driveMin}분 <small>(주차·도보 ${parkWalkMin}분)</small></div>
-        <div class="r-meta">약 ${roadKm}km · 택시비 약 ${taxiFare.toLocaleString()}원</div>
-      </div>
-      <div class="r-bar">
-        <div class="r-seg" style="width:85%; background:#3182f6;">차량 주행 ${driveMin}분</div>
-        <div class="r-seg seg-walk" style="width:15%;">주차 ${parkWalkMin}분</div>
-      </div>
-      <div style="font-size:12px; color:#6b7684;">
-        출발지(${selectedStart.name})에서 도착지(${selectedEnd.name})까지 도심 평균 속도를 반영한 자동차 예상 소요시간입니다. 아래 입력칸에서 시간을 직접 가감할 수 있습니다.
-      </div>
-    `;
-    listEl.appendChild(card);
-
-    document.getElementById('lblMainMove').textContent = '자동차(분)';
-    document.getElementById('inBus').value = driveMin;
-    document.getElementById('inSubway').value = 0;
-    document.getElementById('inWalk').value = parkWalkMin;
-    document.getElementById('inWait').value = 0;
-    selectedFirstBusNote = `자동차 주행(${driveMin}분) 및 주차·도보(${parkWalkMin}분) 기준입니다.`;
-    saveAll();
+  function getBusTypeStyle(busType) {
+    if (busType === 12 || busType === 3 || busType === 1) {
+      return { label: '지선', cls: 'type-green', boxCls: 'green', barCls: 'seg-bus-green' };
+    }
+    return { label: '간선', cls: 'type-blue', boxCls: '', barCls: 'seg-bus-blue' };
   }
 
-  // 사진 1 스타일 대중교통 경로 카드 렌더링 (버스 도착예정 시각 및 대기시간 계산 포함)
-  function renderTransitRoutes() {
-    document.getElementById('lblMainMove').textContent = '버스(분)';
+  function renderRouteList() {
     const listEl = document.getElementById('routeList');
-    listEl.style.display = 'flex';
     listEl.innerHTML = '';
+    listEl.style.display = 'flex';
 
-    const filtered = fetchedPaths.filter(p => currentMode === 0 ? true : p.pathType === currentMode);
-    if (!filtered.length) {
-      listEl.innerHTML = '<div style="font-size:13px; color:#6b7684; padding:10px;">해당 수단 경로가 없습니다.</div>';
+    const filtered = fetchedPaths.filter(p => {
+      if (currentTab === 'all') return true;
+      if (currentTab === 'bus') return p.pathType === 2;
+      if (currentTab === 'subway') return p.pathType === 1;
+      if (currentTab === 'bus_sub') return p.pathType === 3;
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div style="font-size:13px; color:#555; padding:10px;">해당 수단의 경로가 없습니다.</div>';
       return;
     }
 
-    const arrVal = document.getElementById('arrivalTime').value || '09:00';
-    const [arrH, arrM] = arrVal.split(':').map(Number);
-    const arrTotal = arrH * 60 + arrM;
-
     filtered.forEach((path, idx) => {
-      let busMin = 0, subMin = 0, walkMin = 0;
-      let firstIntervalWait = 0;
-      let firstWalkBeforeTransit = 0;
-      let foundFirstTransit = false;
-      let firstBoardingDesc = '';
-
+      const totalMin = path.info.totalTime;
+      const pay = path.info.payment ? `${path.info.payment.toLocaleString()}원` : '';
+      const arrivalVal = document.getElementById('arrivalTime').value || '09:00';
       let barHtml = '';
       let timelineHtml = '';
-      const totalT = path.info.totalTime || 1;
+      let lastEndStation = path.info.lastEndStation || '목적지';
+      let firstBusInfo = null;
+      let walkBeforeTransit = 0;
+      let foundFirstTransit = false;
 
       path.subPath.forEach(sub => {
-        const ratio = Math.max(8, Math.round((sub.sectionTime / totalT) * 100));
+        const secMin = sub.sectionTime;
+        if (secMin <= 0) return;
+        const widthPct = Math.max(8, Math.round((secMin / totalMin) * 100));
 
-        if (sub.trafficType === 3) { // 도보
-          walkMin += sub.sectionTime;
-          if (!foundFirstTransit) firstWalkBeforeTransit += sub.sectionTime;
-          if (sub.sectionTime > 0) {
-            barHtml += `<div class="r-seg seg-walk" style="width:${ratio}%">${sub.sectionTime}분</div>`;
-          }
-        } else if (sub.trafficType === 2) { // 버스
-          busMin += sub.sectionTime;
-          const lane = sub.lane && sub.lane[0] ? sub.lane[0] : { busNo: '버스', type: 1 };
-          const allBusNos = sub.lane ? sub.lane.map(l => l.busNo) : [lane.busNo];
-          const isGreen = [2, 3, 12].includes(lane.type); // 지선/마을 초록, 나머지 간선 파랑
-          const typeLabel = isGreen ? '지선' : '간선';
-          const colorCls = isGreen ? 'c-green' : 'c-blue';
-          const boxCls = isGreen ? 'box-green' : 'box-blue';
-          const segCls = isGreen ? 'seg-bus-g' : 'seg-bus-b';
+        if (sub.trafficType === 3) {
+          if (!foundFirstTransit) walkBeforeTransit += secMin;
+          barHtml += `<div class="rc-seg seg-walk" style="width:${widthPct}%">${secMin}분</div>`;
+        } else if (sub.trafficType === 2) {
+          foundFirstTransit = true;
+          const firstLane = sub.lane && sub.lane[0] ? sub.lane[0] : { busNo: '버스', type: 11 };
+          const style = getBusTypeStyle(firstLane.type);
+          barHtml += `<div class="rc-seg ${style.barCls}" style="width:${widthPct}%">${secMin}분</div>`;
 
-          barHtml += `<div class="r-seg ${segCls}" style="width:${ratio}%">${sub.sectionTime}분</div>`;
-
-          // 버스 배차간격 기반 대기시간 및 도착예정 시각 계산
-          const interval = sub.intervalTime || 10;
-          const estWait = Math.min(12, Math.max(3, Math.round(interval / 2)));
-          if (!foundFirstTransit) {
-            foundFirstTransit = true;
-            firstIntervalWait = estWait;
+          const lanes = sub.lane || [];
+          let badgesHtml = lanes.slice(0, 3).map(l => `<span class="bus-num-box ${style.boxCls}">${l.busNo}</span>`).join('');
+          if (lanes.length > 3) {
+            badgesHtml += `<span style="font-size:12px; color:var(--sub);">포함 ${lanes.length}대</span>`;
           }
 
-          // 도착시간 기준 역산한 해당 정류장 버스 탑승 예정 시각
-          const boardClock = formatTime24(arrTotal - (totalT - firstWalkBeforeTransit));
-          if (firstBoardingDesc === '') {
-            firstBoardingDesc = `[${lane.busNo}번 버스] ${sub.startName} 정류장 ${boardClock} 탑승 맞춰 현관 출발 (평균 대기 ${estWait}분 반영)`;
+          const interval = sub.intervalTime ? `<span class="rc-interval-tag">배차 ${sub.intervalTime}분</span>` : '';
+          if (!firstBusInfo) {
+            firstBusInfo = {
+              station: sub.startName,
+              busNo: firstLane.busNo,
+              interval: sub.intervalTime || 8,
+              walkMin: walkBeforeTransit
+            };
           }
-
-          const extraBuses = allBusNos.length > 1
-            ? allBusNos.slice(1, 3).map(n => `<span class="bus-box ${boxCls}">${n}</span>`).join(' ') + (allBusNos.length > 3 ? ` 외 ${allBusNos.length - 3}대` : '')
-            : '';
 
           timelineHtml += `
-            <div class="tl-node">
-              <div class="tl-header">
-                <span class="type-label ${colorCls}">🚌 ${typeLabel}</span>
-                <span>${sub.startName}</span>
+            <div class="rc-step">
+              <div class="rc-type-col ${style.cls}">■ ${style.label}</div>
+              <div class="rc-detail-col">
+                <div class="rc-station">${sub.startName}</div>
+                <div class="rc-badges">${badgesHtml} ${interval} <span style="font-size:11px; color:var(--sub);">(${secMin}분)</span></div>
               </div>
-              <div>
-                <span class="bus-box ${boxCls}">${lane.busNo}</span>
-                ${extraBuses}
-                <span style="font-size:12px; color:#6b7684; margin-left:4px;">${sub.sectionTime}분 이동 (${sub.stationCount}정류장)</span>
-              </div>
-              <div class="arrival-badge">⏱ ${boardClock} 버스 탑승 예정 · 배차 약 ${interval}분 (대기 약 ${estWait}분)</div>
-            </div>
-          `;
-        } else if (sub.trafficType === 1) { // 지하철
-          subMin += sub.sectionTime;
+            </div>`;
+        } else if (sub.trafficType === 1) {
+          foundFirstTransit = true;
           const laneName = sub.lane && sub.lane[0] ? sub.lane[0].name : '지하철';
-          barHtml += `<div class="r-seg seg-sub" style="width:${ratio}%">${sub.sectionTime}분</div>`;
-
-          const interval = sub.intervalTime || 6;
-          const estWait = Math.min(8, Math.max(2, Math.round(interval / 2)));
-          if (!foundFirstTransit) {
-            foundFirstTransit = true;
-            firstIntervalWait = estWait;
-            const boardClock = formatTime24(arrTotal - (totalT - firstWalkBeforeTransit));
-            firstBoardingDesc = `[${laneName}] ${sub.startName}역 ${boardClock} 열차 탑승 기준 (대기 ${estWait}분 반영)`;
-          }
-
+          barHtml += `<div class="rc-seg seg-subway" style="width:${widthPct}%">${secMin}분</div>`;
           timelineHtml += `
-            <div class="tl-node">
-              <div class="tl-header">
-                <span class="type-label c-sub">🚇 ${laneName}</span>
-                <span>${sub.startName}역 → ${sub.endName}역</span>
+            <div class="rc-step">
+              <div class="rc-type-col type-subway">■ 지하철</div>
+              <div class="rc-detail-col">
+                <div class="rc-station">${sub.startName}역</div>
+                <div class="rc-badges">
+                  <span class="bus-num-box subway">${laneName}</span>
+                  <span style="font-size:11px; color:var(--sub);">(${secMin}분)</span>
+                </div>
               </div>
-              <div>
-                <span class="bus-box box-sub">${sub.sectionTime}분 소요</span>
-                <span style="font-size:12px; color:#6b7684; margin-left:4px;">(${sub.stationCount}개 역 이동)</span>
-              </div>
-            </div>
-          `;
+            </div>`;
         }
       });
 
-      // 하차 지점 표시
       timelineHtml += `
-        <div class="tl-node">
-          <div class="tl-header" style="color:#6b7684;">○ 하차 : ${path.info.lastEndStation || selectedEnd.name}</div>
+        <div class="rc-step">
+          <div class="rc-type-col type-end">□ 하차</div>
+          <div class="rc-detail-col"><div class="rc-station" style="margin:0;">${lastEndStation}</div></div>
+        </div>`;
+
+      const card = document.createElement('div');
+      card.className = 'route-card' + (idx === 0 ? ' selected' : '');
+      card.innerHTML = `
+        <div class="rc-header">
+          <span class="rc-big-time">${totalMin}<small>분</small></span>
+          <span class="rc-sub-info">도착목표 ${arrivalVal} 기준 | ${pay}</span>
         </div>
+        <div class="rc-bar">${barHtml}</div>
+        <div class="rc-timeline">${timelineHtml}</div>
       `;
 
-      const sumMove = busMin + subMin + walkMin;
-      const pay = path.info.payment ? `${path.info.payment.toLocaleString()}원` : '';
-
-      const item = document.createElement('div');
-      item.className = 'route-item' + (idx === 0 ? ' selected' : '');
-      item.innerHTML = `
-        <div class="r-head">
-          <div class="r-big-time">${sumMove}<small>분</small> <span style="font-size:13px; font-weight:600; color:#e03131;">+ 대기 약 ${firstIntervalWait}분</span></div>
-          <div class="r-meta">${ formatTimeKor(arrTotal) } 도착 기준 | ${pay}</div>
-        </div>
-        <div class="r-bar">${barHtml}</div>
-        <div class="r-timeline">${timelineHtml}</div>
-      `;
-
-      item.onclick = () => {
-        document.querySelectorAll('.route-item').forEach(el => el.classList.remove('selected'));
-        item.classList.add('selected');
-        applySelectedRoute(busMin, subMin, walkMin, firstIntervalWait, firstBoardingDesc);
+      card.onclick = () => {
+        document.querySelectorAll('.route-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectPathCard(totalMin, firstBusInfo);
       };
 
-      listEl.appendChild(item);
-
-      if (idx === 0) {
-        applySelectedRoute(busMin, subMin, walkMin, firstIntervalWait, firstBoardingDesc);
-      }
+      listEl.appendChild(card);
+      if (idx === 0) selectPathCard(totalMin, firstBusInfo);
     });
   }
 
-  function applySelectedRoute(bus, sub, walk, wait, note) {
-    document.getElementById('inBus').value = bus;
-    document.getElementById('inSubway').value = sub;
-    document.getElementById('inWalk').value = walk;
-    document.getElementById('inWait').value = wait;
-    selectedFirstBusNote = note;
-    saveAll();
+  function selectPathCard(totalMin, firstBusInfo) {
+    document.getElementById('totalTransitInput').value = totalMin;
+    const panel = document.getElementById('busArrivalPanel');
+
+    if (firstBusInfo) {
+      panel.style.display = 'block';
+      firstWalkMin = firstBusInfo.walkMin || 3;
+      document.getElementById('firstBusTitle').textContent = `[${firstBusInfo.station}] ${firstBusInfo.busNo}번 버스 도착 맞춤`;
+      const estWait = Math.max(3, Math.round(firstBusInfo.interval / 2));
+      document.getElementById('busWaitMin').value = estWait;
+      document.getElementById('busPanelHelp').textContent = `${firstBusInfo.station}까지 도보 약 ${firstWalkMin}분 소요. 버스 대기시간 또는 도착시각에 맞춰 출발시간을 계산합니다.`;
+    } else {
+      panel.style.display = 'none';
+      document.getElementById('useBusSync').checked = false;
+    }
+    saveCurrentState();
   }
 
   init();
