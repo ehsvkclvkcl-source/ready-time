@@ -14,6 +14,8 @@
       --primary: #3182f6;
       --primary-light: #e8f3ff;
       --danger: #f04452;
+      --bus: #2db400;
+      --subway: #0052A4;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Pretendard", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 20px 16px 60px; line-height: 1.4; }
@@ -36,7 +38,7 @@
     
     /* 입력 폼 */
     input[type="time"], input[type="text"], input[type="number"] {
-      border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 14px; color: var(--text); outline: none; background: #fff;
+      border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; font-size: 14px; color: var(--text); outline: none; background: #fff;
     }
     input:focus { border-color: var(--primary); }
     input[type="time"] { width: 100%; font-size: 16px; font-weight: 600; padding: 10px; }
@@ -49,25 +51,54 @@
     .btn-icon { background: #f2f4f6; border: none; border-radius: 8px; padding: 8px 10px; font-size: 12px; cursor: pointer; color: var(--sub); white-space: nowrap; }
     .btn-icon:hover { background: var(--border); color: var(--text); }
     .btn-del { color: var(--danger); background: #fff0f1; }
-    
     .btn-add { width: 100%; background: #f2f4f6; border: none; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; margin-top: 4px; }
     
-    /* 저장된 내 준비 항목 (빠른 추가) */
+    /* 저장된 내 준비 항목 */
     .saved-section { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border); }
-    .saved-label { font-size: 12px; color: var(--sub); margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .saved-label { font-size: 12px; color: var(--sub); margin-bottom: 8px; }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; }
     .chip { display: inline-flex; align-items: center; background: var(--primary-light); color: var(--primary); border-radius: 20px; padding: 5px 10px; font-size: 13px; font-weight: 500; cursor: pointer; user-select: none; }
     .chip-del { margin-left: 6px; font-size: 14px; color: #8b95a1; padding: 0 2px; }
     .chip-del:hover { color: var(--danger); }
     
-    /* 이동시간 및 지도 */
-    .search-box { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-    .search-row { display: flex; gap: 6px; }
-    .search-row input { flex: 1; }
-    .btn-primary { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 10px 14px; font-size: 14px; font-weight: 600; cursor: pointer; }
-    #map { width: 100%; height: 180px; border-radius: 10px; margin-bottom: 12px; display: none; border: 1px solid var(--border); }
+    /* 출발지/도착지 검색 및 자동완성 목록 */
+    .loc-wrap { position: relative; margin-bottom: 8px; }
+    .loc-input-row { display: flex; gap: 6px; }
+    .loc-input-row input { flex: 1; }
+    .btn-find { background: #f2f4f6; border: 1px solid var(--border); border-radius: 8px; padding: 0 12px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; white-space: nowrap; }
+    .place-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--primary); border-radius: 8px; margin-top: 4px; max-height: 180px; overflow-y: auto; z-index: 50; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; }
+    .place-item { padding: 9px 12px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; }
+    .place-item:last-child { border-bottom: none; }
+    .place-item:hover { background: var(--primary-light); }
+    .place-name { font-weight: 600; color: var(--text); }
+    .place-addr { font-size: 11px; color: var(--sub); margin-top: 2px; }
+
+    /* 이동수단 필터 탭 */
+    .filter-tabs { display: flex; gap: 6px; margin: 10px 0; }
+    .tab-btn { flex: 1; padding: 8px; border: 1px solid var(--border); background: #f9fafb; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--sub); cursor: pointer; }
+    .tab-btn.active { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+
+    .btn-primary { width: 100%; background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 11px 14px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 12px; }
+    #map { width: 100%; height: 170px; border-radius: 10px; margin-bottom: 12px; display: none; border: 1px solid var(--border); }
     .status-msg { font-size: 12px; color: var(--sub); margin-bottom: 8px; display: none; }
-    
+
+    /* 추천 경로 선택 리스트 */
+    .route-list { display: none; flex-direction: column; gap: 8px; margin-bottom: 14px; max-height: 320px; overflow-y: auto; padding-right: 2px; }
+    .route-card { border: 1px solid var(--border); border-radius: 10px; padding: 12px; cursor: pointer; background: #fff; transition: 0.15s; }
+    .route-card:hover { border-color: #a0c4ff; }
+    .route-card.selected { border: 2px solid var(--primary); background: #f8fbff; }
+    .route-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .route-total-time { font-size: 16px; font-weight: 700; color: var(--text); }
+    .route-meta { font-size: 12px; color: var(--sub); }
+    .route-steps { display: flex; flex-direction: column; gap: 5px; font-size: 12px; }
+    .step-line { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 700; color: #fff; }
+    .badge-bus { background: var(--bus); }
+    .badge-subway { background: var(--subway); }
+    .badge-walk { background: #8b95a1; }
+    .step-desc { color: var(--text); font-weight: 500; }
+    .step-time { color: var(--sub); font-size: 11px; }
+
     .transit-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     .transit-item { background: #f9fafb; padding: 10px; border-radius: 10px; border: 1px solid var(--border); }
     .transit-item label { display: block; font-size: 12px; color: var(--sub); margin-bottom: 4px; }
@@ -106,7 +137,7 @@
     <div class="card-header">
       <span class="card-title">도착해야 하는 시간</span>
     </div>
-    <input type="time" id="arrivalTime" value="09:00" onchange="calculate()">
+    <input type="time" id="arrivalTime" value="09:00" onchange="saveCurrentState()">
   </div>
 
   <!-- 내 준비 시간 -->
@@ -120,9 +151,7 @@
     <button class="btn-add" onclick="addPrepItem('', 10)">+ 준비 항목 추가</button>
 
     <div class="saved-section">
-      <div class="saved-label">
-        <span>저장해둔 항목 (누르면 위 목록에 추가됩니다)</span>
-      </div>
+      <div class="saved-label">저장해둔 항목 (누르면 위 목록에 추가됩니다)</div>
       <div class="chips" id="savedChips"></div>
     </div>
   </div>
@@ -134,15 +163,38 @@
       <span class="card-sum" id="transitSumText">0분</span>
     </div>
 
-    <div class="search-box">
-      <div class="search-row">
-        <input type="text" id="startLoc" placeholder="출발지 (예: 서창동, 강남역)">
-        <input type="text" id="endLoc" placeholder="도착지 (예: 홍대입구역)">
+    <!-- 출발지 검색 -->
+    <div class="loc-wrap">
+      <div class="loc-input-row">
+        <input type="text" id="startLoc" placeholder="출발지 주소 또는 장소 입력" onkeydown="if(event.key==='Enter') findAddress('start')">
+        <button class="btn-find" onclick="findAddress('start')">장소 찾기</button>
       </div>
-      <button class="btn-primary" onclick="searchRoute()">경로 검색으로 시간 자동 입력</button>
+      <div class="place-dropdown" id="startDropdown"></div>
     </div>
+
+    <!-- 도착지 검색 -->
+    <div class="loc-wrap">
+      <div class="loc-input-row">
+        <input type="text" id="endLoc" placeholder="도착지 주소 또는 장소 입력" onkeydown="if(event.key==='Enter') findAddress('end')">
+        <button class="btn-find" onclick="findAddress('end')">장소 찾기</button>
+      </div>
+      <div class="place-dropdown" id="endDropdown"></div>
+    </div>
+
+    <!-- 이동수단 선택 필터 -->
+    <div class="filter-tabs">
+      <button class="tab-btn active" onclick="setRouteFilter(0, this)">버스+지하철 모두</button>
+      <button class="tab-btn" onclick="setRouteFilter(2, this)">버스만</button>
+      <button class="tab-btn" onclick="setRouteFilter(1, this)">지하철만</button>
+    </div>
+
+    <button class="btn-primary" onclick="searchRoute()">경로 검색하기</button>
+
     <div class="status-msg" id="statusMsg"></div>
     <div id="map"></div>
+
+    <!-- 검색된 경로 목록 (사용자가 클릭해서 선택) -->
+    <div class="route-list" id="routeList"></div>
 
     <div class="transit-grid">
       <div class="transit-item">
@@ -184,13 +236,12 @@
     </div>
     <div class="modal-actions">
       <button class="btn-outline" onclick="closeModal()">닫기</button>
-      <button class="btn-primary" onclick="saveApiKeys()">저장</button>
+      <button class="btn-primary" style="width:auto; margin:0;" onclick="saveApiKeys()">저장</button>
     </div>
   </div>
 </div>
 
 <script>
-  // 기본 데이터 불러오기
   let prepItems = JSON.parse(localStorage.getItem('my_prep_items')) || [
     { name: '씻는 시간', min: 20 },
     { name: '옷 입는 시간', min: 10 }
@@ -203,6 +254,12 @@
     { name: '식사', min: 15 }
   ];
 
+  // 선택된 출발지/도착지 좌표 및 이동수단 필터 (0: 전체, 1: 지하철, 2: 버스)
+  let selectedStart = null;
+  let selectedEnd = null;
+  let currentFilter = 0;
+  let fetchedPaths = [];
+
   function init() {
     const savedState = JSON.parse(localStorage.getItem('my_transit_state'));
     if (savedState) {
@@ -214,9 +271,16 @@
     renderPrepList();
     renderSavedChips();
     calculate();
+
+    // 바깥 클릭 시 드롭다운 닫기
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.loc-wrap')) {
+        document.getElementById('startDropdown').style.display = 'none';
+        document.getElementById('endDropdown').style.display = 'none';
+      }
+    });
   }
 
-  // 준비 항목 렌더링 (모든 문구 수정/삭제 가능)
   function renderPrepList() {
     const list = document.getElementById('prepList');
     list.innerHTML = '';
@@ -227,7 +291,7 @@
         <input type="text" value="${item.name}" placeholder="준비 내용 입력" oninput="updatePrep(${idx}, 'name', this.value)">
         <input type="number" value="${item.min}" min="0" oninput="updatePrep(${idx}, 'min', this.value)">
         <span class="unit">분</span>
-        <button class="btn-icon" title="아래 보관함에 저장" onclick="saveToPreset(${idx})">보관</button>
+        <button class="btn-icon" onclick="saveToPreset(${idx})">보관</button>
         <button class="btn-icon btn-del" onclick="removePrep(${idx})">삭제</button>
       `;
       list.appendChild(row);
@@ -252,16 +316,12 @@
     saveCurrentState();
   }
 
-  // 자주 쓰는 항목 보관함에 저장 및 불러오기
   function saveToPreset(idx) {
     const item = prepItems[idx];
     if (!item.name.trim()) return alert('항목 이름을 입력해주세요.');
     const exists = savedPresets.findIndex(p => p.name === item.name);
-    if (exists >= 0) {
-      savedPresets[exists].min = item.min;
-    } else {
-      savedPresets.push({ name: item.name, min: item.min });
-    }
+    if (exists >= 0) savedPresets[exists].min = item.min;
+    else savedPresets.push({ name: item.name, min: item.min });
     localStorage.setItem('my_saved_presets', JSON.stringify(savedPresets));
     renderSavedChips();
   }
@@ -287,7 +347,6 @@
     renderSavedChips();
   }
 
-  // 상태 저장 및 시간 계산
   function saveCurrentState() {
     localStorage.setItem('my_prep_items', JSON.stringify(prepItems));
     localStorage.setItem('my_transit_state', JSON.stringify({
@@ -331,7 +390,6 @@
     document.getElementById('wakeUpText').textContent = `당신은 ${formatKoreanTime(wakeUpTime)}에 일어나야 합니다`;
   }
 
-  // API 키 모달 관리
   function openModal() {
     document.getElementById('kakaoKeyInput').value = localStorage.getItem('kakao_api_key') || '';
     document.getElementById('odsayKeyInput').value = localStorage.getItem('odsay_api_key') || '';
@@ -344,28 +402,92 @@
     localStorage.setItem('kakao_api_key', document.getElementById('kakaoKeyInput').value.trim());
     localStorage.setItem('odsay_api_key', document.getElementById('odsayKeyInput').value.trim());
     closeModal();
-    alert('API 키가 내 기기에 저장되었습니다.');
+    alert('저장되었습니다.');
   }
 
-  // 카카오맵 및 ODSay 대중교통 연동
   function loadKakaoSdk(key) {
     return new Promise((resolve, reject) => {
       if (window.kakao && window.kakao.maps) return resolve();
       const script = document.createElement('script');
       script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services&autoload=false`;
       script.onload = () => kakao.maps.load(resolve);
-      script.onerror = () => reject(new Error('카카오맵 키가 올바르지 않거나 도메인이 등록되지 않았습니다.'));
+      script.onerror = () => reject(new Error('카카오 키 또는 도메인 설정을 확인해주세요.'));
       document.head.appendChild(script);
     });
   }
 
-  function searchPlace(ps, keyword) {
-    return new Promise((resolve, reject) => {
-      ps.keywordSearch(keyword, (data, status) => {
-        if (status === kakao.maps.services.Status.OK && data.length > 0) resolve(data[0]);
-        else reject(new Error(`'${keyword}' 장소를 찾을 수 없습니다.`));
+  // 주소 검색(Geocoder) + 키워드 장소 검색(Places) 동시 수행
+  async function searchAddressAndPlace(query) {
+    const geocoder = new kakao.maps.services.Geocoder();
+    const ps = new kakao.maps.services.Places();
+
+    const addrPromise = new Promise(resolve => {
+      geocoder.addressSearch(query, (data, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          resolve(data.map(d => ({
+            name: d.building_name ? `${d.address_name} (${d.building_name})` : d.address_name,
+            addr: d.road_address ? d.road_address.address_name : d.address_name,
+            x: d.x,
+            y: d.y
+          })));
+        } else resolve([]);
       });
     });
+
+    const placePromise = new Promise(resolve => {
+      ps.keywordSearch(query, (data, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          resolve(data.slice(0, 6).map(d => ({
+            name: d.place_name,
+            addr: d.road_address_name || d.address_name,
+            x: d.x,
+            y: d.y
+          })));
+        } else resolve([]);
+      });
+    });
+
+    const [addrRes, placeRes] = await Promise.all([addrPromise, placePromise]);
+    return [...addrRes, ...placeRes];
+  }
+
+  async function findAddress(type) {
+    const kakaoKey = localStorage.getItem('kakao_api_key');
+    if (!kakaoKey) { openModal(); return alert('API 키 설정을 먼저 해주세요.'); }
+
+    const inputEl = document.getElementById(type === 'start' ? 'startLoc' : 'endLoc');
+    const dropEl = document.getElementById(type === 'start' ? 'startDropdown' : 'endDropdown');
+    const query = inputEl.value.trim();
+    if (!query) return alert('검색할 주소나 장소명을 입력해주세요.');
+
+    await loadKakaoSdk(kakaoKey);
+    const results = await searchAddressAndPlace(query);
+
+    dropEl.innerHTML = '';
+    if (results.length === 0) {
+      dropEl.innerHTML = '<div class="place-item">검색 결과가 없습니다.</div>';
+    } else {
+      results.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'place-item';
+        div.innerHTML = `<div class="place-name">${item.name}</div><div class="place-addr">${item.addr}</div>`;
+        div.onclick = () => {
+          inputEl.value = item.name;
+          if (type === 'start') selectedStart = item;
+          else selectedEnd = item;
+          dropEl.style.display = 'none';
+        };
+        dropEl.appendChild(div);
+      });
+    }
+    dropEl.style.display = 'block';
+  }
+
+  function setRouteFilter(filterVal, btnEl) {
+    currentFilter = filterVal;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btnEl.classList.add('active');
+    if (fetchedPaths.length > 0) renderRouteList();
   }
 
   async function searchRoute() {
@@ -377,7 +499,7 @@
     const odsayKey = localStorage.getItem('odsay_api_key');
     if (!kakaoKey || !odsayKey) {
       openModal();
-      return alert('상단 [API 키 설정]에서 카카오 키와 ODSay 키를 먼저 입력해 주세요.');
+      return alert('상단 [API 키 설정]에서 키를 먼저 입력해주세요.');
     }
 
     const msgEl = document.getElementById('statusMsg');
@@ -386,53 +508,131 @@
 
     try {
       await loadKakaoSdk(kakaoKey);
-      const ps = new kakao.maps.services.Places();
-      const startPlace = await searchPlace(ps, startVal);
-      const endPlace = await searchPlace(ps, endVal);
+
+      // 사용자가 목록에서 직접 안 골랐거나 텍스트를 바꿨으면 첫 번째 주소/장소로 자동 매칭
+      if (!selectedStart || selectedStart.name !== startVal) {
+        const sList = await searchAddressAndPlace(startVal);
+        if (sList.length === 0) throw new Error(`'${startVal}' 위치를 찾을 수 없습니다.`);
+        selectedStart = sList[0];
+        document.getElementById('startLoc').value = selectedStart.name;
+      }
+      if (!selectedEnd || selectedEnd.name !== endVal) {
+        const eList = await searchAddressAndPlace(endVal);
+        if (eList.length === 0) throw new Error(`'${endVal}' 위치를 찾을 수 없습니다.`);
+        selectedEnd = eList[0];
+        document.getElementById('endLoc').value = selectedEnd.name;
+      }
 
       // 지도 표시
       const mapEl = document.getElementById('map');
       mapEl.style.display = 'block';
       const map = new kakao.maps.Map(mapEl, {
-        center: new kakao.maps.LatLng(startPlace.y, startPlace.x),
+        center: new kakao.maps.LatLng(selectedStart.y, selectedStart.x),
         level: 7
       });
       const bounds = new kakao.maps.LatLngBounds();
-      const p1 = new kakao.maps.LatLng(startPlace.y, startPlace.x);
-      const p2 = new kakao.maps.LatLng(endPlace.y, endPlace.x);
+      const p1 = new kakao.maps.LatLng(selectedStart.y, selectedStart.x);
+      const p2 = new kakao.maps.LatLng(selectedEnd.y, selectedEnd.x);
       new kakao.maps.Marker({ map, position: p1 });
       new kakao.maps.Marker({ map, position: p2 });
       bounds.extend(p1);
       bounds.extend(p2);
       map.setBounds(bounds);
 
-      // ODSay 대중교통 경로 호출
-      const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${startPlace.x}&SY=${startPlace.y}&EX=${endPlace.x}&EY=${endPlace.y}&apiKey=${encodeURIComponent(odsayKey)}`;
+      // ODSay 호출
+      const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${selectedStart.x}&SY=${selectedStart.y}&EX=${selectedEnd.x}&EY=${selectedEnd.y}&apiKey=${encodeURIComponent(odsayKey)}`;
       const res = await fetch(url);
       const json = await res.json();
 
-      if (json.error) {
-        throw new Error(json.error.msg || '대중교통 경로를 불러오지 못했습니다.');
+      if (json.error || !json.result || !json.result.path) {
+        throw new Error(json.error ? json.error.msg : '대중교통 경로가 없습니다.');
       }
 
-      const bestPath = json.result.path[0];
-      let busMin = 0, subwayMin = 0, walkMin = 0;
+      fetchedPaths = json.result.path;
+      msgEl.textContent = `${selectedStart.name} → ${selectedEnd.name} (아래에서 원하는 경로를 선택하세요)`;
+      renderRouteList();
 
-      bestPath.subPath.forEach(sub => {
-        if (sub.trafficType === 1) subwayMin += sub.sectionTime;
-        else if (sub.trafficType === 2) busMin += sub.sectionTime;
-        else if (sub.trafficType === 3) walkMin += sub.sectionTime;
-      });
-
-      document.getElementById('busTime').value = busMin;
-      document.getElementById('subwayTime').value = subwayMin;
-      document.getElementById('walkTime').value = walkMin;
-      saveCurrentState();
-
-      msgEl.textContent = `${startPlace.place_name} → ${endPlace.place_name} (버스 ${busMin}분, 지하철 ${subwayMin}분, 도보 ${walkMin}분 반영됨)`;
     } catch (err) {
       msgEl.textContent = '오류: ' + err.message;
+      document.getElementById('routeList').style.display = 'none';
     }
+  }
+
+  function renderRouteList() {
+    const listEl = document.getElementById('routeList');
+    listEl.innerHTML = '';
+    listEl.style.display = 'flex';
+
+    // 필터링 (pathType: 1 지하철, 2 버스, 3 버스+지하철)
+    const filtered = fetchedPaths.filter(p => {
+      if (currentFilter === 0) return true;
+      return p.pathType === currentFilter;
+    });
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div style="font-size:13px; color:#6b7684; padding:8px;">해당 이동수단으로만 가는 경로가 없습니다.</div>';
+      return;
+    }
+
+    filtered.forEach((path, idx) => {
+      let busMin = 0, subwayMin = 0, walkMin = 0;
+      let stepsHtml = '';
+
+      path.subPath.forEach(sub => {
+        if (sub.trafficType === 1) { // 지하철
+          subwayMin += sub.sectionTime;
+          const laneName = sub.lane && sub.lane[0] ? sub.lane[0].name : '지하철';
+          stepsHtml += `
+            <div class="step-line">
+              <span class="badge badge-subway">${laneName}</span>
+              <span class="step-desc">${sub.startName}역 → ${sub.endName}역</span>
+              <span class="step-time">(${sub.sectionTime}분)</span>
+            </div>`;
+        } else if (sub.trafficType === 2) { // 버스
+          busMin += sub.sectionTime;
+          const busNumbers = sub.lane ? sub.lane.map(l => l.busNo).join(', ') : '버스';
+          stepsHtml += `
+            <div class="step-line">
+              <span class="badge badge-bus">${busNumbers}번</span>
+              <span class="step-desc">${sub.startName} → ${sub.endName}</span>
+              <span class="step-time">(${sub.sectionTime}분)</span>
+            </div>`;
+        } else if (sub.trafficType === 3 && sub.sectionTime > 0) { // 도보
+          walkMin += sub.sectionTime;
+        }
+      });
+
+      const totalCalc = busMin + subwayMin + walkMin;
+      const pay = path.info.payment ? `${path.info.payment.toLocaleString()}원` : '';
+
+      const card = document.createElement('div');
+      card.className = 'route-card' + (idx === 0 ? ' selected' : '');
+      card.innerHTML = `
+        <div class="route-top">
+          <span class="route-total-time">총 ${totalCalc}분 <span style="font-size:12px; font-weight:500; color:#3182f6;">(버스 ${busMin}분 · 지하철 ${subwayMin}분 · 도보 ${walkMin}분)</span></span>
+          <span class="route-meta">${pay}</span>
+        </div>
+        <div class="route-steps">${stepsHtml}</div>
+      `;
+
+      card.onclick = () => {
+        document.querySelectorAll('.route-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        applyRouteTime(busMin, subwayMin, walkMin);
+      };
+
+      listEl.appendChild(card);
+
+      // 첫 번째 경로 기본 자동 반영
+      if (idx === 0) applyRouteTime(busMin, subwayMin, walkMin);
+    });
+  }
+
+  function applyRouteTime(bus, subway, walk) {
+    document.getElementById('busTime').value = bus;
+    document.getElementById('subwayTime').value = subway;
+    document.getElementById('walkTime').value = walk;
+    saveCurrentState();
   }
 
   init();
