@@ -4,131 +4,114 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>준비시간 계산기</title>
-  <!-- 웹폰트 불러오기 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-  <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
   <style>
-    @font-face {
-      font-family: 'GmarketSansMedium';
-      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
-      font-weight: normal; font-style: normal;
-    }
-    @font-face {
-      font-family: 'S-CoreDream-4Regular';
-      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-4Regular.woff') format('woff');
-      font-weight: normal; font-style: normal;
-    }
     @font-face {
       font-family: 'RIDIBatang';
       src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff');
-      font-weight: normal; font-style: normal;
+      font-weight: normal;
+      font-style: normal;
     }
 
     :root {
       --bg: #f4f5f7;
       --card: #ffffff;
-      --text: #111111;
-      --sub: #555555;
-      --border: #222222;
-      --light-border: #d0d4d9;
-      --primary: #1d5cff;
+      --text: #191f28;
+      --sub: #555d67;
+      --border: #2b3036;
+      --light-border: #d5d9de;
+      --primary: #2458f3;
       --primary-light: #edf2ff;
-      --danger: #e02020;
+      --danger: #d93025;
       --bus-green: #2ca03c;
       --bus-blue: #2962eb;
       --subway: #004999;
-      --font-main: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      --radius: 6px; /* 너무 직각도, 너무 둥글지도 않은 단정한 모서리 */
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: var(--font-main);
-      border-radius: 0 !important; /* 모든 모서리를 각지게 고정 */
+      font-family: 'RIDIBatang', serif;
     }
 
-    body { background: var(--bg); color: var(--text); padding: 16px 14px 60px; line-height: 1.45; }
+    body { background: var(--bg); color: var(--text); padding: 22px 16px 70px; line-height: 1.5; }
     .container { max-width: 480px; margin: 0 auto; }
 
-    /* 상단바 & 폰트 선택 */
-    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; }
-    .top-bar h1 { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
-    .top-controls { display: flex; gap: 6px; align-items: center; }
-    .font-select { background: var(--card); border: 1.5px solid var(--border); padding: 5px 8px; font-size: 12px; font-weight: 600; color: var(--text); cursor: pointer; outline: none; }
-    .btn-sm { background: var(--card); border: 1.5px solid var(--border); padding: 5px 10px; font-size: 12px; font-weight: 700; color: var(--text); cursor: pointer; }
+    /* 상단바 */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .top-bar h1 { font-size: 19px; font-weight: normal; color: var(--text); letter-spacing: -0.3px; user-select: none; cursor: default; }
 
-    /* 공통 사각 카드 */
-    .box-card { background: var(--card); border: 2px solid var(--border); padding: 16px; margin-bottom: 12px; }
+    /* 공통 사각틀 (여백 20px로 여유 있게 배치) */
+    .box-card { background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 20px; }
 
     /* UI(1) 상단: 도착해야하는 시간 */
     .arrival-box { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .arrival-label { font-size: 17px; font-weight: 800; white-space: nowrap; }
-    .arrival-input { border: 1.5px solid var(--border); padding: 7px 10px; font-size: 16px; font-weight: 800; color: var(--primary); background: #fff; outline: none; cursor: pointer; }
+    .arrival-label { font-size: 17px; white-space: nowrap; }
+    .arrival-input { border: 1.5px solid var(--border); border-radius: var(--radius); padding: 7px 10px; font-size: 16px; color: var(--primary); background: #fff; outline: none; cursor: pointer; }
 
     /* UI(1) 메인 결과 박스 */
-    .hero-box { background: var(--card); border: 2px solid var(--border); padding: 22px 18px; margin-bottom: 12px; }
-    .wake-title { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; margin-bottom: 18px; word-break: keep-all; }
-    .wake-title span { color: var(--primary); text-decoration: underline; text-underline-offset: 4px; }
-    .door-title { font-size: 17px; font-weight: 700; color: var(--text); padding-top: 14px; border-top: 1.5px solid var(--light-border); display: flex; justify-content: space-between; align-items: center; }
-    .door-title span { color: var(--danger); font-weight: 800; }
-    .bus-sync-badge { margin-top: 10px; font-size: 12px; color: var(--primary); background: var(--primary-light); border: 1px solid var(--primary); padding: 7px 10px; font-weight: 600; display: none; }
+    .hero-box { background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 24px 18px; margin-bottom: 20px; }
+    .wake-title { font-size: 21px; color: var(--text); letter-spacing: -0.5px; margin-bottom: 18px; word-break: keep-all; line-height: 1.4; }
+    .wake-title span { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 2px; }
+    .door-title { font-size: 16px; color: var(--text); padding-top: 16px; border-top: 1px solid var(--light-border); display: flex; justify-content: space-between; align-items: center; }
+    .door-title span { color: var(--danger); }
+    .bus-sync-badge { margin-top: 12px; font-size: 12px; color: var(--primary); background: var(--primary-light); border: 1px solid var(--primary); border-radius: var(--radius); padding: 8px 10px; display: none; }
 
     /* UI(1) 중간 요약 영역 + 시간 설정 버튼 */
-    .summary-strip { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 2px solid var(--border); padding: 14px 16px; margin-bottom: 12px; }
-    .summary-lines { display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--text); }
-    .summary-lines strong { font-weight: 800; margin-left: 4px; }
-    .btn-goto-set { background: var(--text); color: #fff; border: 2px solid var(--text); padding: 12px 18px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; }
-    .btn-goto-set:hover { background: #333; }
+    .summary-strip { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 20px; }
+    .summary-lines { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--text); }
+    .summary-lines strong { margin-left: 4px; color: var(--primary); font-weight: normal; }
+    .btn-goto-set { background: var(--text); color: #fff; border: 1.5px solid var(--text); border-radius: var(--radius); padding: 12px 18px; font-size: 14px; cursor: pointer; white-space: nowrap; }
+    .btn-goto-set:hover { opacity: 0.9; }
 
     /* 검색 영역 */
-    .loc-wrap { position: relative; margin-bottom: 8px; }
+    .loc-wrap { position: relative; margin-bottom: 10px; }
     .loc-input-row { display: flex; gap: 6px; }
-    .loc-input-row input { flex: 1; border: 1.5px solid var(--light-border); padding: 10px 12px; font-size: 14px; outline: none; }
+    .loc-input-row input { flex: 1; border: 1px solid var(--light-border); border-radius: var(--radius); padding: 10px 12px; font-size: 14px; outline: none; }
     .loc-input-row input:focus { border-color: var(--border); }
-    .btn-find { background: #f0f2f5; border: 1.5px solid var(--border); padding: 0 14px; font-size: 13px; font-weight: 700; color: var(--text); cursor: pointer; white-space: nowrap; }
-    .place-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 2px solid var(--border); margin-top: 2px; max-height: 180px; overflow-y: auto; z-index: 50; display: none; }
-    .place-item { padding: 9px 12px; border-bottom: 1px solid var(--light-border); cursor: pointer; font-size: 13px; }
+    .btn-find { background: #f0f2f5; border: 1px solid var(--border); border-radius: var(--radius); padding: 0 14px; font-size: 13px; color: var(--text); cursor: pointer; white-space: nowrap; }
+    .place-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius); margin-top: 4px; max-height: 180px; overflow-y: auto; z-index: 50; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .place-item { padding: 10px 12px; border-bottom: 1px solid var(--light-border); cursor: pointer; font-size: 13px; }
     .place-item:hover { background: var(--primary-light); }
-    .place-name { font-weight: 700; }
     .place-addr { font-size: 11px; color: var(--sub); margin-top: 2px; }
 
     /* 이동수단 상단 탭 */
-    .mode-tabs { display: flex; border: 1.5px solid var(--border); margin: 12px 0 10px; overflow-x: auto; background: #f8f9fa; }
-    .mode-tab { flex: 1; text-align: center; padding: 9px 6px; font-size: 13px; font-weight: 600; color: var(--sub); background: none; border: none; border-right: 1px solid var(--light-border); cursor: pointer; white-space: nowrap; }
+    .mode-tabs { display: flex; border: 1px solid var(--border); border-radius: var(--radius); margin: 14px 0 12px; overflow: hidden; background: #f8f9fa; }
+    .mode-tab { flex: 1; text-align: center; padding: 9px 6px; font-size: 12px; color: var(--sub); background: none; border: none; border-right: 1px solid var(--light-border); cursor: pointer; white-space: nowrap; }
     .mode-tab:last-child { border-right: none; }
-    .mode-tab.active { background: var(--text); color: #fff; font-weight: 800; }
+    .mode-tab.active { background: var(--text); color: #fff; }
     .mode-tab .cnt { font-size: 11px; margin-left: 2px; opacity: 0.85; }
 
-    .btn-primary { width: 100%; background: var(--primary); color: #fff; border: 2px solid var(--border); padding: 12px; font-size: 15px; font-weight: 800; cursor: pointer; margin-bottom: 10px; }
+    .btn-primary { width: 100%; background: var(--primary); color: #fff; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 12px; font-size: 15px; cursor: pointer; margin-bottom: 12px; }
 
-    #map { width: 100%; height: 170px; margin-bottom: 12px; display: none; border: 1.5px solid var(--border); }
-    .status-msg { font-size: 12px; color: var(--sub); margin-bottom: 8px; display: none; }
+    #map { width: 100%; height: 175px; margin-bottom: 14px; display: none; border: 1px solid var(--border); border-radius: var(--radius); }
+    .status-msg { font-size: 12px; color: var(--sub); margin-bottom: 10px; display: none; }
 
     /* 버스 도착시간 / 배차 동기화 박스 */
-    .bus-arrival-panel { background: var(--primary-light); border: 1.5px solid var(--primary); padding: 12px; margin-bottom: 12px; display: none; }
-    .bus-panel-title { font-size: 13px; font-weight: 800; color: var(--primary); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .bus-arrival-panel { background: var(--primary-light); border: 1px solid var(--primary); border-radius: var(--radius); padding: 12px; margin-bottom: 14px; display: none; }
+    .bus-panel-title { font-size: 13px; color: var(--primary); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
     .bus-panel-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; }
-    .bus-panel-row select, .bus-panel-row input { border: 1.5px solid var(--border); padding: 5px 8px; font-size: 13px; background: #fff; }
+    .bus-panel-row select, .bus-panel-row input { border: 1px solid var(--border); border-radius: 4px; padding: 5px 8px; font-size: 13px; background: #fff; }
     .bus-panel-help { font-size: 11px; color: var(--sub); margin-top: 6px; }
 
     /* 자동차 전용 패널 */
-    .car-panel { background: #f8f9fa; border: 1.5px solid var(--border); padding: 14px; margin-bottom: 12px; display: none; }
+    .car-panel { background: #f8f9fa; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; display: none; }
     .car-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .car-input { width: 80px; text-align: right; font-weight: 800; padding: 6px 8px; border: 1.5px solid var(--border); }
+    .car-input { width: 80px; text-align: right; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; }
 
-    /* 경로 리스트 (직각 스타일) */
-    .route-list { display: none; flex-direction: column; gap: 10px; margin-bottom: 12px; }
-    .route-card { border: 1.5px solid var(--light-border); padding: 14px; background: #fff; cursor: pointer; }
+    /* 경로 리스트 */
+    .route-list { display: none; flex-direction: column; gap: 12px; margin-bottom: 14px; }
+    .route-card { border: 1px solid var(--light-border); border-radius: var(--radius); padding: 14px; background: #fff; cursor: pointer; }
     .route-card.selected { border: 2px solid var(--primary); background: #fcfdff; }
 
     .rc-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
-    .rc-big-time { font-size: 22px; font-weight: 800; color: var(--text); }
-    .rc-big-time small { font-size: 14px; font-weight: 700; }
+    .rc-big-time { font-size: 21px; color: var(--text); }
+    .rc-big-time small { font-size: 14px; }
     .rc-sub-info { font-size: 12px; color: var(--sub); }
 
-    /* 수평 비율 바 (직각) */
-    .rc-bar { display: flex; width: 100%; height: 18px; overflow: hidden; background: #e9ecef; margin-bottom: 14px; font-size: 10px; font-weight: 700; color: #fff; border: 1px solid var(--border); }
+    /* 수평 비율 바 */
+    .rc-bar { display: flex; width: 100%; height: 18px; border-radius: 4px; overflow: hidden; background: #e9ecef; margin-bottom: 14px; font-size: 10px; color: #fff; border: 1px solid var(--border); }
     .rc-seg { display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; }
     .seg-walk { background: #d0d5dd; color: #222; }
     .seg-bus-green { background: var(--bus-green); }
@@ -138,68 +121,69 @@
     /* 세로 타임라인 스텝 */
     .rc-timeline { display: flex; flex-direction: column; gap: 10px; padding-left: 2px; }
     .rc-step { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; }
-    .rc-type-col { width: 54px; font-weight: 800; font-size: 12px; flex-shrink: 0; padding-top: 1px; }
+    .rc-type-col { width: 56px; font-size: 12px; flex-shrink: 0; padding-top: 1px; }
     .type-green { color: var(--bus-green); }
     .type-blue { color: var(--bus-blue); }
     .type-subway { color: var(--subway); }
     .type-end { color: var(--sub); }
 
     .rc-detail-col { flex: 1; }
-    .rc-station { font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .rc-station { color: var(--text); margin-bottom: 4px; }
     .rc-badges { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
-    .bus-num-box { display: inline-block; padding: 1px 6px; font-size: 12px; font-weight: 800; border: 1.5px solid var(--bus-blue); color: var(--bus-blue); background: #fff; }
+    .bus-num-box { display: inline-block; padding: 1px 6px; font-size: 12px; border: 1px solid var(--bus-blue); border-radius: 4px; color: var(--bus-blue); background: #fff; }
     .bus-num-box.green { border-color: var(--bus-green); color: var(--bus-green); }
     .bus-num-box.subway { border-color: var(--subway); color: #fff; background: var(--subway); }
-    .rc-interval-tag { font-size: 11px; color: var(--text); background: #eaecef; padding: 2px 6px; border: 1px solid #ccc; }
+    .rc-interval-tag { font-size: 11px; color: var(--text); background: #eaecef; padding: 1px 6px; border-radius: 4px; }
 
     /* 직접 입력 칸 */
-    .manual-row { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1.5px solid var(--light-border); font-size: 13px; color: var(--sub); }
-    .manual-row input { width: 64px; text-align: right; padding: 5px 8px; border: 1.5px solid var(--border); font-weight: 800; color: var(--text); }
+    .manual-row { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--light-border); font-size: 13px; color: var(--sub); }
+    .manual-row input { width: 64px; text-align: right; padding: 5px 8px; border: 1px solid var(--border); border-radius: 4px; color: var(--text); }
 
     /* ==================== UI(2): 설정 화면 ==================== */
     #settingsView { display: none; }
-    .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .settings-header h2 { font-size: 22px; font-weight: 800; }
-    .btn-back-main { background: var(--text); color: #fff; border: 2px solid var(--text); padding: 9px 14px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .settings-header h2 { font-size: 21px; font-weight: normal; }
+    .btn-back-main { background: var(--text); color: #fff; border: 1.5px solid var(--text); border-radius: var(--radius); padding: 9px 14px; font-size: 13px; cursor: pointer; }
 
-    .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1.5px solid var(--border); }
-    .section-title { font-size: 16px; font-weight: 800; }
-    .section-sum { font-size: 15px; font-weight: 800; color: var(--primary); }
+    .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 16px; }
+    .section-sum { font-size: 15px; color: var(--primary); }
 
     .prep-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-    .prep-row input[type="text"] { flex: 1; min-width: 0; border: 1.5px solid var(--light-border); padding: 8px 10px; font-size: 14px; }
-    .prep-row input[type="number"] { width: 64px; text-align: right; border: 1.5px solid var(--light-border); padding: 8px; font-size: 14px; font-weight: 700; }
+    .prep-row input[type="text"] { flex: 1; min-width: 0; border: 1px solid var(--light-border); border-radius: 4px; padding: 8px 10px; font-size: 14px; }
+    .prep-row input[type="number"] { width: 64px; text-align: right; border: 1px solid var(--light-border); border-radius: 4px; padding: 8px; font-size: 14px; }
     .prep-row input:focus { border-color: var(--border); outline: none; }
     .unit { font-size: 13px; color: var(--sub); }
-    .btn-icon { background: #f0f2f5; border: 1px solid var(--border); padding: 8px 10px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--text); white-space: nowrap; }
+    .btn-icon { background: #f0f2f5; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; font-size: 12px; cursor: pointer; color: var(--text); white-space: nowrap; }
     .btn-del { color: var(--danger); background: #fff5f5; border-color: var(--danger); }
-    .btn-add { width: 100%; background: #f0f2f5; border: 1.5px solid var(--border); padding: 10px; font-size: 14px; font-weight: 800; color: var(--text); cursor: pointer; margin-top: 4px; }
+    .btn-add { width: 100%; background: #f0f2f5; border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; font-size: 14px; color: var(--text); cursor: pointer; margin-top: 6px; }
 
     .saved-section { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--light-border); }
     .saved-label { font-size: 12px; color: var(--sub); margin-bottom: 8px; }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-    .chip { display: inline-flex; align-items: center; background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); padding: 5px 10px; font-size: 13px; font-weight: 700; cursor: pointer; user-select: none; }
+    .chip { display: inline-flex; align-items: center; background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); border-radius: 4px; padding: 5px 10px; font-size: 13px; cursor: pointer; user-select: none; }
     .chip-del { margin-left: 6px; font-size: 14px; color: var(--text); padding: 0 2px; }
 
     /* 세트 1, 2, 3 저장 및 불러오기 */
-    .set-box { background: var(--card); border: 2px solid var(--border); padding: 16px; margin-bottom: 16px; }
-    .set-title { font-size: 15px; font-weight: 800; margin-bottom: 10px; }
+    .set-box { background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 20px; }
+    .set-title { font-size: 15px; margin-bottom: 12px; }
     .set-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
     .set-row:last-child { margin-bottom: 0; }
-    .set-name-input { flex: 1; border: 1.5px solid var(--light-border); padding: 8px 10px; font-size: 13px; font-weight: 700; }
-    .btn-set-load { background: var(--primary-light); color: var(--primary); border: 1.5px solid var(--primary); padding: 8px 12px; font-size: 13px; font-weight: 800; cursor: pointer; white-space: nowrap; }
-    .btn-set-save { background: #f0f2f5; color: var(--text); border: 1.5px solid var(--border); padding: 8px 12px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .set-name-input { flex: 1; border: 1px solid var(--light-border); border-radius: 4px; padding: 8px 10px; font-size: 13px; }
+    .btn-set-load { background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); border-radius: 4px; padding: 8px 12px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+    .btn-set-save { background: #f0f2f5; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; font-size: 13px; cursor: pointer; white-space: nowrap; }
 
-    .bottom-save-btn { width: 100%; background: var(--text); color: #fff; border: 2px solid var(--text); padding: 15px; font-size: 16px; font-weight: 800; cursor: pointer; }
+    .bottom-save-btn { width: 100%; background: var(--text); color: #fff; border: 1.5px solid var(--text); border-radius: var(--radius); padding: 15px; font-size: 16px; cursor: pointer; }
 
-    /* API 모달 */
+    /* 숨겨진 관리자용 API 모달 (제목 5번 연속 클릭 시에만 열림) */
     .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
-    .modal { background: #fff; width: 100%; max-width: 400px; border: 2px solid var(--border); padding: 20px; }
-    .modal h2 { font-size: 17px; margin-bottom: 12px; }
+    .modal { background: #fff; width: 100%; max-width: 400px; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .modal h2 { font-size: 16px; margin-bottom: 12px; font-weight: normal; }
     .modal-field { margin-bottom: 12px; }
     .modal-field label { display: block; font-size: 13px; color: var(--sub); margin-bottom: 4px; }
-    .modal-field input { width: 100%; border: 1.5px solid var(--border); padding: 9px 10px; font-size: 14px; }
+    .modal-field input { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 9px 10px; font-size: 14px; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+    .btn-sm { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -209,17 +193,8 @@
   <!-- ==================== [화면 1] 메인 화면 (UI 1) ==================== -->
   <div id="mainView">
     <div class="top-bar">
-      <h1>준비시간 계산기</h1>
-      <div class="top-controls">
-        <select id="fontSelector" class="font-select" onchange="changeFont(this.value)">
-          <option value="'Pretendard', sans-serif">폰트: 프리텐다드</option>
-          <option value="'GmarketSansMedium', sans-serif">폰트: 지마켓 산스 (각진)</option>
-          <option value="'S-CoreDream-4Regular', sans-serif">폰트: 에스코어 드림</option>
-          <option value="'NanumSquareNeo', sans-serif">폰트: 나눔스퀘어네오</option>
-          <option value="'RIDIBatang', serif">폰트: 리디바탕 (명조)</option>
-        </select>
-        <button class="btn-sm" onclick="openModal()">API 키</button>
-      </div>
+      <!-- 제목을 5번 연속 누르면 숨겨진 API 키 설정창이 열립니다 -->
+      <h1 onclick="secretAdminTrigger()">준비시간 계산기</h1>
     </div>
 
     <!-- 도착해야 하는 시간 -->
@@ -285,8 +260,8 @@
       <!-- 버스 도착시간 / 배차 맞춤 설정창 -->
       <div class="bus-arrival-panel" id="busArrivalPanel">
         <div class="bus-panel-title">
-          <span id="firstBusTitle">🚌 첫 번째 버스 도착시간 맞춤</span>
-          <label style="font-size:12px; font-weight:700; color:var(--text); cursor:pointer;">
+          <span id="firstBusTitle">첫 번째 버스 도착시간 맞춤</span>
+          <label style="font-size:12px; color:var(--text); cursor:pointer;">
             <input type="checkbox" id="useBusSync" onchange="calculate()"> 출발시간에 반영
           </label>
         </div>
@@ -310,7 +285,7 @@
       <!-- 자동차 전용 패널 -->
       <div class="car-panel" id="carPanel">
         <div class="car-row">
-          <span style="font-size:14px; font-weight:800;">🚗 자동차 예상 이동 시간</span>
+          <span style="font-size:14px;">자동차 예상 이동 시간</span>
           <div>
             <input type="number" id="carTimeInput" class="car-input" value="30" min="0" oninput="applyCarTime()">
             <span class="unit">분</span>
@@ -381,10 +356,10 @@
 
 </div>
 
-<!-- API 키 설정 모달 -->
+<!-- 숨겨진 API 키 설정 모달 (제목을 5번 연속 터치했을 때만 열림) -->
 <div class="modal-bg" id="apiModal">
   <div class="modal">
-    <h2>API 키 설정 (내 기기에만 저장)</h2>
+    <h2>관리자 API 키 설정</h2>
     <div class="modal-field">
       <label>카카오 JavaScript 키</label>
       <input type="text" id="kakaoKeyInput" placeholder="카카오 디벨로퍼스 JavaScript 키">
@@ -401,6 +376,41 @@
 </div>
 
 <script>
+  // =========================================================================
+  // ★ 다른 사람에게 배포할 때는 아래 따옴표('') 안에 발급받은 키를 적어두세요!
+  // (도메인 제한이 걸려 있어서 다른 사이트에서는 도용할 수 없으며 과금되지 않습니다)
+  // =========================================================================
+  const DEFAULT_KAKAO_KEY = '여기에_카카오_키_입력';
+  const DEFAULT_ODSAY_KEY = '여기에_ODSAY_키_입력';
+
+  function getKakaoKey() {
+    const local = localStorage.getItem('kakao_api_key');
+    if (local) return local;
+    if (DEFAULT_KAKAO_KEY && DEFAULT_KAKAO_KEY !== '2780d8c6258d2689bdd2e8d56e597ba0') return DEFAULT_KAKAO_KEY;
+    return '';
+  }
+
+  function getOdsayKey() {
+    const local = localStorage.getItem('odsay_api_key');
+    if (local) return local;
+    if (DEFAULT_ODSAY_KEY && DEFAULT_ODSAY_KEY !== 's818hJgK2Wx1z3U8Et0kiQ') return DEFAULT_ODSAY_KEY;
+    return '';
+  }
+
+  // 상단 제목 5번 연속 터치 시 관리자 모달 열기
+  let titleTapCount = 0;
+  let titleTapTimer = null;
+  function secretAdminTrigger() {
+    titleTapCount++;
+    clearTimeout(titleTapTimer);
+    if (titleTapCount >= 5) {
+      titleTapCount = 0;
+      openModal();
+    } else {
+      titleTapTimer = setTimeout(() => { titleTapCount = 0; }, 1200);
+    }
+  }
+
   let prepItems = JSON.parse(localStorage.getItem('my_prep_items')) || [
     { name: '씻는 시간', min: 20 },
     { name: '옷 입는 시간', min: 10 },
@@ -435,13 +445,6 @@
   let firstWalkMin = 3;
 
   function init() {
-    // 저장된 폰트 불러오기
-    const savedFont = localStorage.getItem('my_selected_font');
-    if (savedFont) {
-      document.documentElement.style.setProperty('--font-main', savedFont);
-      document.getElementById('fontSelector').value = savedFont;
-    }
-
     const savedState = JSON.parse(localStorage.getItem('my_transit_state_v2'));
     if (savedState) {
       document.getElementById('arrivalTime').value = savedState.arrivalTime || '09:00';
@@ -456,11 +459,6 @@
         document.getElementById('endDropdown').style.display = 'none';
       }
     });
-  }
-
-  function changeFont(fontVal) {
-    document.documentElement.style.setProperty('--font-main', fontVal);
-    localStorage.setItem('my_selected_font', fontVal);
   }
 
   function showSettingsView() {
@@ -720,8 +718,8 @@
   }
 
   async function findAddress(type) {
-    const kakaoKey = localStorage.getItem('kakao_api_key');
-    if (!kakaoKey) { openModal(); return alert('상단 [API 키] 설정을 먼저 완료해주세요.'); }
+    const kakaoKey = getKakaoKey();
+    if (!kakaoKey) { openModal(); return alert('API 키가 설정되지 않았습니다.'); }
 
     const inputEl = document.getElementById(type === 'start' ? 'startLoc' : 'endLoc');
     const dropEl = document.getElementById(type === 'start' ? 'startDropdown' : 'endDropdown');
@@ -738,7 +736,7 @@
       results.forEach(item => {
         const div = document.createElement('div');
         div.className = 'place-item';
-        div.innerHTML = `<div class="place-name">${item.name}</div><div class="place-addr">${item.addr}</div>`;
+        div.innerHTML = `<div>${item.name}</div><div class="place-addr">${item.addr}</div>`;
         div.onclick = () => {
           inputEl.value = item.name;
           if (type === 'start') selectedStart = item;
@@ -799,11 +797,11 @@
     const endVal = document.getElementById('endLoc').value.trim();
     if (!startVal || !endVal) return alert('출발지와 도착지를 모두 입력해주세요.');
 
-    const kakaoKey = localStorage.getItem('kakao_api_key');
-    const odsayKey = localStorage.getItem('odsay_api_key');
+    const kakaoKey = getKakaoKey();
+    const odsayKey = getOdsayKey();
     if (!kakaoKey || !odsayKey) {
       openModal();
-      return alert('상단 [API 키]에서 키를 먼저 입력해주세요.');
+      return alert('API 키를 먼저 설정해주세요.');
     }
 
     const msgEl = document.getElementById('statusMsg');
