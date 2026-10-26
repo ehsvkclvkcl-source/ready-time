@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>준비시간 계산기</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --card: #ffffff;
+      --text: #191f28;
+      --sub: #6b7684;
+      --border: #e5e8eb;
+      --primary: #3182f6;
+      --primary-light: #e8f3ff;
+      --danger: #f04452;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Pretendard", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 20px 16px 60px; line-height: 1.4; }
+    .container { max-width: 480px; margin: 0 auto; }
+    
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .header h1 { font-size: 20px; font-weight: 700; }
+    .btn-outline { background: var(--card); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 13px; color: var(--sub); cursor: pointer; }
+    
+    /* 결과 영역 */
+    .result-box { background: var(--primary); color: #fff; border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+    .result-main { font-size: 21px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.3px; }
+    .result-sub { display: flex; justify-content: space-between; font-size: 14px; background: rgba(0,0,0,0.12); padding: 10px 14px; border-radius: 10px; }
+    
+    /* 카드 공통 */
+    .card { background: var(--card); border-radius: 16px; padding: 18px; margin-bottom: 14px; border: 1px solid var(--border); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .card-title { font-size: 16px; font-weight: 700; }
+    .card-sum { font-size: 14px; color: var(--primary); font-weight: 600; }
+    
+    /* 입력 폼 */
+    input[type="time"], input[type="text"], input[type="number"] {
+      border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 14px; color: var(--text); outline: none; background: #fff;
+    }
+    input:focus { border-color: var(--primary); }
+    input[type="time"] { width: 100%; font-size: 16px; font-weight: 600; padding: 10px; }
+    
+    /* 준비 항목 리스트 */
+    .prep-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .prep-row input[type="text"] { flex: 1; min-width: 0; }
+    .prep-row input[type="number"] { width: 64px; text-align: right; }
+    .unit { font-size: 13px; color: var(--sub); }
+    .btn-icon { background: #f2f4f6; border: none; border-radius: 8px; padding: 8px 10px; font-size: 12px; cursor: pointer; color: var(--sub); white-space: nowrap; }
+    .btn-icon:hover { background: var(--border); color: var(--text); }
+    .btn-del { color: var(--danger); background: #fff0f1; }
+    
+    .btn-add { width: 100%; background: #f2f4f6; border: none; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; margin-top: 4px; }
+    
+    /* 저장된 내 준비 항목 (빠른 추가) */
+    .saved-section { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border); }
+    .saved-label { font-size: 12px; color: var(--sub); margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { display: inline-flex; align-items: center; background: var(--primary-light); color: var(--primary); border-radius: 20px; padding: 5px 10px; font-size: 13px; font-weight: 500; cursor: pointer; user-select: none; }
+    .chip-del { margin-left: 6px; font-size: 14px; color: #8b95a1; padding: 0 2px; }
+    .chip-del:hover { color: var(--danger); }
+    
+    /* 이동시간 및 지도 */
+    .search-box { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .search-row { display: flex; gap: 6px; }
+    .search-row input { flex: 1; }
+    .btn-primary { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 10px 14px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    #map { width: 100%; height: 180px; border-radius: 10px; margin-bottom: 12px; display: none; border: 1px solid var(--border); }
+    .status-msg { font-size: 12px; color: var(--sub); margin-bottom: 8px; display: none; }
+    
+    .transit-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .transit-item { background: #f9fafb; padding: 10px; border-radius: 10px; border: 1px solid var(--border); }
+    .transit-item label { display: block; font-size: 12px; color: var(--sub); margin-bottom: 4px; }
+    .transit-input-wrap { display: flex; align-items: center; gap: 4px; }
+    .transit-input-wrap input { width: 100%; text-align: right; font-weight: 600; }
+
+    /* 모달 */
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
+    .modal { background: #fff; width: 100%; max-width: 400px; border-radius: 16px; padding: 20px; }
+    .modal h2 { font-size: 17px; margin-bottom: 12px; }
+    .modal-field { margin-bottom: 12px; }
+    .modal-field label { display: block; font-size: 13px; color: var(--sub); margin-bottom: 4px; }
+    .modal-field input { width: 100%; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>준비시간 계산기</h1>
+    <button class="btn-outline" onclick="openModal()">API 키 설정</button>
+  </div>
+
+  <!-- 결과 영역 -->
+  <div class="result-box">
+    <div class="result-main" id="wakeUpText">당신은 오전 07:00에 일어나야 합니다</div>
+    <div class="result-sub">
+      <span>출발 시간 <strong id="departText">오전 08:00</strong></span>
+      <span>총 소요 <strong id="totalMinText">60분</strong></span>
+    </div>
+  </div>
+
+  <!-- 도착해야 하는 시간 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">도착해야 하는 시간</span>
+    </div>
+    <input type="time" id="arrivalTime" value="09:00" onchange="calculate()">
+  </div>
+
+  <!-- 내 준비 시간 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">내 준비 시간</span>
+      <span class="card-sum" id="prepSumText">0분</span>
+    </div>
+    
+    <div id="prepList"></div>
+    <button class="btn-add" onclick="addPrepItem('', 10)">+ 준비 항목 추가</button>
+
+    <div class="saved-section">
+      <div class="saved-label">
+        <span>저장해둔 항목 (누르면 위 목록에 추가됩니다)</span>
+      </div>
+      <div class="chips" id="savedChips"></div>
+    </div>
+  </div>
+
+  <!-- 이동 시간 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">이동 시간</span>
+      <span class="card-sum" id="transitSumText">0분</span>
+    </div>
+
+    <div class="search-box">
+      <div class="search-row">
+        <input type="text" id="startLoc" placeholder="출발지 (예: 서창동, 강남역)">
+        <input type="text" id="endLoc" placeholder="도착지 (예: 홍대입구역)">
+      </div>
+      <button class="btn-primary" onclick="searchRoute()">경로 검색으로 시간 자동 입력</button>
+    </div>
+    <div class="status-msg" id="statusMsg"></div>
+    <div id="map"></div>
+
+    <div class="transit-grid">
+      <div class="transit-item">
+        <label>버스</label>
+        <div class="transit-input-wrap">
+          <input type="number" id="busTime" value="0" min="0" oninput="saveCurrentState()">
+          <span class="unit">분</span>
+        </div>
+      </div>
+      <div class="transit-item">
+        <label>지하철</label>
+        <div class="transit-input-wrap">
+          <input type="number" id="subwayTime" value="0" min="0" oninput="saveCurrentState()">
+          <span class="unit">분</span>
+        </div>
+      </div>
+      <div class="transit-item">
+        <label>도보·기타</label>
+        <div class="transit-input-wrap">
+          <input type="number" id="walkTime" value="0" min="0" oninput="saveCurrentState()">
+          <span class="unit">분</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- API 키 설정 모달 -->
+<div class="modal-bg" id="apiModal">
+  <div class="modal">
+    <h2>API 키 설정 (내 기기에만 저장)</h2>
+    <div class="modal-field">
+      <label>카카오 JavaScript 키</label>
+      <input type="text" id="kakaoKeyInput" placeholder="카카오 디벨로퍼스 JavaScript 키">
+    </div>
+    <div class="modal-field">
+      <label>ODSay 대중교통 API 키</label>
+      <input type="text" id="odsayKeyInput" placeholder="ODSay Lab API 키">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal()">닫기</button>
+      <button class="btn-primary" onclick="saveApiKeys()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 기본 데이터 불러오기
+  let prepItems = JSON.parse(localStorage.getItem('my_prep_items')) || [
+    { name: '씻는 시간', min: 20 },
+    { name: '옷 입는 시간', min: 10 }
+  ];
+  let savedPresets = JSON.parse(localStorage.getItem('my_saved_presets')) || [
+    { name: '씻는 시간', min: 20 },
+    { name: '옷 입는 시간', min: 10 },
+    { name: '머리 말리기', min: 10 },
+    { name: '화장', min: 15 },
+    { name: '식사', min: 15 }
+  ];
+
+  function init() {
+    const savedState = JSON.parse(localStorage.getItem('my_transit_state'));
+    if (savedState) {
+      document.getElementById('arrivalTime').value = savedState.arrivalTime || '09:00';
+      document.getElementById('busTime').value = savedState.bus || 0;
+      document.getElementById('subwayTime').value = savedState.subway || 0;
+      document.getElementById('walkTime').value = savedState.walk || 0;
+    }
+    renderPrepList();
+    renderSavedChips();
+    calculate();
+  }
+
+  // 준비 항목 렌더링 (모든 문구 수정/삭제 가능)
+  function renderPrepList() {
+    const list = document.getElementById('prepList');
+    list.innerHTML = '';
+    prepItems.forEach((item, idx) => {
+      const row = document.createElement('div');
+      row.className = 'prep-row';
+      row.innerHTML = `
+        <input type="text" value="${item.name}" placeholder="준비 내용 입력" oninput="updatePrep(${idx}, 'name', this.value)">
+        <input type="number" value="${item.min}" min="0" oninput="updatePrep(${idx}, 'min', this.value)">
+        <span class="unit">분</span>
+        <button class="btn-icon" title="아래 보관함에 저장" onclick="saveToPreset(${idx})">보관</button>
+        <button class="btn-icon btn-del" onclick="removePrep(${idx})">삭제</button>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  function updatePrep(idx, field, val) {
+    if (field === 'min') val = parseInt(val) || 0;
+    prepItems[idx][field] = val;
+    saveCurrentState();
+  }
+
+  function addPrepItem(name = '', min = 10) {
+    prepItems.push({ name, min });
+    renderPrepList();
+    saveCurrentState();
+  }
+
+  function removePrep(idx) {
+    prepItems.splice(idx, 1);
+    renderPrepList();
+    saveCurrentState();
+  }
+
+  // 자주 쓰는 항목 보관함에 저장 및 불러오기
+  function saveToPreset(idx) {
+    const item = prepItems[idx];
+    if (!item.name.trim()) return alert('항목 이름을 입력해주세요.');
+    const exists = savedPresets.findIndex(p => p.name === item.name);
+    if (exists >= 0) {
+      savedPresets[exists].min = item.min;
+    } else {
+      savedPresets.push({ name: item.name, min: item.min });
+    }
+    localStorage.setItem('my_saved_presets', JSON.stringify(savedPresets));
+    renderSavedChips();
+  }
+
+  function renderSavedChips() {
+    const container = document.getElementById('savedChips');
+    container.innerHTML = '';
+    savedPresets.forEach((preset, idx) => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.innerHTML = `
+        <span onclick="addPrepItem('${preset.name}', ${preset.min})">+ ${preset.name} ${preset.min}분</span>
+        <span class="chip-del" onclick="removePreset(event, ${idx})">×</span>
+      `;
+      container.appendChild(chip);
+    });
+  }
+
+  function removePreset(e, idx) {
+    e.stopPropagation();
+    savedPresets.splice(idx, 1);
+    localStorage.setItem('my_saved_presets', JSON.stringify(savedPresets));
+    renderSavedChips();
+  }
+
+  // 상태 저장 및 시간 계산
+  function saveCurrentState() {
+    localStorage.setItem('my_prep_items', JSON.stringify(prepItems));
+    localStorage.setItem('my_transit_state', JSON.stringify({
+      arrivalTime: document.getElementById('arrivalTime').value,
+      bus: parseInt(document.getElementById('busTime').value) || 0,
+      subway: parseInt(document.getElementById('subwayTime').value) || 0,
+      walk: parseInt(document.getElementById('walkTime').value) || 0
+    }));
+    calculate();
+  }
+
+  function formatKoreanTime(totalMinutes) {
+    while (totalMinutes < 0) totalMinutes += 1440;
+    totalMinutes = totalMinutes % 1440;
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    const ampm = h < 12 ? '오전' : '오후';
+    const displayH = h % 12 === 0 ? 12 : h % 12;
+    return `${ampm} ${String(displayH).padStart(2, '0')}시 ${String(m).padStart(2, '0')}분`;
+  }
+
+  function calculate() {
+    const arrivalVal = document.getElementById('arrivalTime').value || '09:00';
+    const [arrH, arrM] = arrivalVal.split(':').map(Number);
+    const arrivalTotal = arrH * 60 + arrM;
+
+    const prepSum = prepItems.reduce((acc, cur) => acc + (parseInt(cur.min) || 0), 0);
+    const bus = parseInt(document.getElementById('busTime').value) || 0;
+    const subway = parseInt(document.getElementById('subwayTime').value) || 0;
+    const walk = parseInt(document.getElementById('walkTime').value) || 0;
+    const transitSum = bus + subway + walk;
+    const totalMin = prepSum + transitSum;
+
+    const departTime = arrivalTotal - transitSum;
+    const wakeUpTime = arrivalTotal - totalMin;
+
+    document.getElementById('prepSumText').textContent = `${prepSum}분`;
+    document.getElementById('transitSumText').textContent = `${transitSum}분`;
+    document.getElementById('totalMinText').textContent = `${totalMin}분`;
+    document.getElementById('departText').textContent = formatKoreanTime(departTime);
+    document.getElementById('wakeUpText').textContent = `당신은 ${formatKoreanTime(wakeUpTime)}에 일어나야 합니다`;
+  }
+
+  // API 키 모달 관리
+  function openModal() {
+    document.getElementById('kakaoKeyInput').value = localStorage.getItem('kakao_api_key') || '';
+    document.getElementById('odsayKeyInput').value = localStorage.getItem('odsay_api_key') || '';
+    document.getElementById('apiModal').style.display = 'flex';
+  }
+  function closeModal() {
+    document.getElementById('apiModal').style.display = 'none';
+  }
+  function saveApiKeys() {
+    localStorage.setItem('kakao_api_key', document.getElementById('kakaoKeyInput').value.trim());
+    localStorage.setItem('odsay_api_key', document.getElementById('odsayKeyInput').value.trim());
+    closeModal();
+    alert('API 키가 내 기기에 저장되었습니다.');
+  }
+
+  // 카카오맵 및 ODSay 대중교통 연동
+  function loadKakaoSdk(key) {
+    return new Promise((resolve, reject) => {
+      if (window.kakao && window.kakao.maps) return resolve();
+      const script = document.createElement('script');
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services&autoload=false`;
+      script.onload = () => kakao.maps.load(resolve);
+      script.onerror = () => reject(new Error('카카오맵 키가 올바르지 않거나 도메인이 등록되지 않았습니다.'));
+      document.head.appendChild(script);
+    });
+  }
+
+  function searchPlace(ps, keyword) {
+    return new Promise((resolve, reject) => {
+      ps.keywordSearch(keyword, (data, status) => {
+        if (status === kakao.maps.services.Status.OK && data.length > 0) resolve(data[0]);
+        else reject(new Error(`'${keyword}' 장소를 찾을 수 없습니다.`));
+      });
+    });
+  }
+
+  async function searchRoute() {
+    const startVal = document.getElementById('startLoc').value.trim();
+    const endVal = document.getElementById('endLoc').value.trim();
+    if (!startVal || !endVal) return alert('출발지와 도착지를 모두 입력해주세요.');
+
+    const kakaoKey = localStorage.getItem('kakao_api_key');
+    const odsayKey = localStorage.getItem('odsay_api_key');
+    if (!kakaoKey || !odsayKey) {
+      openModal();
+      return alert('상단 [API 키 설정]에서 카카오 키와 ODSay 키를 먼저 입력해 주세요.');
+    }
+
+    const msgEl = document.getElementById('statusMsg');
+    msgEl.style.display = 'block';
+    msgEl.textContent = '경로를 검색하고 있습니다...';
+
+    try {
+      await loadKakaoSdk(kakaoKey);
+      const ps = new kakao.maps.services.Places();
+      const startPlace = await searchPlace(ps, startVal);
+      const endPlace = await searchPlace(ps, endVal);
+
+      // 지도 표시
+      const mapEl = document.getElementById('map');
+      mapEl.style.display = 'block';
+      const map = new kakao.maps.Map(mapEl, {
+        center: new kakao.maps.LatLng(startPlace.y, startPlace.x),
+        level: 7
+      });
+      const bounds = new kakao.maps.LatLngBounds();
+      const p1 = new kakao.maps.LatLng(startPlace.y, startPlace.x);
+      const p2 = new kakao.maps.LatLng(endPlace.y, endPlace.x);
+      new kakao.maps.Marker({ map, position: p1 });
+      new kakao.maps.Marker({ map, position: p2 });
+      bounds.extend(p1);
+      bounds.extend(p2);
+      map.setBounds(bounds);
+
+      // ODSay 대중교통 경로 호출
+      const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${startPlace.x}&SY=${startPlace.y}&EX=${endPlace.x}&EY=${endPlace.y}&apiKey=${encodeURIComponent(odsayKey)}`;
+      const res = await fetch(url);
+      const json = await res.json();
+
+      if (json.error) {
+        throw new Error(json.error.msg || '대중교통 경로를 불러오지 못했습니다.');
+      }
+
+      const bestPath = json.result.path[0];
+      let busMin = 0, subwayMin = 0, walkMin = 0;
+
+      bestPath.subPath.forEach(sub => {
+        if (sub.trafficType === 1) subwayMin += sub.sectionTime;
+        else if (sub.trafficType === 2) busMin += sub.sectionTime;
+        else if (sub.trafficType === 3) walkMin += sub.sectionTime;
+      });
+
+      document.getElementById('busTime').value = busMin;
+      document.getElementById('subwayTime').value = subwayMin;
+      document.getElementById('walkTime').value = walkMin;
+      saveCurrentState();
+
+      msgEl.textContent = `${startPlace.place_name} → ${endPlace.place_name} (버스 ${busMin}분, 지하철 ${subwayMin}분, 도보 ${walkMin}분 반영됨)`;
+    } catch (err) {
+      msgEl.textContent = '오류: ' + err.message;
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
