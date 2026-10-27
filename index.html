@@ -29,7 +29,7 @@
 
     body {
       background: var(--bg);
-      padding: 28px 16px 80px;
+      padding: 32px 16px 90px;
       font-size: 15px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
@@ -38,19 +38,19 @@
     button { font-family: inherit; }
 
     /* 상단바 */
-    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
     .top-bar h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; user-select: none; cursor: default; }
     .btn-ghost-sm {
       background: #fff; border: 1px solid var(--line-strong); border-radius: var(--radius);
       padding: 9px 14px; font-size: 14px; font-weight: 500; cursor: pointer;
     }
 
-    /* 카드 (틀과 틀 사이의 세로 간격을 24px로 넉넉하게 띄움) */
+    /* 카드 (틀과 틀 사이의 세로 간격을 36px로 대폭 넓힘) */
     .card {
       background: var(--card);
       border-radius: var(--radius-card);
       padding: 20px;
-      margin-bottom: 24px;
+      margin-bottom: 36px;
       box-shadow: 0 1px 2px rgba(16,24,40,.04), 0 6px 20px rgba(16,24,40,.05);
     }
     .label { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
@@ -80,8 +80,8 @@
       border-radius: var(--radius); padding: 8px 10px; display: none;
     }
 
-    /* 소요 시간 (흰 배경 없음, 위아래 간격 넉넉히 확보) */
-    .summary { margin: 8px 4px 28px; }
+    /* 소요 시간 (흰 배경 없음, 위아래 간격을 더 시원하게 확보) */
+    .summary { margin: 12px 4px 40px; }
     .summary-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .summary-head .title { font-size: 15px; font-weight: 700; }
     .link-btn {
@@ -153,7 +153,7 @@
     .car-panel .info { font-size: 13px; }
 
     /* 경로 리스트 */
-    .route-list { display: none; flex-direction: column; gap: 12px; margin-bottom: 14px; }
+    .route-list { display: none; flex-direction: column; gap: 14px; margin-bottom: 14px; }
     .route-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; background: #fff; cursor: pointer; }
     .route-card.selected { border: 2px solid var(--accent); }
     .rc-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
@@ -193,7 +193,7 @@
 
     /* ==================== 설정 화면 ==================== */
     #settingsView { display: none; }
-    .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; gap: 8px; }
+    .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; gap: 8px; }
     .settings-header h2 { font-size: 22px; font-weight: 700; }
 
     .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
