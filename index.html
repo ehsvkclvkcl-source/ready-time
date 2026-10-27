@@ -15,8 +15,8 @@
       --tile: #eceef2;
       --accent: #2563eb;        /* 주요 버튼 배경에만 사용 */
       --accent-soft: #eff4ff;
-      --radius-card: 10px;
-      --radius: 6px;
+      --radius-card: 16px;
+      --radius: 10px;
     }
 
     * {
@@ -77,7 +77,7 @@
     .hero .bus-sync-badge { background: rgba(255,255,255,.18); }
     .bus-sync-badge {
       margin-top: 10px; font-size: 13px; background: var(--tile);
-      border-radius: 6px; padding: 8px 10px; display: none;
+      border-radius: var(--radius); padding: 8px 10px; display: none;
     }
 
     /* 소요 시간 (흰 배경 없음, 위아래 간격 넉넉히 확보) */
@@ -89,7 +89,7 @@
       cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
     }
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .stat { background: var(--tile); border-radius: 6px; padding: 12px 14px; }
+    .stat { background: var(--tile); border-radius: var(--radius); padding: 12px 14px; }
     .stat span { display: block; font-size: 13px; }
     .stat b { display: block; font-size: 18px; font-weight: 700; text-align: right; margin-top: 6px; }
 
@@ -121,7 +121,7 @@
       padding: 9px 3px; margin: 14px 0; gap: 2px; overflow-x: auto;
     }
     .mode-tab {
-      flex: 0 0 auto; border: none; background: none; padding: 16px 10px; border-radius: 6px;
+      flex: 0 0 auto; border: none; background: none; padding: 16px 10px; border-radius: var(--radius);
       font-size: 14px; cursor: pointer; white-space: nowrap;
     }
     .mode-tab.active { background: #fff; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
@@ -137,24 +137,24 @@
     .status-msg { font-size: 13px; margin-bottom: 10px; display: none; }
 
     /* 버스 맞춤 패널 */
-    .bus-arrival-panel { background: #f7f8fa; border-radius: 6px; padding: 14px; margin-bottom: 14px; display: none; }
+    .bus-arrival-panel { background: #f7f8fa; border-radius: var(--radius); padding: 14px; margin-bottom: 14px; display: none; }
     .bus-panel-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
     .bus-panel-title label { font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
     .bus-panel-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 14px; }
     .bus-panel-row select, .bus-panel-row input {
-      border: 1px solid var(--line-strong); border-radius: 6px; padding: 6px 8px; font-size: 14px; background: #fff;
+      border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 6px 8px; font-size: 14px; background: #fff;
     }
     .bus-panel-help { font-size: 13px; margin-top: 8px; }
 
     /* 자동차 패널 */
-    .car-panel { background: #f7f8fa; border-radius: 6px; padding: 14px; margin-bottom: 14px; display: none; }
+    .car-panel { background: #f7f8fa; border-radius: var(--radius); padding: 14px; margin-bottom: 14px; display: none; }
     .car-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .car-input { width: 80px; text-align: right; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: 6px; background: #fff; }
+    .car-input { width: 80px; text-align: right; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; }
     .car-panel .info { font-size: 13px; }
 
     /* 경로 리스트 */
     .route-list { display: none; flex-direction: column; gap: 12px; margin-bottom: 14px; }
-    .route-card { border: 1px solid var(--line); border-radius: 6px; padding: 16px; background: #fff; cursor: pointer; }
+    .route-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; background: #fff; cursor: pointer; }
     .route-card.selected { border: 2px solid var(--accent); }
     .rc-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
     .rc-big-time { font-size: 24px; font-weight: 700; }
@@ -162,7 +162,7 @@
     .rc-sub-info { font-size: 13px; }
 
     .rc-bar {
-      display: flex; width: 100%; height: 22px; border-radius: 6px; overflow: hidden;
+      display: flex; width: 100%; height: 22px; border-radius: var(--radius); overflow: hidden;
       background: var(--tile); margin-bottom: 14px; font-size: 12px; font-weight: 700;
     }
     .rc-seg { display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; }
@@ -177,8 +177,8 @@
     .rc-detail-col { flex: 1; }
     .rc-station { margin-bottom: 4px; font-weight: 700; }
     .rc-badges { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; font-size: 13px; }
-    .bus-num-box { display: inline-block; padding: 1px 6px; font-size: 13px; font-weight: 700; border: 1px solid var(--line-strong); border-radius: 6px; background: #fff; }
-    .rc-interval-tag { font-size: 12px; background: var(--tile); padding: 1px 6px; border-radius: 6px; }
+    .bus-num-box { display: inline-block; padding: 1px 6px; font-size: 13px; font-weight: 700; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; }
+    .rc-interval-tag { font-size: 12px; background: var(--tile); padding: 1px 6px; border-radius: var(--radius); }
 
     /* 직접 입력 */
     .manual-row {
@@ -187,7 +187,7 @@
     }
     .manual-row input {
       width: 72px; text-align: right; padding: 6px 8px; border: 1px solid var(--line-strong);
-      border-radius: 6px; background: #fff; font-size: 14px; font-weight: 700;
+      border-radius: var(--radius); background: #fff; font-size: 14px; font-weight: 700;
     }
     .unit { font-size: 14px; }
 
@@ -202,16 +202,16 @@
 
     .prep-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
     .prep-row input[type="text"] {
-      flex: 1; min-width: 0; border: 1px solid var(--line-strong); border-radius: 6px;
+      flex: 1; min-width: 0; border: 1px solid var(--line-strong); border-radius: var(--radius);
       padding: 9px 10px; font-size: 15px; background: #fff; outline: none;
     }
     .prep-row input[type="number"] {
-      width: 64px; text-align: right; border: 1px solid var(--line-strong); border-radius: 6px;
+      width: 64px; text-align: right; border: 1px solid var(--line-strong); border-radius: var(--radius);
       padding: 9px 8px; font-size: 15px; background: #fff; outline: none;
     }
     .prep-row input:focus { border-color: var(--accent); }
     .btn-icon {
-      background: #fff; border: 1px solid var(--line-strong); border-radius: 6px;
+      background: #fff; border: 1px solid var(--line-strong); border-radius: var(--radius);
       padding: 8px 10px; font-size: 13px; cursor: pointer; white-space: nowrap;
     }
     .btn-add {
@@ -223,7 +223,7 @@
     .saved-label { font-size: 13px; margin-bottom: 8px; }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; }
     .chip {
-      display: inline-flex; align-items: center; background: var(--tile); border-radius: 6px;
+      display: inline-flex; align-items: center; background: var(--tile); border-radius: var(--radius);
       padding: 6px 12px; font-size: 14px; cursor: pointer; user-select: none;
     }
     .chip-del { margin-left: 8px; font-size: 15px; padding: 0 2px; }
@@ -233,12 +233,12 @@
     .set-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; width: 100%; }
     .set-row:last-child { margin-bottom: 0; }
     .set-name-input {
-      flex: 1; min-width: 0; border: 1px solid var(--line-strong); border-radius: 6px;
+      flex: 1; min-width: 0; border: 1px solid var(--line-strong); border-radius: var(--radius);
       padding: 9px 10px; font-size: 14px; background: #fff; outline: none;
     }
     .set-name-input:focus { border-color: var(--accent); }
     .btn-set-load, .btn-set-save {
-      flex-shrink: 0; background: var(--tile); border: none; border-radius: 6px;
+      flex-shrink: 0; background: var(--tile); border: none; border-radius: var(--radius);
       padding: 9px 11px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
     }
 
@@ -254,7 +254,7 @@
     .modal-field { margin-bottom: 12px; }
     .modal-field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; }
     .modal-field input {
-      width: 100%; border: 1px solid var(--line-strong); border-radius: 6px; padding: 10px; font-size: 14px; outline: none;
+      width: 100%; border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 10px; font-size: 14px; outline: none;
     }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
     .modal-actions .btn-ghost-sm { padding: 9px 14px; }
@@ -456,14 +456,14 @@
   function getKakaoKey() {
     const local = localStorage.getItem('kakao_api_key');
     if (local) return local;
-    if (DEFAULT_KAKAO_KEY && DEFAULT_KAKAO_KEY !== '여기에_카카오_키_입력') return DEFAULT_KAKAO_KEY;
+    if (DEFAULT_KAKAO_KEY && DEFAULT_KAKAO_KEY !== '2780d8c6258d2689bdd2e8d56e597ba0') return DEFAULT_KAKAO_KEY;
     return '';
   }
 
   function getOdsayKey() {
     const local = localStorage.getItem('odsay_api_key');
     if (local) return local;
-    if (DEFAULT_ODSAY_KEY && DEFAULT_ODSAY_KEY !== '여기에_ODSAY_키_입력') return DEFAULT_ODSAY_KEY;
+    if (DEFAULT_ODSAY_KEY && DEFAULT_ODSAY_KEY !== 's818hJgK2Wx1z3U8Et0kiQ') return DEFAULT_ODSAY_KEY;
     return '';
   }
 
