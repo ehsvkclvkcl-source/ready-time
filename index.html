@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>준비시간 계산기</title>
+  <title>외출 시간 계산기</title>
   <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
   <style>
     :root {
@@ -450,20 +450,20 @@
   // ★ 다른 사람에게 배포할 때는 아래 따옴표('') 안에 발급받은 키를 적어두세요!
   // (도메인 제한이 걸려 있어서 다른 사이트에서는 도용할 수 없으며 과금되지 않습니다)
   // =========================================================================
-  const DEFAULT_KAKAO_KEY = '2780d8c6258d2689bdd2e8d56e597ba0';
-  const DEFAULT_ODSAY_KEY = 's818hJgK2Wx1z3U8Et0kiQ';
+  const DEFAULT_KAKAO_KEY = '5daed69726e41da2bb2a8a4dab8ec5ad';
+  const DEFAULT_ODSAY_KEY = 'CmNv0isNgkR0kUHQYwwphg';
 
   function getKakaoKey() {
     const local = localStorage.getItem('kakao_api_key');
     if (local) return local;
-    if (DEFAULT_KAKAO_KEY && DEFAULT_KAKAO_KEY !== '2780d8c6258d2689bdd2e8d56e597ba0') return DEFAULT_KAKAO_KEY;
+    if (DEFAULT_KAKAO_KEY && DEFAULT_KAKAO_KEY !== '5daed69726e41da2bb2a8a4dab8ec5ad') return DEFAULT_KAKAO_KEY;
     return '';
   }
 
   function getOdsayKey() {
     const local = localStorage.getItem('odsay_api_key');
     if (local) return local;
-    if (DEFAULT_ODSAY_KEY && DEFAULT_ODSAY_KEY !== 's818hJgK2Wx1z3U8Et0kiQ') return DEFAULT_ODSAY_KEY;
+    if (DEFAULT_ODSAY_KEY && DEFAULT_ODSAY_KEY !== 'CmNv0isNgkR0kUHQYwwphg') return DEFAULT_ODSAY_KEY;
     return '';
   }
 
