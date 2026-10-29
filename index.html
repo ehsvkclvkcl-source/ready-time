@@ -1043,9 +1043,9 @@
     panel.style.display = 'block';
     firstWalkMin = firstTransitInfo.walkMin || 3;
     document.getElementById('firstBusTitle').textContent = `[${firstTransitInfo.station}] ${firstTransitInfo.lineName} 도착 맞춤`;
-    const estWait = Math.max(3, Math.round((firstTransitInfo.interval || 8) / 2));
+    const estWait = firstTransitInfo.interval || 8;
     document.getElementById('busWaitMin').value = estWait;
-    document.getElementById('busPanelHelp').textContent = `${firstTransitInfo.station}까지 도보 약 ${firstWalkMin}분 소요. 배차 대기시간 또는 도착시각에 맞춰 출발시간을 계산합니다.`;
+    document.getElementById('busPanelHelp').textContent = `${firstTransitInfo.station}까지 도보 약 ${firstWalkMin}분 소요. 최대 대기시간(배차간격)을 적용했습니다. 실시간 도착시간은 별도 앱을 이용해주세요.`;
 
     saveCurrentState();
   }
