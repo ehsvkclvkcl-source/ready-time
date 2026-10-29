@@ -9,11 +9,11 @@
     :root {
       --bg: #f4f5f7;
       --card: #ffffff;
-      --text: #191f28;          /* 모든 글자 색 통일 */
+      --text: #191f28;
       --line: #e5e8eb;
       --line-strong: #d1d6db;
       --tile: #eceef2;
-      --accent: #2563eb;        /* 주요 버튼 배경에만 사용 */
+      --accent: #2563eb;
       --accent-soft: #eff4ff;
       --radius-card: 16px;
       --radius: 10px;
@@ -37,15 +37,9 @@
     .container { max-width: 450px; margin: 0 auto; }
     button { font-family: inherit; }
 
-    /* 상단바 */
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
     .top-bar h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; user-select: none; cursor: default; }
-    .btn-ghost-sm {
-      background: #fff; border: 1px solid var(--line-strong); border-radius: var(--radius);
-      padding: 8px 13px; font-size: 13.5px; font-weight: 500; cursor: pointer;
-    }
 
-    /* 카드 (틀 사이의 넓은 간격은 유지하고, 내부 여백만 살짝 줄임) */
     .card {
       background: var(--card);
       border-radius: var(--radius-card);
@@ -56,14 +50,12 @@
     .label { font-size: 12.5px; font-weight: 500; margin-bottom: 6px; }
     .arrival-card { padding: 15px 17px; }
 
-    /* 도착 시간 */
     .arrival-input {
       width: 100%; border: 1px solid var(--line-strong); border-radius: var(--radius);
       padding: 8px 11px; font-size: 16px; font-weight: 700; background: #fff; outline: none; cursor: pointer;
     }
     .arrival-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 
-    /* 결과 카드: 파란 배경, 흰 글씨 */
     .hero { background: var(--accent); padding: 30px 20px; }
     .hero, .hero * { color: #fff; }
     .wake-text { font-size: 17px; font-weight: 500; line-height: 1.5; letter-spacing: -0.3px; word-break: keep-all; }
@@ -80,7 +72,6 @@
       border-radius: var(--radius); padding: 7px 10px; display: none;
     }
 
-    /* 소요 시간 (흰 배경 없음) */
     .summary { margin: 10px 4px 36px; }
     .summary-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 11px; }
     .summary-head .title { font-size: 14.5px; font-weight: 700; }
@@ -93,7 +84,6 @@
     .stat span { display: block; font-size: 12.5px; }
     .stat b { display: block; font-size: 17px; font-weight: 700; text-align: right; margin-top: 5px; }
 
-    /* 검색 */
     .loc-wrap { position: relative; margin-bottom: 9px; }
     .loc-row { display: flex; gap: 7px; }
     .loc-row input {
@@ -115,7 +105,6 @@
     .place-item:hover { background: var(--tile); }
     .place-addr { font-size: 11.5px; margin-top: 2px; }
 
-    /* 이동수단 탭 */
     .mode-tabs {
       display: flex; background: var(--tile); border-radius: var(--radius);
       padding: 7px 3px; margin: 13px 0; gap: 2px; overflow-x: auto;
@@ -136,7 +125,6 @@
     #map { width: 100%; height: 165px; margin-bottom: 13px; display: none; border-radius: var(--radius); }
     .status-msg { font-size: 12.5px; margin-bottom: 9px; display: none; }
 
-    /* 버스 맞춤 패널 */
     .bus-arrival-panel { background: #f7f8fa; border-radius: var(--radius); padding: 13px; margin-bottom: 13px; display: none; }
     .bus-panel-title { font-size: 13.5px; font-weight: 700; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
     .bus-panel-title label { font-size: 12.5px; font-weight: 500; cursor: pointer; white-space: nowrap; }
@@ -146,13 +134,11 @@
     }
     .bus-panel-help { font-size: 12.5px; margin-top: 7px; }
 
-    /* 자동차 패널 */
     .car-panel { background: #f7f8fa; border-radius: var(--radius); padding: 13px; margin-bottom: 13px; display: none; }
     .car-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
     .car-input { width: 74px; text-align: right; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; }
     .car-panel .info { font-size: 12.5px; }
 
-    /* 경로 리스트 */
     .route-list { display: none; flex-direction: column; gap: 13px; margin-bottom: 13px; }
     .route-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 15px; background: #fff; cursor: pointer; }
     .route-card.selected { border: 2px solid var(--accent); }
@@ -180,7 +166,6 @@
     .bus-num-box { display: inline-block; padding: 1px 6px; font-size: 12.5px; font-weight: 700; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; }
     .rc-interval-tag { font-size: 11.5px; background: var(--tile); padding: 1px 6px; border-radius: var(--radius); }
 
-    /* 직접 입력 */
     .manual-row {
       display: flex; align-items: center; justify-content: space-between; gap: 8px;
       padding-top: 11px; border-top: 1px solid var(--line); font-size: 13.5px; font-weight: 700;
@@ -191,7 +176,6 @@
     }
     .unit { font-size: 13.5px; }
 
-    /* ==================== 설정 화면 ==================== */
     #settingsView { display: none; }
     .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 8px; }
     .settings-header h2 { font-size: 20px; font-weight: 700; }
@@ -228,7 +212,6 @@
     }
     .chip-del { margin-left: 7px; font-size: 14px; padding: 0 2px; }
 
-    /* 세트 영역 */
     .set-title { font-size: 15.5px; font-weight: 700; margin-bottom: 11px; }
     .set-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; width: 100%; }
     .set-row:last-child { margin-bottom: 0; }
@@ -246,49 +229,30 @@
       width: 100%; background: var(--accent); border: none; border-radius: var(--radius);
       padding: 14px; font-size: 15.5px; font-weight: 700; color: #fff; cursor: pointer;
     }
-
-    /* 숨겨진 관리자 모달 */
-    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
-    .modal { background: #fff; width: 100%; max-width: 380px; border-radius: var(--radius-card); padding: 20px; }
-    .modal h2 { font-size: 16px; font-weight: 700; margin-bottom: 13px; }
-    .modal-field { margin-bottom: 11px; }
-    .modal-field label { display: block; font-size: 12.5px; font-weight: 500; margin-bottom: 4px; }
-    .modal-field input {
-      width: 100%; border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 9px; font-size: 13.5px; outline: none;
-    }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
-    .modal-actions .btn-ghost-sm { padding: 8px 13px; }
-    .modal-actions .btn-primary { width: auto; margin: 0; padding: 8px 15px; }
   </style>
 </head>
 <body>
 
 <div class="container">
-
-  <!-- ==================== [화면 1] 메인 화면 ==================== -->
   <div id="mainView">
     <div class="top-bar">
-      <!-- 제목을 5번 연속 누르면 숨겨진 API 키 설정창이 열립니다 -->
-      <h1 onclick="secretAdminTrigger()">외출 시간 계산기</h1>
+      <h1>외출 시간 계산기</h1>
     </div>
 
-    <!-- 도착해야 하는 시간 -->
     <div class="card arrival-card">
       <div class="label">도착해야하는 시간</div>
       <input type="time" id="arrivalTime" class="arrival-input" value="09:00" onchange="saveCurrentState()">
     </div>
 
-    <!-- 메인 결과 -->
     <div class="card hero">
-      <div class="wake-text" id="wakeUpText">당신은 <b>오전 07시 21분</b>에 일어나야 합니다</div>
+      <div class="wake-text" id="wakeUpText">당신은 <b>오전 07시 21분</b>에 준비를 시작해야 합니다</div>
       <div class="door-row">
-        <span class="door-label">현관문을 열어야하는 시간:</span>
+        <span class="door-label">현관문을 나서는 시간:</span>
         <span class="door-time" id="doorTimeText">오전 08시 36분</span>
       </div>
       <div class="bus-sync-badge" id="busSyncBadge"></div>
     </div>
 
-    <!-- 소요 시간 (흰 배경 없음) -->
     <div class="summary">
       <div class="summary-head">
         <span class="title">소요 시간</span>
@@ -301,7 +265,6 @@
       </div>
     </div>
 
-    <!-- 경로 찾기 -->
     <div class="card">
       <div class="loc-wrap">
         <div class="loc-row">
@@ -332,7 +295,6 @@
       <div class="status-msg" id="statusMsg"></div>
       <div id="map"></div>
 
-      <!-- 버스 도착시간 맞춤 -->
       <div class="bus-arrival-panel" id="busArrivalPanel">
         <div class="bus-panel-title">
           <span id="firstBusTitle">첫 번째 버스 도착시간 맞춤</span>
@@ -357,7 +319,6 @@
         <div class="bus-panel-help" id="busPanelHelp">정류장까지 도보 시간을 고려해 현관문 나가는 시간을 자동 조절합니다.</div>
       </div>
 
-      <!-- 자동차 패널 -->
       <div class="car-panel" id="carPanel">
         <div class="car-row">
           <span>자동차 예상 이동 시간</span>
@@ -381,8 +342,7 @@
     </div>
   </div>
 
-  <!-- ==================== [화면 2] 시간 설정 화면 ==================== -->
-  <div id="settingsView">
+  <div id="settingsView" style="display:none;">
     <div class="settings-header">
       <h2>설정</h2>
       <button class="btn-ghost-sm" onclick="showMainView()">메인화면으로 가기</button>
@@ -390,7 +350,7 @@
 
     <div class="card">
       <div class="section-head">
-        <span class="section-title">내 준비 시간</span>
+        <span class="section-title">준비 시간</span>
         <span class="section-sum" id="prepSumText">0분</span>
       </div>
       <div id="prepList"></div>
@@ -423,62 +383,20 @@
 
     <button class="bottom-save-btn" onclick="showMainView()">설정 저장 및 메인화면으로 가기</button>
   </div>
-
-</div>
-
-<!-- 숨겨진 API 키 설정 모달 -->
-<div class="modal-bg" id="apiModal">
-  <div class="modal">
-    <h2>관리자 API 키 설정</h2>
-    <div class="modal-field">
-      <label>카카오 JavaScript 키</label>
-      <input type="text" id="kakaoKeyInput" placeholder="카카오 디벨로퍼스 JavaScript 키">
-    </div>
-    <div class="modal-field">
-      <label>ODSay 대중교통 API 키</label>
-      <input type="text" id="odsayKeyInput" placeholder="ODSay Lab API 키">
-    </div>
-    <div class="modal-actions">
-      <button class="btn-ghost-sm" onclick="closeModal()">닫기</button>
-      <button class="btn-primary" onclick="saveApiKeys()">저장</button>
-    </div>
-  </div>
 </div>
 
 <script>
-  // =========================================================================
-  // ★ 다른 사람에게 배포할 때는 아래 따옴표('') 안에 발급받은 키를 적어두세요!
-  // (도메인 제한이 걸려 있어서 다른 사이트에서는 도용할 수 없으며 과금되지 않습니다)
-  // =========================================================================
   const DEFAULT_KAKAO_KEY = 'bcda303772c79350b3e59668efedaa16';
   const DEFAULT_ODSAY_KEY = 'XPoPdOhl+rYG0K+qwaOcIw';
 
   function getKakaoKey() {
-    const local = localStorage.getItem('kakao_api_key');
-    if (local) return local;
     if (DEFAULT_KAKAO_KEY && DEFAULT_KAKAO_KEY !== 'bcda303772c79350b3e59668efedaa16') return DEFAULT_KAKAO_KEY;
-    return '';
+    return localStorage.getItem('kakao_api_key') || '';
   }
 
   function getOdsayKey() {
-    const local = localStorage.getItem('odsay_api_key');
-    if (local) return local;
     if (DEFAULT_ODSAY_KEY && DEFAULT_ODSAY_KEY !== 'XPoPdOhl+rYG0K+qwaOcIw') return DEFAULT_ODSAY_KEY;
-    return '';
-  }
-
-  // 상단 제목 5번 연속 터치 시 관리자 모달 열기
-  let titleTapCount = 0;
-  let titleTapTimer = null;
-  function secretAdminTrigger() {
-    titleTapCount++;
-    clearTimeout(titleTapTimer);
-    if (titleTapCount >= 5) {
-      titleTapCount = 0;
-      openModal();
-    } else {
-      titleTapTimer = setTimeout(() => { titleTapCount = 0; }, 1200);
-    }
+    return localStorage.getItem('odsay_api_key') || '';
   }
 
   let prepItems = JSON.parse(localStorage.getItem('my_prep_items')) || [
@@ -728,20 +646,7 @@
     document.getElementById('sumOther').textContent = `${otherSum}분`;
 
     document.getElementById('doorTimeText').textContent = formatKoreanTime(doorTime);
-    document.getElementById('wakeUpText').innerHTML = `당신은 <b>${formatKoreanTime(wakeUpTime)}</b>에 일어나야 합니다`;
-  }
-
-  function openModal() {
-    document.getElementById('kakaoKeyInput').value = localStorage.getItem('kakao_api_key') || '';
-    document.getElementById('odsayKeyInput').value = localStorage.getItem('odsay_api_key') || '';
-    document.getElementById('apiModal').style.display = 'flex';
-  }
-  function closeModal() { document.getElementById('apiModal').style.display = 'none'; }
-  function saveApiKeys() {
-    localStorage.setItem('kakao_api_key', document.getElementById('kakaoKeyInput').value.trim());
-    localStorage.setItem('odsay_api_key', document.getElementById('odsayKeyInput').value.trim());
-    closeModal();
-    alert('API 키가 저장되었습니다.');
+    document.getElementById('wakeUpText').innerHTML = `당신은 <b>${formatKoreanTime(wakeUpTime)}</b>에 준비를 시작해야 합니다`;
   }
 
   function loadKakaoSdk(key) {
@@ -750,7 +655,7 @@
       const script = document.createElement('script');
       script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services&autoload=false`;
       script.onload = () => kakao.maps.load(resolve);
-      script.onerror = () => reject(new Error('카카오 API 키 또는 도메인 설정을 확인해주세요.'));
+      script.onerror = () => reject(new Error('카카오 디벨로퍼스 [Web] 플랫폼에 현재 접속 중인 주소가 등록되어 있는지 확인해주세요.'));
       document.head.appendChild(script);
     });
   }
@@ -789,34 +694,38 @@
 
   async function findAddress(type) {
     const kakaoKey = getKakaoKey();
-    if (!kakaoKey) { openModal(); return alert('API 키가 설정되지 않았습니다.'); }
+    if (!kakaoKey) return alert('API 키가 설정되지 않았습니다.');
 
     const inputEl = document.getElementById(type === 'start' ? 'startLoc' : 'endLoc');
     const dropEl = document.getElementById(type === 'start' ? 'startDropdown' : 'endDropdown');
     const query = inputEl.value.trim();
     if (!query) return alert('주소나 장소명을 입력해주세요.');
 
-    await loadKakaoSdk(kakaoKey);
-    const results = await searchAddressAndPlace(query);
+    try {
+      await loadKakaoSdk(kakaoKey);
+      const results = await searchAddressAndPlace(query);
 
-    dropEl.innerHTML = '';
-    if (results.length === 0) {
-      dropEl.innerHTML = '<div class="place-item">검색 결과가 없습니다.</div>';
-    } else {
-      results.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'place-item';
-        div.innerHTML = `<div>${item.name}</div><div class="place-addr">${item.addr}</div>`;
-        div.onclick = () => {
-          inputEl.value = item.name;
-          if (type === 'start') selectedStart = item;
-          else selectedEnd = item;
-          dropEl.style.display = 'none';
-        };
-        dropEl.appendChild(div);
-      });
+      dropEl.innerHTML = '';
+      if (results.length === 0) {
+        dropEl.innerHTML = '<div class="place-item">검색 결과가 없습니다.</div>';
+      } else {
+        results.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'place-item';
+          div.innerHTML = `<div>${item.name}</div><div class="place-addr">${item.addr}</div>`;
+          div.onclick = () => {
+            inputEl.value = item.name;
+            if (type === 'start') selectedStart = item;
+            else selectedEnd = item;
+            dropEl.style.display = 'none';
+          };
+          dropEl.appendChild(div);
+        });
+      }
+      dropEl.style.display = 'block';
+    } catch (err) {
+      alert(err.message);
     }
-    dropEl.style.display = 'block';
   }
 
   function switchTab(tabName, btnEl) {
@@ -862,6 +771,21 @@
     saveCurrentState();
   }
 
+  async function fetchOdsayData(odsayUrl) {
+    try {
+      const res = await fetch(odsayUrl);
+      const json = await res.json();
+      if (json && json.result && json.result.path) return json;
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(odsayUrl)}`;
+      const pRes = await fetch(proxyUrl);
+      return await pRes.json();
+    } catch (e) {
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(odsayUrl)}`;
+      const pRes = await fetch(proxyUrl);
+      return await pRes.json();
+    }
+  }
+
   async function searchRoute() {
     const startVal = document.getElementById('startLoc').value.trim();
     const endVal = document.getElementById('endLoc').value.trim();
@@ -869,10 +793,7 @@
 
     const kakaoKey = getKakaoKey();
     const odsayKey = getOdsayKey();
-    if (!kakaoKey || !odsayKey) {
-      openModal();
-      return alert('API 키를 먼저 설정해주세요.');
-    }
+    if (!kakaoKey || !odsayKey) return alert('API 키가 설정되지 않았습니다.');
 
     const msgEl = document.getElementById('statusMsg');
     msgEl.style.display = 'block';
@@ -916,8 +837,7 @@
       }
 
       const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${selectedStart.x}&SY=${selectedStart.y}&EX=${selectedEnd.x}&EY=${selectedEnd.y}&apiKey=${encodeURIComponent(odsayKey)}`;
-      const res = await fetch(url);
-      const json = await res.json();
+      const json = await fetchOdsayData(url);
 
       if (json.error || !json.result || !json.result.path) {
         throw new Error(json.error ? json.error.msg : '대중교통 경로가 없습니다.');
