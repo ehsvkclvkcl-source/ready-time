@@ -10,6 +10,7 @@
       --bg: #f4f5f7;
       --card: #ffffff;
       --text: #191f28;
+      --sub: #6b7684;
       --line: #e5e8eb;
       --line-strong: #d1d6db;
       --tile: #eceef2;
@@ -117,11 +118,11 @@
       padding: 7px 3px; margin: 13px 0; gap: 2px; overflow-x: auto;
     }
     .mode-tab {
-      flex: 0 0 auto; border: none; background: none; padding: 12px 9px; border-radius: var(--radius);
+      flex: 0 0 auto; border: none; background: none; padding: 10px 9px; border-radius: var(--radius);
       font-size: 13.5px; cursor: pointer; white-space: nowrap;
     }
     .mode-tab.active { background: #fff; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
-    .mode-tab .cnt { font-size: 11.5px; margin-left: 2px; }
+    .mode-tab .cnt { font-size: 11.5px; margin-left: 2px; color: var(--accent); }
 
     .btn-primary {
       width: 100%; background: var(--accent); border: none; border-radius: var(--radius);
@@ -130,48 +131,149 @@
     .btn-primary:hover { opacity: .92; }
 
     #map { width: 100%; height: 165px; margin-bottom: 13px; display: none; border-radius: var(--radius); }
-    .status-msg { font-size: 12.5px; margin-bottom: 9px; display: none; }
+    .status-msg { font-size: 12.5px; margin-bottom: 9px; display: none; color: var(--sub); }
 
-    .bus-arrival-panel { background: #f7f8fa; border-radius: var(--radius); padding: 13px; margin-bottom: 13px; display: none; }
+    .bus-arrival-panel { background: #f7f8fa; border-radius: var(--radius); padding: 13px; margin-bottom: 13px; display: none; border: 1px solid var(--line); }
     .bus-panel-title { font-size: 13.5px; font-weight: 700; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
     .bus-panel-title label { font-size: 12.5px; font-weight: 500; cursor: pointer; white-space: nowrap; }
     .bus-panel-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13.5px; }
     .bus-panel-row select, .bus-panel-row input {
       border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 6px 8px; font-size: 13.5px; background: #fff;
     }
-    .bus-panel-help { font-size: 12.5px; margin-top: 7px; line-height: 1.45; }
+    .bus-panel-help { font-size: 12px; margin-top: 7px; line-height: 1.45; color: var(--sub); }
 
     .car-panel { background: #f7f8fa; border-radius: var(--radius); padding: 13px; margin-bottom: 13px; display: none; }
     .car-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
     .car-input { width: 74px; text-align: right; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; }
-    .car-panel .info { font-size: 12.5px; }
+    .car-panel .info { font-size: 12.5px; color: var(--sub); }
 
-    .route-list { display: none; flex-direction: column; gap: 13px; margin-bottom: 13px; }
-    .route-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 15px; background: #fff; cursor: pointer; }
-    .route-card.selected { border: 2px solid var(--accent); }
-    .rc-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 9px; flex-wrap: wrap; }
-    .rc-big-time { font-size: 22px; font-weight: 700; }
-    .rc-big-time small { font-size: 14px; font-weight: 700; }
-    .rc-sub-info { font-size: 12.5px; }
-
-    .rc-bar {
-      display: flex; width: 100%; height: 20px; border-radius: var(--radius); overflow: hidden;
-      background: var(--tile); margin-bottom: 13px; font-size: 11px; font-weight: 700;
+    /* 네이버 지도 스타일 경로 카드 */
+    .route-list { display: none; flex-direction: column; gap: 12px; margin-bottom: 13px; }
+    .route-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .rc-seg { display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; min-width: 24px; }
-    .seg-walk { background: #e5e8eb; }
-    .seg-bus-green { background: #cfd6e0; }
-    .seg-bus-blue { background: #b7c2d1; }
-    .seg-subway { background: #9aa7ba; }
+    .route-card.selected {
+      border: 2px solid var(--accent);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+    }
 
-    .rc-timeline { display: flex; flex-direction: column; gap: 9px; }
-    .rc-step { display: flex; align-items: flex-start; gap: 9px; font-size: 13.5px; }
-    .rc-type-col { width: 56px; font-size: 12.5px; font-weight: 700; flex-shrink: 0; padding-top: 1px; }
-    .rc-detail-col { flex: 1; }
-    .rc-station { margin-bottom: 3px; font-weight: 700; }
-    .rc-badges { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; font-size: 12.5px; }
-    .bus-num-box { display: inline-block; padding: 2px 7px; font-size: 12.5px; font-weight: 700; border: 1px solid var(--line-strong); border-radius: 6px; background: #fff; }
-    .rc-interval-tag { font-size: 11.5px; background: var(--tile); padding: 2px 7px; border-radius: 6px; font-weight: 500; }
+    .rc-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; flex-wrap: wrap; gap: 6px; }
+    .rc-title-left { display: flex; align-items: baseline; gap: 6px; }
+    .rc-big-time { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #111; }
+    .rc-big-time small { font-size: 14px; font-weight: 700; margin-left: 1px; }
+    .rc-walk-sum { font-size: 12px; color: var(--sub); font-weight: 500; }
+    .rc-sub-info { font-size: 12.5px; color: var(--sub); font-weight: 500; }
+
+    /* 네이버 지도 스타일 컬러 진행 바 */
+    .rc-bar {
+      display: flex;
+      width: 100%;
+      height: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #e9ecef;
+      margin-bottom: 15px;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .rc-seg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      overflow: hidden;
+      color: #fff;
+      padding: 0 2px;
+    }
+    .rc-seg.seg-walk {
+      background: #e2e5e9;
+      color: #6b7684;
+    }
+
+    /* 수직 타임라인 */
+    .rc-timeline { display: flex; flex-direction: column; }
+    .rc-step { display: flex; align-items: stretch; gap: 11px; position: relative; }
+    .rc-axis {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 14px;
+      flex-shrink: 0;
+    }
+    .rc-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+      background: #fff;
+      border: 3px solid var(--line-strong);
+      z-index: 1;
+    }
+    .rc-line {
+      width: 2px;
+      flex: 1;
+      background: #e1e4e8;
+      margin: 2px 0;
+    }
+    .rc-content {
+      flex: 1;
+      padding-bottom: 13px;
+      min-width: 0;
+    }
+    .rc-step:last-child .rc-content { padding-bottom: 0; }
+
+    .rc-row-main {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .rc-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+    .rc-station-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #191f28;
+    }
+    .rc-sub-meta {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--sub);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .rc-alt-buses {
+      font-size: 11.5px;
+      color: #4e5968;
+      background: #f2f4f6;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .rc-interval-tag {
+      font-size: 11.5px;
+      color: #2563eb;
+      background: #eff4ff;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
 
     .manual-row {
       display: flex; align-items: center; justify-content: space-between; gap: 8px;
@@ -237,30 +339,14 @@
       padding: 14px; font-size: 15.5px; font-weight: 700; color: #fff; cursor: pointer;
     }
 
-    .coffee-support-wrap {
-      margin-top: 12px;
-      text-align: center;
-    }
+    .coffee-support-wrap { margin-top: 12px; text-align: center; }
     .btn-coffee {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      width: 100%;
-      background: #FEE500;
-      color: #191f28;
-      border: none;
-      border-radius: var(--radius);
-      padding: 13px 16px;
-      font-size: 14.5px;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: 0 1px 2px rgba(16,24,40,.05);
-      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; background: #FEE500; color: #191f28; border: none; border-radius: var(--radius);
+      padding: 13px 16px; font-size: 14.5px; font-weight: 700; text-decoration: none;
+      box-shadow: 0 1px 2px rgba(16,24,40,.05); cursor: pointer;
     }
-    .btn-coffee:hover {
-      opacity: 0.92;
-    }
+    .btn-coffee:hover { opacity: 0.92; }
   </style>
 </head>
 <body>
@@ -1137,18 +1223,41 @@
     document.getElementById('cntBusSub').textContent = fetchedPaths.filter(p => p.pathType === 3).length;
   }
 
-  function getBusTypeStyle(busType) {
-    // UI 색상 구분용 매핑
-    if (busType === 12 || busType === 3) {
-      return { label: '지선/마을', barCls: 'seg-bus-green' };
+  // 네이버 지도 스타일 버스 색상 매핑
+  function getBusColorInfo(busType) {
+    if (busType === 11) return { label: '간선', color: '#386de8' };
+    if (busType === 4 || busType === 6 || busType === 14 || busType === 15 || busType === 2) {
+      return { label: '광역/좌석', color: '#e63c2e' };
     }
-    if (busType === 11) {
-      return { label: '간선', barCls: 'seg-bus-blue' };
-    }
-    if (busType === 4 || busType === 6 || busType === 14 || busType === 15) {
-      return { label: '광역/급행', barCls: 'seg-bus-blue' };
-    }
-    return { label: '버스', barCls: 'seg-bus-green' };
+    if (busType === 3) return { label: '마을', color: '#53b332' };
+    if (busType === 12) return { label: '지선', color: '#3cc344' };
+    return { label: '버스', color: '#3cc344' };
+  }
+
+  // 네이버 지도 스타일 지하철 노선 색상 매핑
+  function getSubwayColorInfo(name) {
+    const n = String(name || '');
+    if (n.includes('인천') && n.includes('1호선')) return { label: '인천1호선', color: '#759cce' };
+    if (n.includes('인천') && n.includes('2호선')) return { label: '인천2호선', color: '#f5a251' };
+    if (n.includes('1호선')) return { label: '1호선', color: '#0052A4' };
+    if (n.includes('2호선')) return { label: '2호선', color: '#00A84D' };
+    if (n.includes('3호선')) return { label: '3호선', color: '#EF7C1C' };
+    if (n.includes('4호선')) return { label: '4호선', color: '#00A5DE' };
+    if (n.includes('5호선')) return { label: '5호선', color: '#996CAC' };
+    if (n.includes('6호선')) return { label: '6호선', color: '#CD7C2F' };
+    if (n.includes('7호선')) return { label: '7호선', color: '#747F00' };
+    if (n.includes('8호선')) return { label: '8호선', color: '#E6186C' };
+    if (n.includes('9호선')) return { label: '9호선', color: '#BDB092' };
+    if (n.includes('수인') || n.includes('분당')) return { label: '수인분당', color: '#FABE00' };
+    if (n.includes('경의') || n.includes('중앙')) return { label: '경의중앙', color: '#77C4A3' };
+    if (n.includes('공항')) return { label: '공항철도', color: '#0090D2' };
+    if (n.includes('신분당')) return { label: '신분당선', color: '#D4003B' };
+    if (n.includes('경춘')) return { label: '경춘선', color: '#0C8E72' };
+    if (n.includes('김포')) return { label: '김포골드', color: '#A17800' };
+    if (n.includes('서해')) return { label: '서해선', color: '#8FC31F' };
+    if (n.includes('신림')) return { label: '신림선', color: '#6789CA' };
+    if (n.includes('우이')) return { label: '우이신설', color: '#B0CE18' };
+    return { label: n.replace('수도권 ', ''), color: '#5c6bc0' };
   }
 
   function renderRouteList(preserveManual = false) {
@@ -1173,35 +1282,41 @@
     filtered.forEach((path, idx) => {
       const totalMin = Math.max(0, parseInt(path.info?.totalTime, 10) || 0);
       const pay = path.info?.payment ? `${Number(path.info.payment).toLocaleString()}원` : '';
-      const arrivalVal = document.getElementById('arrivalTime').value || '09:00';
       let barHtml = '';
       let timelineHtml = '';
       const lastEndStation = esc(path.info?.lastEndStation || '목적지');
       let firstTransitInfo = null;
       let walkBeforeTransit = 0;
+      let totalWalkMin = 0;
       let foundFirstTransit = false;
 
       (path.subPath || []).forEach(sub => {
         const secMin = Math.max(0, parseInt(sub.sectionTime, 10) || 0);
         if (secMin <= 0) return;
 
+        // 4분 미만 짧은 구간은 막대 내부 텍스트 생략하여 글자 겹침 방지
+        const barLabel = secMin >= 4 ? `${secMin}분` : '';
+
         if (sub.trafficType === 3) {
+          totalWalkMin += secMin;
           if (!foundFirstTransit) walkBeforeTransit += secMin;
-          barHtml += `<div class="rc-seg seg-walk" style="flex:${secMin}">${secMin}분</div>`;
+          barHtml += `<div class="rc-seg seg-walk" style="flex:${Math.max(1.5, secMin)}">${barLabel}</div>`;
         } else if (sub.trafficType === 2) {
           foundFirstTransit = true;
-          const firstLane = sub.lane && sub.lane[0] ? sub.lane[0] : { busNo: '버스', type: 1 };
-          const style = getBusTypeStyle(firstLane.type);
-          barHtml += `<div class="rc-seg ${style.barCls}" style="flex:${secMin}">${secMin}분</div>`;
-
           const lanes = sub.lane || [];
-          let badgesHtml = lanes.slice(0, 3).map(l => `<span class="bus-num-box">${esc(l.busNo)}</span>`).join('');
-          if (lanes.length > 3) {
-            badgesHtml += `<span style="font-size:12.5px;">외 ${lanes.length - 3}대</span>`;
-          }
+          const firstLane = lanes[0] ? lanes[0] : { busNo: '버스', type: 1 };
+          const bColor = getBusColorInfo(firstLane.type);
+          barHtml += `<div class="rc-seg" style="flex:${Math.max(2, secMin)}; background:${bColor.color};">${barLabel}</div>`;
+
+          const mainBusNo = esc(firstLane.busNo);
+          const otherBuses = lanes.slice(1, 4).map(l => esc(l.busNo)).join(', ');
+          const extraCnt = lanes.length > 4 ? ` 외 ${lanes.length - 4}대` : '';
+          const altHtml = otherBuses ? `<span class="rc-alt-buses">대체 ${otherBuses}${extraCnt}</span>` : '';
 
           const intervalNum = Math.max(0, parseInt(sub.intervalTime, 10) || 0);
-          const interval = intervalNum ? `<span class="rc-interval-tag">배차 ${intervalNum}분</span>` : '';
+          const intervalHtml = intervalNum ? `<span class="rc-interval-tag">배차 ${intervalNum}분</span>` : '';
+          const endSt = sub.endName ? ` → ${esc(sub.endName)}` : '';
+
           if (!firstTransitInfo) {
             firstTransitInfo = {
               type: 'bus',
@@ -1214,23 +1329,36 @@
 
           timelineHtml += `
             <div class="rc-step">
-              <div class="rc-type-col">■ ${esc(style.label)}</div>
-              <div class="rc-detail-col">
-                <div class="rc-station">${esc(sub.startName)}</div>
-                <div class="rc-badges">${badgesHtml} ${interval}</div>
+              <div class="rc-axis">
+                <div class="rc-dot" style="border-color:${bColor.color}"></div>
+                <div class="rc-line" style="background:${bColor.color}55"></div>
+              </div>
+              <div class="rc-content">
+                <div class="rc-row-main">
+                  <span class="rc-badge" style="background:${bColor.color}">${esc(bColor.label)} ${mainBusNo}</span>
+                  <span class="rc-station-name">${esc(sub.startName)}</span>
+                </div>
+                <div class="rc-sub-meta">
+                  <span>${secMin}분 이동${endSt}</span>
+                  ${intervalHtml}
+                  ${altHtml}
+                </div>
               </div>
             </div>`;
         } else if (sub.trafficType === 1) {
           foundFirstTransit = true;
-          const laneName = sub.lane && sub.lane[0] ? String(sub.lane[0].name || '지하철') : '지하철';
-          barHtml += `<div class="rc-seg seg-subway" style="flex:${secMin}">${secMin}분</div>`;
+          const rawName = sub.lane && sub.lane[0] ? String(sub.lane[0].name || '지하철') : '지하철';
+          const sColor = getSubwayColorInfo(rawName);
+          barHtml += `<div class="rc-seg" style="flex:${Math.max(2, secMin)}; background:${sColor.color};">${barLabel}</div>`;
 
           const intervalNum = Math.max(0, parseInt(sub.intervalTime, 10) || 0);
+          const endSt = sub.endName ? ` → ${esc(sub.endName)}역` : '';
+
           if (!firstTransitInfo) {
             firstTransitInfo = {
               type: 'subway',
               station: `${String(sub.startName || '')}역`,
-              lineName: laneName,
+              lineName: sColor.label,
               interval: intervalNum || 6,
               walkMin: walkBeforeTransit
             };
@@ -1238,11 +1366,17 @@
 
           timelineHtml += `
             <div class="rc-step">
-              <div class="rc-type-col">■ 지하철</div>
-              <div class="rc-detail-col">
-                <div class="rc-station">${esc(sub.startName)}역</div>
-                <div class="rc-badges">
-                  <span class="bus-num-box">${esc(laneName)}</span>
+              <div class="rc-axis">
+                <div class="rc-dot" style="border-color:${sColor.color}"></div>
+                <div class="rc-line" style="background:${sColor.color}55"></div>
+              </div>
+              <div class="rc-content">
+                <div class="rc-row-main">
+                  <span class="rc-badge" style="background:${sColor.color}">${esc(sColor.label)}</span>
+                  <span class="rc-station-name">${esc(sub.startName)}역</span>
+                </div>
+                <div class="rc-sub-meta">
+                  <span>${secMin}분 이동${endSt}</span>
                 </div>
               </div>
             </div>`;
@@ -1261,16 +1395,25 @@
 
       timelineHtml += `
         <div class="rc-step">
-          <div class="rc-type-col">□ 하차</div>
-          <div class="rc-detail-col"><div class="rc-station" style="margin:0;">${lastEndStation}</div></div>
+          <div class="rc-axis">
+            <div class="rc-dot" style="border-color:#4e5968; background:#4e5968;"></div>
+          </div>
+          <div class="rc-content">
+            <div class="rc-row-main">
+              <span class="rc-station-name">${lastEndStation} 하차</span>
+            </div>
+          </div>
         </div>`;
 
       const card = document.createElement('div');
       card.className = 'route-card' + (idx === 0 ? ' selected' : '');
       card.innerHTML = `
         <div class="rc-header">
-          <span class="rc-big-time">${totalMin}<small>분</small></span>
-          <span class="rc-sub-info">도착목표 ${esc(arrivalVal)} 기준 | ${esc(pay)}</span>
+          <div class="rc-title-left">
+            <span class="rc-big-time">${totalMin}<small>분</small></span>
+            <span class="rc-walk-sum">도보 ${totalWalkMin}분</span>
+          </div>
+          <span class="rc-sub-info">${esc(pay)}</span>
         </div>
         <div class="rc-bar">${barHtml}</div>
         <div class="rc-timeline">${timelineHtml}</div>
