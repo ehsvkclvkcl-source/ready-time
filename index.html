@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>외출 시간 계산기</title>
   <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
   <style>
@@ -15,6 +15,8 @@
       --tile: #eceef2;
       --accent: #2563eb;
       --accent-soft: #eff4ff;
+      --warn-bg: #fff3cd;
+      --warn-text: #997404;
       --radius-card: 16px;
       --radius: 10px;
     }
@@ -23,7 +25,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: "NanumSquareNeo", "Noto Sans KR", system-ui, sans-serif;
+      font-family: "NanumSquareNeo", "Noto Sans KR", system-ui, -apple-system, sans-serif;
       color: var(--text);
     }
 
@@ -51,7 +53,7 @@
       margin-bottom: 34px;
       box-shadow: 0 1px 2px rgba(16,24,40,.04), 0 6px 20px rgba(16,24,40,.05);
     }
-    .label { font-size: 12.5px; font-weight: 500; margin-bottom: 6px; }
+    .label { font-size: 12.5px; font-weight: 500; margin-bottom: 6px; display: block; }
     .arrival-card { padding: 15px 17px; }
 
     .arrival-input {
@@ -71,6 +73,7 @@
     .door-label { font-size: 14.5px; font-weight: 500; }
     .door-time { font-size: 17px; font-weight: 700; }
     .hero .bus-sync-badge { background: rgba(255,255,255,.18); }
+    .hero .bus-sync-badge.warn { background: var(--warn-bg); color: var(--warn-text); font-weight: 700; }
     .bus-sync-badge {
       margin-top: 9px; font-size: 12.5px; background: var(--tile);
       border-radius: var(--radius); padding: 7px 10px; display: none;
@@ -107,7 +110,7 @@
     .place-item { padding: 9px 11px; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 13.5px; }
     .place-item:last-child { border-bottom: none; }
     .place-item:hover { background: var(--tile); }
-    .place-addr { font-size: 11.5px; margin-top: 2px; }
+    .place-addr { font-size: 11.5px; margin-top: 2px; color: #555; }
 
     .mode-tabs {
       display: flex; background: var(--tile); border-radius: var(--radius);
@@ -136,7 +139,7 @@
     .bus-panel-row select, .bus-panel-row input {
       border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 6px 8px; font-size: 13.5px; background: #fff;
     }
-    .bus-panel-help { font-size: 12.5px; margin-top: 7px; }
+    .bus-panel-help { font-size: 12.5px; margin-top: 7px; line-height: 1.45; }
 
     .car-panel { background: #f7f8fa; border-radius: var(--radius); padding: 13px; margin-bottom: 13px; display: none; }
     .car-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
@@ -153,9 +156,9 @@
 
     .rc-bar {
       display: flex; width: 100%; height: 20px; border-radius: var(--radius); overflow: hidden;
-      background: var(--tile); margin-bottom: 13px; font-size: 11.5px; font-weight: 700;
+      background: var(--tile); margin-bottom: 13px; font-size: 11px; font-weight: 700;
     }
-    .rc-seg { display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; }
+    .rc-seg { display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; min-width: 24px; }
     .seg-walk { background: #e5e8eb; }
     .seg-bus-green { background: #cfd6e0; }
     .seg-bus-blue { background: #b7c2d1; }
@@ -269,7 +272,7 @@
     </div>
 
     <div class="card arrival-card">
-      <div class="label">도착해야하는 시간</div>
+      <label class="label" for="arrivalTime">도착해야하는 시간</label>
       <input type="time" id="arrivalTime" class="arrival-input" value="09:00" onchange="saveCurrentState()">
     </div>
 
@@ -285,7 +288,7 @@
     <div class="summary">
       <div class="summary-head">
         <span class="title">소요 시간</span>
-        <button class="link-btn" onclick="showSettingsView()">시간 설정</button>
+        <button type="button" class="link-btn" onclick="showSettingsView()">시간 설정</button>
       </div>
       <div class="stats">
         <div class="stat"><span>이동</span><b id="sumTransit">0분</b></div>
@@ -297,29 +300,29 @@
     <div class="card">
       <div class="loc-wrap">
         <div class="loc-row">
-          <input type="text" id="startLoc" placeholder="출발지 주소 또는 장소 입력" onkeydown="if(event.key==='Enter') findAddress('start')">
-          <button class="btn-find" onclick="findAddress('start')">장소 찾기</button>
+          <input type="text" id="startLoc" aria-label="출발지 입력" placeholder="출발지 주소 또는 장소 입력" oninput="onLocationInput('start')" onkeydown="if(event.key==='Enter') findAddress('start')">
+          <button type="button" class="btn-find" onclick="findAddress('start')">장소 찾기</button>
         </div>
         <div class="place-dropdown" id="startDropdown"></div>
       </div>
 
       <div class="loc-wrap">
         <div class="loc-row">
-          <input type="text" id="endLoc" placeholder="도착지 주소 또는 장소 입력" onkeydown="if(event.key==='Enter') findAddress('end')">
-          <button class="btn-find" onclick="findAddress('end')">장소 찾기</button>
+          <input type="text" id="endLoc" aria-label="도착지 입력" placeholder="도착지 주소 또는 장소 입력" oninput="onLocationInput('end')" onkeydown="if(event.key==='Enter') findAddress('end')">
+          <button type="button" class="btn-find" onclick="findAddress('end')">장소 찾기</button>
         </div>
         <div class="place-dropdown" id="endDropdown"></div>
       </div>
 
-      <div class="mode-tabs">
-        <button class="mode-tab active" onclick="switchTab('all', this)">전체 <span class="cnt" id="cntAll"></span></button>
-        <button class="mode-tab" onclick="switchTab('bus', this)">버스 <span class="cnt" id="cntBus"></span></button>
-        <button class="mode-tab" onclick="switchTab('subway', this)">지하철 <span class="cnt" id="cntSub"></span></button>
-        <button class="mode-tab" onclick="switchTab('bus_sub', this)">버스+지하철 <span class="cnt" id="cntBusSub"></span></button>
-        <button class="mode-tab" onclick="switchTab('car', this)">자동차</button>
+      <div class="mode-tabs" role="tablist">
+        <button type="button" role="tab" class="mode-tab active" onclick="switchTab('all', this)">전체 <span class="cnt" id="cntAll"></span></button>
+        <button type="button" role="tab" class="mode-tab" onclick="switchTab('bus', this)">버스 <span class="cnt" id="cntBus"></span></button>
+        <button type="button" role="tab" class="mode-tab" onclick="switchTab('subway', this)">지하철 <span class="cnt" id="cntSub"></span></button>
+        <button type="button" role="tab" class="mode-tab" onclick="switchTab('bus_sub', this)">버스+지하철 <span class="cnt" id="cntBusSub"></span></button>
+        <button type="button" role="tab" class="mode-tab" onclick="switchTab('car', this)">자동차</button>
       </div>
 
-      <button class="btn-primary" onclick="searchRoute()">경로 검색하기</button>
+      <button type="button" class="btn-primary" onclick="searchRoute()">경로 검색하기</button>
 
       <div class="status-msg" id="statusMsg"></div>
       <div id="map"></div>
@@ -332,16 +335,16 @@
           </label>
         </div>
         <div class="bus-panel-row">
-          <select id="busSyncMode" onchange="toggleBusSyncInput()">
+          <select id="busSyncMode" aria-label="대기시간 반영 방식" onchange="toggleBusSyncInput()">
             <option value="wait">배차/대기 시간 추가</option>
             <option value="clock">정류장/역 도착 시각 지정</option>
           </select>
           <div id="busWaitWrap" style="display:flex; align-items:center; gap:4px;">
-            <input type="number" id="busWaitMin" value="5" min="0" style="width:56px; text-align:right;" oninput="calculate()">
+            <input type="number" id="busWaitMin" aria-label="대기 시간(분)" value="5" min="0" style="width:56px; text-align:right;" oninput="calculate()">
             <span>분 대기</span>
           </div>
           <div id="busClockWrap" style="display:none; align-items:center; gap:4px;">
-            <input type="time" id="busTargetClock" value="08:15" onchange="calculate()">
+            <input type="time" id="busTargetClock" aria-label="정류장 도착 시각" value="08:15" onchange="calculate()">
             <span>도착 맞춤</span>
           </div>
         </div>
@@ -350,21 +353,21 @@
 
       <div class="car-panel" id="carPanel">
         <div class="car-row">
-          <span>자동차 예상 이동 시간</span>
+          <span>자동차 예상 이동 시간 (추정)</span>
           <div>
-            <input type="number" id="carTimeInput" class="car-input" value="30" min="0" oninput="applyCarTime()">
+            <input type="number" id="carTimeInput" aria-label="자동차 예상 이동 시간(분)" class="car-input" value="30" min="0" oninput="applyCarTime()">
             <span class="unit">분</span>
           </div>
         </div>
-        <div class="info" id="carDistInfo">출발지와 도착지를 검색하면 도로 주행 예상 시간이 자동 계산됩니다.</div>
+        <div class="info" id="carDistInfo">출발지와 도착지를 검색하면 도로 주행 추정 시간이 자동 계산됩니다.</div>
       </div>
 
       <div class="route-list" id="routeList"></div>
 
       <div class="manual-row">
-        <span>선택된 총 이동시간 (직접 수정 가능)</span>
+        <label for="totalTransitInput">선택된 총 이동시간 (직접 수정 가능)</label>
         <div>
-          <input type="number" id="totalTransitInput" value="0" min="0" oninput="saveCurrentState()">
+          <input type="number" id="totalTransitInput" value="0" min="0" oninput="onManualTransitInput()">
           <span class="unit">분</span>
         </div>
       </div>
@@ -380,7 +383,7 @@
   <div id="settingsView" style="display:none;">
     <div class="settings-header">
       <h2>설정</h2>
-      <button class="btn-ghost-sm" onclick="showMainView()">메인화면으로 가기</button>
+      <button type="button" class="btn-ghost-sm" onclick="showMainView()">메인화면으로 가기</button>
     </div>
 
     <div class="card">
@@ -389,7 +392,7 @@
         <span class="section-sum" id="prepSumText">0분</span>
       </div>
       <div id="prepList"></div>
-      <button class="btn-add" onclick="addItem('prep', '', 10)">+ 준비 항목 추가</button>
+      <button type="button" class="btn-add" onclick="addItem('prep', '새 준비 항목', 10)">+ 준비 항목 추가</button>
 
       <div class="saved-section">
         <div class="saved-label">저장해둔 항목 (누르면 위 목록에 추가됩니다)</div>
@@ -403,7 +406,7 @@
         <span class="section-sum" id="otherSumText">0분</span>
       </div>
       <div id="otherList"></div>
-      <button class="btn-add" onclick="addItem('other', '', 10)">+ 그 외 항목 추가</button>
+      <button type="button" class="btn-add" onclick="addItem('other', '새 항목', 10)">+ 그 외 항목 추가</button>
 
       <div class="saved-section">
         <div class="saved-label">저장해둔 항목 (누르면 위 목록에 추가됩니다)</div>
@@ -416,61 +419,118 @@
       <div id="setListContainer"></div>
     </div>
 
-    <button class="bottom-save-btn" onclick="showMainView()">설정 저장 및 메인화면으로 가기</button>
+    <button type="button" class="bottom-save-btn" onclick="showMainView()">설정 저장 및 메인화면으로 가기</button>
   </div>
 </div>
 
 <script>
-  const DEFAULT_KAKAO_KEY = 'bcda303772c79350b3e59668efedaa16';
-  const DEFAULT_ODSAY_KEY = 'XPoPdOhl+rYG0K+qwaOcIw';
+  const KAKAO_KEY = 'bcda303772c79350b3e59668efedaa16';
+  const ODSAY_KEY = 'XPoPdOhl+rYG0K+qwaOcIw';
 
-  function getKakaoKey() {
-    return DEFAULT_KAKAO_KEY;
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
   }
 
-  function getOdsayKey() {
-    return DEFAULT_ODSAY_KEY;
+  function deepClone(obj) {
+    return JSON.parse(JSON.stringify(obj));
   }
 
-  let prepItems = JSON.parse(localStorage.getItem('my_prep_items')) || [
+  function sanitizeItems(arr, fallback) {
+    if (!Array.isArray(arr)) return deepClone(fallback);
+    return arr
+      .filter(it => it && typeof it === 'object')
+      .map(it => ({
+        name: String(it.name ?? '').slice(0, 40),
+        min: Math.max(0, parseInt(it.min, 10) || 0)
+      }));
+  }
+
+  function loadItems(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return deepClone(fallback);
+      const parsed = JSON.parse(raw);
+      return sanitizeItems(parsed, fallback);
+    } catch (e) {
+      return deepClone(fallback);
+    }
+  }
+
+  function loadCustomSets(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return deepClone(fallback);
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed) || parsed.length === 0) return deepClone(fallback);
+      return parsed.map((s, idx) => ({
+        name: String(s?.name ?? `세트${idx + 1}`).slice(0, 30),
+        prep: sanitizeItems(s?.prep, []),
+        other: sanitizeItems(s?.other, [])
+      }));
+    } catch (e) {
+      return deepClone(fallback);
+    }
+  }
+
+  function loadStateObject(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return deepClone(fallback);
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object') return deepClone(fallback);
+      return {
+        arrivalTime: /^\d{2}:\d{2}$/.test(parsed.arrivalTime) ? parsed.arrivalTime : fallback.arrivalTime,
+        transitMin: Math.max(0, parseInt(parsed.transitMin, 10) || 0)
+      };
+    } catch (e) {
+      return deepClone(fallback);
+    }
+  }
+
+  const DEFAULT_PREP = [
     { name: '씻는 시간', min: 20 },
     { name: '옷 입는 시간', min: 10 },
     { name: '머리 말리기', min: 10 }
   ];
-  let otherItems = JSON.parse(localStorage.getItem('my_other_items')) || [
+  const DEFAULT_OTHER = [
     { name: '짐 챙기기', min: 10 }
   ];
 
-  let prepPresets = JSON.parse(localStorage.getItem('my_prep_presets')) || [
+  let prepItems = loadItems('my_prep_items', DEFAULT_PREP);
+  let otherItems = loadItems('my_other_items', DEFAULT_OTHER);
+
+  let prepPresets = loadItems('my_prep_presets', [
     { name: '씻는 시간', min: 20 },
     { name: '옷 입는 시간', min: 10 },
     { name: '머리 말리기', min: 10 },
     { name: '화장', min: 15 }
-  ];
-  let otherPresets = JSON.parse(localStorage.getItem('my_other_presets')) || [
+  ]);
+  let otherPresets = loadItems('my_other_presets', [
     { name: '짐 챙기기', min: 10 },
     { name: '아침 식사', min: 15 },
     { name: '여유 시간', min: 10 }
-  ];
+  ]);
 
-  let customSets = JSON.parse(localStorage.getItem('my_custom_sets')) || [
-    { name: '세트1', prep: [...prepItems], other: [...otherItems] },
+  let customSets = loadCustomSets('my_custom_sets', [
+    { name: '세트1', prep: deepClone(DEFAULT_PREP), other: deepClone(DEFAULT_OTHER) },
     { name: '세트2', prep: [{ name: '옷 입는 시간', min: 5 }], other: [{ name: '모자 챙기기', min: 3 }] },
     { name: '세트3', prep: [{ name: '씻는 시간', min: 25 }, { name: '옷 고르기', min: 15 }], other: [{ name: '여유 시간', min: 10 }] }
-  ];
+  ]);
 
   let selectedStart = null;
   let selectedEnd = null;
   let currentTab = 'all';
   let fetchedPaths = [];
   let firstWalkMin = 3;
+  let userModifiedTransit = false;
 
   function init() {
-    const savedState = JSON.parse(localStorage.getItem('my_transit_state_v2'));
-    if (savedState) {
-      document.getElementById('arrivalTime').value = savedState.arrivalTime || '09:00';
-      document.getElementById('totalTransitInput').value = savedState.transitMin || 0;
-    }
+    const savedState = loadStateObject('my_transit_state_v2', { arrivalTime: '09:00', transitMin: 0 });
+    document.getElementById('arrivalTime').value = savedState.arrivalTime;
+    document.getElementById('totalTransitInput').value = savedState.transitMin;
+
     renderAllSettings();
     calculate();
 
@@ -482,12 +542,27 @@
     });
   }
 
+  function onLocationInput(type) {
+    if (type === 'start') selectedStart = null;
+    else selectedEnd = null;
+    userModifiedTransit = false;
+  }
+
+  function onManualTransitInput() {
+    userModifiedTransit = true;
+    saveCurrentState();
+  }
+
   function showSettingsView() {
     document.getElementById('mainView').style.display = 'none';
     document.getElementById('settingsView').style.display = 'block';
     window.scrollTo(0, 0);
   }
+
   function showMainView() {
+    prepItems = prepItems.filter(it => it.name.trim() !== '');
+    otherItems = otherItems.filter(it => it.name.trim() !== '');
+    renderAllSettings();
     saveCurrentState();
     document.getElementById('settingsView').style.display = 'none';
     document.getElementById('mainView').style.display = 'block';
@@ -508,27 +583,56 @@
     arr.forEach((item, idx) => {
       const row = document.createElement('div');
       row.className = 'prep-row';
-      row.innerHTML = `
-        <input type="text" value="${item.name}" placeholder="항목 이름 입력" oninput="updateItem('${type}', ${idx}, 'name', this.value)">
-        <input type="number" value="${item.min}" min="0" oninput="updateItem('${type}', ${idx}, 'min', this.value)">
-        <span class="unit">분</span>
-        <button class="btn-icon" onclick="savePreset('${type}', ${idx})">보관</button>
-        <button class="btn-icon" onclick="removeItem('${type}', ${idx})">삭제</button>
-      `;
+
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.value = item.name;
+      nameInput.placeholder = '항목 이름 입력';
+      nameInput.addEventListener('input', () => updateItem(type, idx, 'name', nameInput.value));
+
+      const minInput = document.createElement('input');
+      minInput.type = 'number';
+      minInput.min = '0';
+      minInput.value = item.min;
+      minInput.addEventListener('input', () => updateItem(type, idx, 'min', minInput.value));
+
+      const unitSpan = document.createElement('span');
+      unitSpan.className = 'unit';
+      unitSpan.textContent = '분';
+
+      const saveBtn = document.createElement('button');
+      saveBtn.type = 'button';
+      saveBtn.className = 'btn-icon';
+      saveBtn.textContent = '보관';
+      saveBtn.addEventListener('click', () => savePreset(type, idx));
+
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'btn-icon';
+      delBtn.textContent = '삭제';
+      delBtn.addEventListener('click', () => removeItem(type, idx));
+
+      row.append(nameInput, minInput, unitSpan, saveBtn, delBtn);
       el.appendChild(row);
     });
   }
 
   function updateItem(type, idx, field, val) {
     const arr = type === 'prep' ? prepItems : otherItems;
-    if (field === 'min') val = parseInt(val) || 0;
+    if (!arr[idx]) return;
+    if (field === 'min') {
+      val = Math.max(0, parseInt(val, 10) || 0);
+    } else {
+      val = String(val ?? '').slice(0, 40);
+    }
     arr[idx][field] = val;
     saveCurrentState();
   }
 
-  function addItem(type, name = '', min = 10) {
+  function addItem(type, name = '새 항목', min = 10) {
     const arr = type === 'prep' ? prepItems : otherItems;
-    arr.push({ name, min });
+    const cleanMin = Math.max(0, parseInt(min, 10) || 0);
+    arr.push({ name: String(name).slice(0, 40), min: cleanMin });
     renderAllSettings();
     saveCurrentState();
   }
@@ -544,10 +648,13 @@
     const arr = type === 'prep' ? prepItems : otherItems;
     const presets = type === 'prep' ? prepPresets : otherPresets;
     const item = arr[idx];
-    if (!item.name.trim()) return alert('항목 이름을 입력해주세요.');
-    const found = presets.findIndex(p => p.name === item.name);
-    if (found >= 0) presets[found].min = item.min;
-    else presets.push({ name: item.name, min: item.min });
+    if (!item || !item.name.trim()) return alert('항목 이름을 입력해주세요.');
+    const cleanName = item.name.trim().slice(0, 40);
+    const cleanMin = Math.max(0, parseInt(item.min, 10) || 0);
+
+    const found = presets.findIndex(p => p.name === cleanName);
+    if (found >= 0) presets[found].min = cleanMin;
+    else presets.push({ name: cleanName, min: cleanMin });
 
     localStorage.setItem(type === 'prep' ? 'my_prep_presets' : 'my_other_presets', JSON.stringify(presets));
     renderAllSettings();
@@ -559,10 +666,17 @@
     presets.forEach((p, idx) => {
       const chip = document.createElement('div');
       chip.className = 'chip';
-      chip.innerHTML = `
-        <span onclick="addItem('${type}', '${p.name}', ${p.min})">+ ${p.name} ${p.min}분</span>
-        <span class="chip-del" onclick="removePreset(event, '${type}', ${idx})">×</span>
-      `;
+
+      const textSpan = document.createElement('span');
+      textSpan.textContent = `+ ${p.name} ${p.min}분`;
+      textSpan.addEventListener('click', () => addItem(type, p.name, p.min));
+
+      const delSpan = document.createElement('span');
+      delSpan.className = 'chip-del';
+      delSpan.textContent = '×';
+      delSpan.addEventListener('click', (e) => removePreset(e, type, idx));
+
+      chip.append(textSpan, delSpan);
       el.appendChild(chip);
     });
   }
@@ -581,53 +695,83 @@
     customSets.forEach((s, idx) => {
       const row = document.createElement('div');
       row.className = 'set-row';
-      row.innerHTML = `
-        <input type="text" class="set-name-input" value="${s.name}" oninput="updateSetName(${idx}, this.value)">
-        <button class="btn-set-load" onclick="loadSet(${idx})">불러오기</button>
-        <button class="btn-set-save" onclick="saveToSet(${idx})">저장</button>
-      `;
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'set-name-input';
+      input.value = s.name;
+      input.addEventListener('input', () => updateSetName(idx, input.value));
+
+      const loadBtn = document.createElement('button');
+      loadBtn.type = 'button';
+      loadBtn.className = 'btn-set-load';
+      loadBtn.textContent = '불러오기';
+      loadBtn.addEventListener('click', () => loadSet(idx));
+
+      const saveBtn = document.createElement('button');
+      saveBtn.type = 'button';
+      saveBtn.className = 'btn-set-save';
+      saveBtn.textContent = '저장';
+      saveBtn.addEventListener('click', () => saveToSet(idx));
+
+      row.append(input, loadBtn, saveBtn);
       container.appendChild(row);
     });
   }
 
   function updateSetName(idx, val) {
-    customSets[idx].name = val;
+    customSets[idx].name = String(val ?? '').slice(0, 30);
     localStorage.setItem('my_custom_sets', JSON.stringify(customSets));
   }
 
   function saveToSet(idx) {
-    customSets[idx].prep = JSON.parse(JSON.stringify(prepItems));
-    customSets[idx].other = JSON.parse(JSON.stringify(otherItems));
+    customSets[idx].prep = deepClone(prepItems.filter(it => it.name.trim() !== ''));
+    customSets[idx].other = deepClone(otherItems.filter(it => it.name.trim() !== ''));
     localStorage.setItem('my_custom_sets', JSON.stringify(customSets));
-    alert(`'${customSets[idx].name}'로 저장되었습니다.`);
+    alert(`'${customSets[idx].name}'에 저장되었습니다.`);
   }
 
   function loadSet(idx) {
-    prepItems = JSON.parse(JSON.stringify(customSets[idx].prep || []));
-    otherItems = JSON.parse(JSON.stringify(customSets[idx].other || []));
+    prepItems = deepClone(customSets[idx].prep || []);
+    otherItems = deepClone(customSets[idx].other || []);
     renderAllSettings();
     saveCurrentState();
     alert(`'${customSets[idx].name}' 설정을 불러왔습니다.`);
   }
 
   function saveCurrentState() {
+    const transitInput = document.getElementById('totalTransitInput');
+    const cleanTransit = Math.max(0, parseInt(transitInput.value, 10) || 0);
+    if (String(cleanTransit) !== transitInput.value && transitInput.value !== '') {
+      transitInput.value = cleanTransit;
+    }
+
     localStorage.setItem('my_prep_items', JSON.stringify(prepItems));
     localStorage.setItem('my_other_items', JSON.stringify(otherItems));
     localStorage.setItem('my_transit_state_v2', JSON.stringify({
-      arrivalTime: document.getElementById('arrivalTime').value,
-      transitMin: parseInt(document.getElementById('totalTransitInput').value) || 0
+      arrivalTime: document.getElementById('arrivalTime').value || '09:00',
+      transitMin: cleanTransit
     }));
     calculate();
   }
 
   function formatKoreanTime(totalMinutes) {
-    while (totalMinutes < 0) totalMinutes += 1440;
-    totalMinutes = totalMinutes % 1440;
-    const h = Math.floor(totalMinutes / 60);
-    const m = totalMinutes % 60;
+    let dayOffset = 0;
+    let mVal = totalMinutes;
+    while (mVal < 0) {
+      mVal += 1440;
+      dayOffset -= 1;
+    }
+    while (mVal >= 1440) {
+      mVal -= 1440;
+      dayOffset += 1;
+    }
+    const h = Math.floor(mVal / 60);
+    const m = mVal % 60;
     const ampm = h < 12 ? '오전' : '오후';
     const displayH = h % 12 === 0 ? 12 : h % 12;
-    return `${ampm} ${String(displayH).padStart(2, '0')}시 ${String(m).padStart(2, '0')}분`;
+    const prefix = dayOffset < 0 ? '전날 ' : (dayOffset > 0 ? '다음날 ' : '');
+    return `${prefix}${ampm} ${String(displayH).padStart(2, '0')}시 ${String(m).padStart(2, '0')}분`;
   }
 
   function toggleBusSyncInput() {
@@ -640,31 +784,48 @@
   function calculate() {
     const arrivalVal = document.getElementById('arrivalTime').value || '09:00';
     const [arrH, arrM] = arrivalVal.split(':').map(Number);
-    const arrivalTotal = arrH * 60 + arrM;
+    const arrivalTotal = (arrH || 0) * 60 + (arrM || 0);
 
-    const prepSum = prepItems.reduce((acc, cur) => acc + (parseInt(cur.min) || 0), 0);
-    const otherSum = otherItems.reduce((acc, cur) => acc + (parseInt(cur.min) || 0), 0);
-    let transitSum = parseInt(document.getElementById('totalTransitInput').value) || 0;
+    const prepSum = prepItems.reduce((acc, cur) => acc + Math.max(0, parseInt(cur.min, 10) || 0), 0);
+    const otherSum = otherItems.reduce((acc, cur) => acc + Math.max(0, parseInt(cur.min, 10) || 0), 0);
+    const baseTransit = Math.max(0, parseInt(document.getElementById('totalTransitInput').value, 10) || 0);
+    let displayTransit = baseTransit;
 
     const useBusSync = document.getElementById('useBusSync').checked;
     const syncMode = document.getElementById('busSyncMode').value;
     const badgeEl = document.getElementById('busSyncBadge');
+    badgeEl.classList.remove('warn');
 
-    let doorTime = arrivalTotal - transitSum;
+    let doorTime = arrivalTotal - baseTransit;
 
     if (useBusSync && currentTab !== 'car') {
       badgeEl.style.display = 'block';
       if (syncMode === 'wait') {
-        const waitMin = parseInt(document.getElementById('busWaitMin').value) || 0;
-        transitSum += waitMin;
-        doorTime = arrivalTotal - transitSum;
-        badgeEl.textContent = `배차/대기 시간 ${waitMin}분 반영됨`;
+        const waitInput = document.getElementById('busWaitMin');
+        const waitMin = Math.max(0, parseInt(waitInput.value, 10) || 0);
+        displayTransit = baseTransit + waitMin;
+        doorTime = arrivalTotal - displayTransit;
+        badgeEl.textContent = `배차/대기 시간 ${waitMin}분 추가 반영됨`;
       } else {
         const busClock = document.getElementById('busTargetClock').value || '08:15';
         const [bH, bM] = busClock.split(':').map(Number);
-        const busClockTotal = bH * 60 + bM;
+        const busClockTotal = (bH || 0) * 60 + (bM || 0);
         doorTime = busClockTotal - firstWalkMin;
-        badgeEl.textContent = `${busClock} 탑승 맞춤 (도보 ${firstWalkMin}분 전 출발)`;
+
+        const remainingTransit = Math.max(0, baseTransit - firstWalkMin);
+        const expectedArrival = busClockTotal + remainingTransit;
+        const diffLate = expectedArrival - arrivalTotal;
+        displayTransit = baseTransit;
+
+        if (busClockTotal > arrivalTotal) {
+          badgeEl.classList.add('warn');
+          badgeEl.textContent = `⚠️ 지정한 탑승 시각(${busClock})이 도착 목표 시간(${arrivalVal})보다 늦습니다!`;
+        } else if (diffLate > 0) {
+          badgeEl.classList.add('warn');
+          badgeEl.textContent = `⚠️ ${busClock} 탑승 시 도착 목표보다 약 ${diffLate}분 늦을 수 있습니다! (예상 도착 ${formatKoreanTime(expectedArrival)})`;
+        } else {
+          badgeEl.textContent = `${busClock} 탑승 맞춤 (도보 ${firstWalkMin}분 전 출발 · 예상 도착 ${formatKoreanTime(expectedArrival)})`;
+        }
       }
     } else {
       badgeEl.style.display = 'none';
@@ -674,23 +835,59 @@
 
     document.getElementById('prepSumText').textContent = `${prepSum}분`;
     document.getElementById('otherSumText').textContent = `${otherSum}분`;
-    document.getElementById('sumTransit').textContent = `${transitSum}분`;
+    document.getElementById('sumTransit').textContent = `${displayTransit}분`;
     document.getElementById('sumPrep').textContent = `${prepSum}분`;
     document.getElementById('sumOther').textContent = `${otherSum}분`;
 
     document.getElementById('doorTimeText').textContent = formatKoreanTime(doorTime);
-    document.getElementById('wakeUpText').innerHTML = `당신은 <b>${formatKoreanTime(wakeUpTime)}</b>에 준비를 시작해야 합니다`;
+    document.getElementById('wakeUpText').innerHTML = `당신은 <b>${esc(formatKoreanTime(wakeUpTime))}</b>에 준비를 시작해야 합니다`;
   }
 
-  function loadKakaoSdk(key) {
-    return new Promise((resolve, reject) => {
-      if (window.kakao && window.kakao.maps) return resolve();
+  let kakaoLoadPromise = null;
+  function loadKakaoSdk() {
+    if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
+      return Promise.resolve();
+    }
+    if (kakaoLoadPromise) return kakaoLoadPromise;
+
+    kakaoLoadPromise = new Promise((resolve, reject) => {
+      const existing = document.getElementById('kakao-sdk-script');
+      if (existing) existing.remove();
+
+      const timer = setTimeout(() => {
+        kakaoLoadPromise = null;
+        reject(new Error('카카오 지도 초기화 시간이 초과되었습니다.'));
+      }, 8000);
+
       const script = document.createElement('script');
-      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services&autoload=false`;
-      script.onload = () => kakao.maps.load(resolve);
-      script.onerror = () => reject(new Error('카카오 디벨로퍼스 [Web] 플랫폼에 현재 접속 중인 주소가 등록되어 있는지 확인해주세요.'));
+      script.id = 'kakao-sdk-script';
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(KAKAO_KEY)}&libraries=services&autoload=false`;
+      script.onload = () => {
+        if (!window.kakao || !window.kakao.maps) {
+          clearTimeout(timer);
+          kakaoLoadPromise = null;
+          script.remove();
+          return reject(new Error('카카오 SDK 객체를 찾을 수 없습니다.'));
+        }
+        kakao.maps.load(() => {
+          clearTimeout(timer);
+          if (!kakao.maps.services) {
+            kakaoLoadPromise = null;
+            return reject(new Error('카카오 장소 검색(services) 라이브러리를 불러오지 못했습니다.'));
+          }
+          resolve();
+        });
+      };
+      script.onerror = () => {
+        clearTimeout(timer);
+        kakaoLoadPromise = null;
+        script.remove();
+        reject(new Error('카카오 지도 로드에 실패했습니다. 도메인 등록 상태를 확인해주세요.'));
+      };
       document.head.appendChild(script);
     });
+
+    return kakaoLoadPromise;
   }
 
   async function searchAddressAndPlace(query) {
@@ -722,40 +919,60 @@
     });
 
     const [addrRes, placeRes] = await Promise.all([addrPromise, placePromise]);
-    return [...addrRes, ...placeRes];
+    const seen = new Set();
+    return [...addrRes, ...placeRes].filter(r => {
+      if (isNaN(r.x) || isNaN(r.y)) return false;
+      const key = `${r.x.toFixed(4)},${r.y.toFixed(4)}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function renderPlaceDropdown(type, results) {
+    const inputEl = document.getElementById(type === 'start' ? 'startLoc' : 'endLoc');
+    const dropEl = document.getElementById(type === 'start' ? 'startDropdown' : 'endDropdown');
+    dropEl.innerHTML = '';
+
+    if (results.length === 0) {
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'place-item';
+      emptyDiv.textContent = '검색 결과가 없습니다.';
+      dropEl.appendChild(emptyDiv);
+    } else {
+      results.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'place-item';
+
+        const nameDiv = document.createElement('div');
+        nameDiv.textContent = item.name;
+        const addrDiv = document.createElement('div');
+        addrDiv.className = 'place-addr';
+        addrDiv.textContent = item.addr;
+
+        div.append(nameDiv, addrDiv);
+        div.addEventListener('click', () => {
+          inputEl.value = item.name;
+          if (type === 'start') selectedStart = item;
+          else selectedEnd = item;
+          userModifiedTransit = false;
+          dropEl.style.display = 'none';
+        });
+        dropEl.appendChild(div);
+      });
+    }
+    dropEl.style.display = 'block';
   }
 
   async function findAddress(type) {
-    const kakaoKey = getKakaoKey();
-    if (!kakaoKey) return alert('API 키가 설정되지 않았습니다.');
-
     const inputEl = document.getElementById(type === 'start' ? 'startLoc' : 'endLoc');
-    const dropEl = document.getElementById(type === 'start' ? 'startDropdown' : 'endDropdown');
     const query = inputEl.value.trim();
     if (!query) return alert('주소나 장소명을 입력해주세요.');
 
     try {
-      await loadKakaoSdk(kakaoKey);
+      await loadKakaoSdk();
       const results = await searchAddressAndPlace(query);
-
-      dropEl.innerHTML = '';
-      if (results.length === 0) {
-        dropEl.innerHTML = '<div class="place-item">검색 결과가 없습니다.</div>';
-      } else {
-        results.forEach(item => {
-          const div = document.createElement('div');
-          div.className = 'place-item';
-          div.innerHTML = `<div>${item.name}</div><div class="place-addr">${item.addr}</div>`;
-          div.onclick = () => {
-            inputEl.value = item.name;
-            if (type === 'start') selectedStart = item;
-            else selectedEnd = item;
-            dropEl.style.display = 'none';
-          };
-          dropEl.appendChild(div);
-        });
-      }
-      dropEl.style.display = 'block';
+      renderPlaceDropdown(type, results);
     } catch (err) {
       alert(err.message);
     }
@@ -770,11 +987,13 @@
       document.getElementById('routeList').style.display = 'none';
       document.getElementById('busArrivalPanel').style.display = 'none';
       document.getElementById('carPanel').style.display = 'block';
-      if (selectedStart && selectedEnd) calcCarEstimate();
-      else applyCarTime();
+      if (!userModifiedTransit) {
+        if (selectedStart && selectedEnd) calcCarEstimate();
+        else applyCarTime();
+      }
     } else {
       document.getElementById('carPanel').style.display = 'none';
-      if (fetchedPaths.length > 0) renderRouteList();
+      if (fetchedPaths.length > 0) renderRouteList(true);
     }
   }
 
@@ -782,10 +1001,10 @@
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
               Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
   function calcCarEstimate() {
@@ -794,29 +1013,53 @@
     const roadKm = (straightKm * 1.35).toFixed(1);
     const estMin = Math.max(5, Math.round((roadKm / 28) * 60) + 5);
     document.getElementById('carTimeInput').value = estMin;
-    document.getElementById('carDistInfo').textContent = `예상 주행 거리 약 ${roadKm}km 기준 자동 산출 (직접 시간 수정 가능)`;
+    document.getElementById('carDistInfo').textContent = `추정 주행 거리 약 ${roadKm}km 기준 산출 (실제 교통상황에 따라 다르므로 직접 수정 가능)`;
     applyCarTime();
   }
 
   function applyCarTime() {
-    const carMin = parseInt(document.getElementById('carTimeInput').value) || 0;
+    const carMin = Math.max(0, parseInt(document.getElementById('carTimeInput').value, 10) || 0);
     document.getElementById('totalTransitInput').value = carMin;
     saveCurrentState();
   }
 
   async function fetchOdsayData(odsayUrl) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
     try {
-      const res = await fetch(odsayUrl);
-      const json = await res.json();
-      if (json && json.result && json.result.path) return json;
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(odsayUrl)}`;
-      const pRes = await fetch(proxyUrl);
-      return await pRes.json();
+      const res = await fetch(odsayUrl, { signal: controller.signal });
+      if (!res.ok) {
+        throw new Error(`대중교통 서버 연결 오류 (HTTP ${res.status})`);
+      }
+      const data = await res.json();
+      if (data.error) {
+        const msg = Array.isArray(data.error) ? data.error[0]?.message : (data.error.msg || data.error.message);
+        throw new Error(msg || '대중교통 경로 조회 중 오류가 발생했습니다.');
+      }
+      return data;
     } catch (e) {
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(odsayUrl)}`;
-      const pRes = await fetch(proxyUrl);
-      return await pRes.json();
+      if (e.name === 'AbortError') {
+        throw new Error('경로 검색 응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.');
+      }
+      throw e;
+    } finally {
+      clearTimeout(timer);
     }
+  }
+
+  async function resolvePlaceSelection(type, query) {
+    const results = await searchAddressAndPlace(query);
+    if (results.length === 0) {
+      throw new Error(`'${query}'에 대한 검색 결과가 없습니다.`);
+    }
+    if (results.length === 1) {
+      if (type === 'start') selectedStart = results[0];
+      else selectedEnd = results[0];
+      document.getElementById(type === 'start' ? 'startLoc' : 'endLoc').value = results[0].name;
+      return true;
+    }
+    renderPlaceDropdown(type, results);
+    return false;
   }
 
   async function searchRoute() {
@@ -824,29 +1067,29 @@
     const endVal = document.getElementById('endLoc').value.trim();
     if (!startVal || !endVal) return alert('출발지와 도착지를 모두 입력해주세요.');
 
-    const kakaoKey = getKakaoKey();
-    const odsayKey = getOdsayKey();
-    if (!kakaoKey || !odsayKey) return alert('API 키가 설정되지 않았습니다.');
-
     const msgEl = document.getElementById('statusMsg');
     msgEl.style.display = 'block';
-    msgEl.textContent = '경로를 검색하고 있습니다...';
+    msgEl.textContent = '장소 및 경로를 확인하고 있습니다...';
 
     try {
-      await loadKakaoSdk(kakaoKey);
+      await loadKakaoSdk();
 
       if (!selectedStart || selectedStart.name !== startVal) {
-        const sList = await searchAddressAndPlace(startVal);
-        if (sList.length === 0) throw new Error(`'${startVal}' 위치를 찾을 수 없습니다.`);
-        selectedStart = sList[0];
-        document.getElementById('startLoc').value = selectedStart.name;
+        const resolved = await resolvePlaceSelection('start', startVal);
+        if (!resolved) {
+          msgEl.textContent = '출발지 검색 결과가 여러 개입니다. 목록에서 정확한 장소를 선택해주세요.';
+          return;
+        }
       }
       if (!selectedEnd || selectedEnd.name !== endVal) {
-        const eList = await searchAddressAndPlace(endVal);
-        if (eList.length === 0) throw new Error(`'${endVal}' 위치를 찾을 수 없습니다.`);
-        selectedEnd = eList[0];
-        document.getElementById('endLoc').value = selectedEnd.name;
+        const resolved = await resolvePlaceSelection('end', endVal);
+        if (!resolved) {
+          msgEl.textContent = '도착지 검색 결과가 여러 개입니다. 목록에서 정확한 장소를 선택해주세요.';
+          return;
+        }
       }
+
+      userModifiedTransit = false;
 
       const mapEl = document.getElementById('map');
       mapEl.style.display = 'block';
@@ -865,24 +1108,24 @@
 
       if (currentTab === 'car') {
         calcCarEstimate();
-        msgEl.textContent = `${selectedStart.name} → ${selectedEnd.name} (자동차 경로 반영됨)`;
+        msgEl.textContent = `${selectedStart.name} → ${selectedEnd.name} (자동차 추정 경로 반영됨)`;
         return;
       }
 
-      const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${selectedStart.x}&SY=${selectedStart.y}&EX=${selectedEnd.x}&EY=${selectedEnd.y}&apiKey=${encodeURIComponent(odsayKey)}`;
+      const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${encodeURIComponent(selectedStart.x)}&SY=${encodeURIComponent(selectedStart.y)}&EX=${encodeURIComponent(selectedEnd.x)}&EY=${encodeURIComponent(selectedEnd.y)}&apiKey=${encodeURIComponent(ODSAY_KEY)}`;
       const json = await fetchOdsayData(url);
 
-      if (json.error || !json.result || !json.result.path) {
-        throw new Error(json.error ? json.error.msg : '대중교통 경로가 없습니다.');
+      if (!json.result || !Array.isArray(json.result.path) || json.result.path.length === 0) {
+        throw new Error('검색된 대중교통 경로가 없습니다.');
       }
 
       fetchedPaths = json.result.path;
       updateTabCounts();
       msgEl.textContent = `${selectedStart.name} → ${selectedEnd.name} (원하는 경로를 클릭하세요)`;
-      renderRouteList();
+      renderRouteList(false);
 
     } catch (err) {
-      msgEl.textContent = '오류: ' + err.message;
+      msgEl.textContent = '안내: ' + err.message;
       document.getElementById('routeList').style.display = 'none';
     }
   }
@@ -895,13 +1138,20 @@
   }
 
   function getBusTypeStyle(busType) {
-    if (busType === 12 || busType === 3 || busType === 1) {
-      return { label: '지선', boxCls: '', barCls: 'seg-bus-green' };
+    // UI 색상 구분용 매핑
+    if (busType === 12 || busType === 3) {
+      return { label: '지선/마을', barCls: 'seg-bus-green' };
     }
-    return { label: '간선', boxCls: '', barCls: 'seg-bus-blue' };
+    if (busType === 11) {
+      return { label: '간선', barCls: 'seg-bus-blue' };
+    }
+    if (busType === 4 || busType === 6 || busType === 14 || busType === 15) {
+      return { label: '광역/급행', barCls: 'seg-bus-blue' };
+    }
+    return { label: '버스', barCls: 'seg-bus-green' };
   }
 
-  function renderRouteList() {
+  function renderRouteList(preserveManual = false) {
     const listEl = document.getElementById('routeList');
     listEl.innerHTML = '';
     listEl.style.display = 'flex';
@@ -921,66 +1171,67 @@
     }
 
     filtered.forEach((path, idx) => {
-      const totalMin = path.info.totalTime;
-      const pay = path.info.payment ? `${path.info.payment.toLocaleString()}원` : '';
+      const totalMin = Math.max(0, parseInt(path.info?.totalTime, 10) || 0);
+      const pay = path.info?.payment ? `${Number(path.info.payment).toLocaleString()}원` : '';
       const arrivalVal = document.getElementById('arrivalTime').value || '09:00';
       let barHtml = '';
       let timelineHtml = '';
-      let lastEndStation = path.info.lastEndStation || '목적지';
+      const lastEndStation = esc(path.info?.lastEndStation || '목적지');
       let firstTransitInfo = null;
       let walkBeforeTransit = 0;
       let foundFirstTransit = false;
 
-      path.subPath.forEach(sub => {
-        const secMin = sub.sectionTime;
+      (path.subPath || []).forEach(sub => {
+        const secMin = Math.max(0, parseInt(sub.sectionTime, 10) || 0);
         if (secMin <= 0) return;
-        const widthPct = Math.max(8, Math.round((secMin / totalMin) * 100));
 
         if (sub.trafficType === 3) {
           if (!foundFirstTransit) walkBeforeTransit += secMin;
-          barHtml += `<div class="rc-seg seg-walk" style="width:${widthPct}%">${secMin}분</div>`;
+          barHtml += `<div class="rc-seg seg-walk" style="flex:${secMin}">${secMin}분</div>`;
         } else if (sub.trafficType === 2) {
           foundFirstTransit = true;
-          const firstLane = sub.lane && sub.lane[0] ? sub.lane[0] : { busNo: '버스', type: 11 };
+          const firstLane = sub.lane && sub.lane[0] ? sub.lane[0] : { busNo: '버스', type: 1 };
           const style = getBusTypeStyle(firstLane.type);
-          barHtml += `<div class="rc-seg ${style.barCls}" style="width:${widthPct}%">${secMin}분</div>`;
+          barHtml += `<div class="rc-seg ${style.barCls}" style="flex:${secMin}">${secMin}분</div>`;
 
           const lanes = sub.lane || [];
-          let badgesHtml = lanes.slice(0, 3).map(l => `<span class="bus-num-box">${l.busNo}</span>`).join('');
+          let badgesHtml = lanes.slice(0, 3).map(l => `<span class="bus-num-box">${esc(l.busNo)}</span>`).join('');
           if (lanes.length > 3) {
             badgesHtml += `<span style="font-size:12.5px;">외 ${lanes.length - 3}대</span>`;
           }
 
-          const interval = sub.intervalTime ? `<span class="rc-interval-tag">배차 ${sub.intervalTime}분</span>` : '';
+          const intervalNum = Math.max(0, parseInt(sub.intervalTime, 10) || 0);
+          const interval = intervalNum ? `<span class="rc-interval-tag">배차 ${intervalNum}분</span>` : '';
           if (!firstTransitInfo) {
             firstTransitInfo = {
               type: 'bus',
-              station: sub.startName,
-              lineName: `${firstLane.busNo}번 버스`,
-              interval: sub.intervalTime || 8,
+              station: String(sub.startName || '정류장'),
+              lineName: `${String(firstLane.busNo || '버스')}번 버스`,
+              interval: intervalNum || 8,
               walkMin: walkBeforeTransit
             };
           }
 
           timelineHtml += `
             <div class="rc-step">
-              <div class="rc-type-col">■ ${style.label}</div>
+              <div class="rc-type-col">■ ${esc(style.label)}</div>
               <div class="rc-detail-col">
-                <div class="rc-station">${sub.startName}</div>
+                <div class="rc-station">${esc(sub.startName)}</div>
                 <div class="rc-badges">${badgesHtml} ${interval}</div>
               </div>
             </div>`;
         } else if (sub.trafficType === 1) {
           foundFirstTransit = true;
-          const laneName = sub.lane && sub.lane[0] ? sub.lane[0].name : '지하철';
-          barHtml += `<div class="rc-seg seg-subway" style="width:${widthPct}%">${secMin}분</div>`;
+          const laneName = sub.lane && sub.lane[0] ? String(sub.lane[0].name || '지하철') : '지하철';
+          barHtml += `<div class="rc-seg seg-subway" style="flex:${secMin}">${secMin}분</div>`;
 
+          const intervalNum = Math.max(0, parseInt(sub.intervalTime, 10) || 0);
           if (!firstTransitInfo) {
             firstTransitInfo = {
               type: 'subway',
-              station: `${sub.startName}역`,
+              station: `${String(sub.startName || '')}역`,
               lineName: laneName,
-              interval: sub.intervalTime || 6,
+              interval: intervalNum || 6,
               walkMin: walkBeforeTransit
             };
           }
@@ -989,9 +1240,9 @@
             <div class="rc-step">
               <div class="rc-type-col">■ 지하철</div>
               <div class="rc-detail-col">
-                <div class="rc-station">${sub.startName}역</div>
+                <div class="rc-station">${esc(sub.startName)}역</div>
                 <div class="rc-badges">
-                  <span class="bus-num-box">${laneName}</span>
+                  <span class="bus-num-box">${esc(laneName)}</span>
                 </div>
               </div>
             </div>`;
@@ -1019,25 +1270,28 @@
       card.innerHTML = `
         <div class="rc-header">
           <span class="rc-big-time">${totalMin}<small>분</small></span>
-          <span class="rc-sub-info">도착목표 ${arrivalVal} 기준 | ${pay}</span>
+          <span class="rc-sub-info">도착목표 ${esc(arrivalVal)} 기준 | ${esc(pay)}</span>
         </div>
         <div class="rc-bar">${barHtml}</div>
         <div class="rc-timeline">${timelineHtml}</div>
       `;
 
-      card.onclick = () => {
+      card.addEventListener('click', () => {
+        userModifiedTransit = false;
         document.querySelectorAll('.route-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
-        selectPathCard(totalMin, firstTransitInfo);
-      };
+        selectPathCard(totalMin, firstTransitInfo, false);
+      });
 
       listEl.appendChild(card);
-      if (idx === 0) selectPathCard(totalMin, firstTransitInfo);
+      if (idx === 0) selectPathCard(totalMin, firstTransitInfo, preserveManual);
     });
   }
 
-  function selectPathCard(totalMin, firstTransitInfo) {
-    document.getElementById('totalTransitInput').value = totalMin;
+  function selectPathCard(totalMin, firstTransitInfo, preserveManual = false) {
+    if (!preserveManual || !userModifiedTransit) {
+      document.getElementById('totalTransitInput').value = totalMin;
+    }
     const panel = document.getElementById('busArrivalPanel');
 
     panel.style.display = 'block';
