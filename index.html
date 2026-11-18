@@ -51,10 +51,10 @@
       background: var(--card);
       border-radius: var(--radius-card);
       padding: 18px;
-      margin-bottom: 34px;
+      margin-bottom: 28px;
       box-shadow: 0 1px 2px rgba(16,24,40,.04), 0 6px 20px rgba(16,24,40,.05);
     }
-    .label { font-size: 12.5px; font-weight: 500; margin-bottom: 6px; display: block; }
+    .label { font-size: 12.5px; font-weight: 500; margin-bottom: 6px; display: block; color: var(--sub); }
     .arrival-card { padding: 15px 17px; }
 
     .arrival-input {
@@ -80,7 +80,7 @@
       border-radius: var(--radius); padding: 7px 10px; display: none;
     }
 
-    .summary { margin: 10px 4px 36px; }
+    .summary { margin: 10px 4px 28px; }
     .summary-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 11px; }
     .summary-head .title { font-size: 14.5px; font-weight: 700; }
     .link-btn {
@@ -89,201 +89,63 @@
     }
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .stat { background: var(--tile); border-radius: var(--radius); padding: 11px 13px; }
-    .stat span { display: block; font-size: 12.5px; }
+    .stat span { display: block; font-size: 12.5px; color: var(--sub); }
     .stat b { display: block; font-size: 17px; font-weight: 700; text-align: right; margin-top: 5px; }
 
-    .loc-wrap { position: relative; margin-bottom: 9px; }
-    .loc-row { display: flex; gap: 7px; }
-    .loc-row input {
-      flex: 1; min-width: 0; border: 1px solid var(--line-strong); border-radius: var(--radius);
-      padding: 10px 12px; font-size: 14.5px; background: #fff; outline: none;
+    /* 이동 시간 설정 카드 */
+    .card-title { font-size: 15.5px; font-weight: 700; margin-bottom: 14px; }
+    .transit-main-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 13px 14px; background: #f7f8fa; border: 1px solid var(--line); border-radius: var(--radius);
+      margin-bottom: 10px;
     }
-    .loc-row input:focus { border-color: var(--accent); }
-    .btn-find {
-      background: #fff; border: 1px solid var(--line-strong); border-radius: var(--radius);
-      padding: 0 13px; font-size: 13.5px; font-weight: 500; cursor: pointer; white-space: nowrap;
+    .transit-main-row label { font-size: 14.5px; font-weight: 700; }
+    .transit-input-wrap { display: flex; align-items: center; gap: 6px; }
+    .transit-input-wrap input {
+      width: 78px; text-align: right; padding: 7px 10px; border: 1px solid var(--line-strong);
+      border-radius: var(--radius); background: #fff; font-size: 16px; font-weight: 700; outline: none;
     }
-    .place-dropdown {
-      position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; z-index: 50; display: none;
-      background: #fff; border: 1px solid var(--line-strong); border-radius: var(--radius);
-      max-height: 175px; overflow-y: auto; box-shadow: 0 8px 20px rgba(0,0,0,.08);
-    }
-    .place-item { padding: 9px 11px; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 13.5px; }
-    .place-item:last-child { border-bottom: none; }
-    .place-item:hover { background: var(--tile); }
-    .place-addr { font-size: 11.5px; margin-top: 2px; color: #555; }
+    .transit-input-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 
-    .mode-tabs {
-      display: flex; background: var(--tile); border-radius: var(--radius);
-      padding: 7px 3px; margin: 13px 0; gap: 2px; overflow-x: auto;
+    .quick-min-row {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px;
     }
-    .mode-tab {
-      flex: 0 0 auto; border: none; background: none; padding: 10px 9px; border-radius: var(--radius);
-      font-size: 13.5px; cursor: pointer; white-space: nowrap;
+    .btn-quick-min {
+      flex: 1; min-width: 54px; background: var(--tile); border: none; border-radius: 8px;
+      padding: 7px 0; font-size: 12.5px; font-weight: 600; cursor: pointer; color: #4e5968;
     }
-    .mode-tab.active { background: #fff; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
-    .mode-tab .cnt { font-size: 11.5px; margin-left: 2px; color: var(--accent); }
+    .btn-quick-min:hover { background: #dfe3e8; }
 
-    .btn-primary {
-      width: 100%; background: var(--accent); border: none; border-radius: var(--radius);
-      padding: 13px; font-size: 15px; font-weight: 700; color: #fff; cursor: pointer; margin-bottom: 11px;
+    .map-links-label { font-size: 12px; color: var(--sub); margin-bottom: 7px; }
+    .map-links-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+    .btn-map-link {
+      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      padding: 11px 10px; border-radius: var(--radius); font-size: 13.5px; font-weight: 700;
+      text-decoration: none; cursor: pointer; border: 1px solid transparent;
     }
-    .btn-primary:hover { opacity: .92; }
+    .btn-naver { background: #03C75A; color: #fff; }
+    .btn-kakao { background: #FEE500; color: #191f28; }
+    .btn-map-link:hover { opacity: 0.92; }
 
-    #map { width: 100%; height: 165px; margin-bottom: 13px; display: none; border-radius: var(--radius); }
-    .status-msg { font-size: 12.5px; margin-bottom: 9px; display: none; color: var(--sub); }
-
-    .bus-arrival-panel { background: #f7f8fa; border-radius: var(--radius); padding: 13px; margin-bottom: 13px; display: none; border: 1px solid var(--line); }
-    .bus-panel-title { font-size: 13.5px; font-weight: 700; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .bus-panel-title label { font-size: 12.5px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+    .bus-arrival-panel {
+      background: #f7f8fa; border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 13px;
+    }
+    .bus-panel-title {
+      font-size: 13.5px; font-weight: 700; margin-bottom: 9px;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    }
+    .bus-panel-title label { font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
     .bus-panel-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13.5px; }
     .bus-panel-row select, .bus-panel-row input {
-      border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 6px 8px; font-size: 13.5px; background: #fff;
+      border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 6px 8px; font-size: 13.5px; background: #fff; outline: none;
     }
-    .bus-panel-help { font-size: 12px; margin-top: 7px; line-height: 1.45; color: var(--sub); }
+    .bus-clock-sub {
+      width: 100%; display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 13px;
+    }
+    .bus-panel-help { font-size: 12px; margin-top: 8px; line-height: 1.45; color: var(--sub); }
 
-    .car-panel { background: #f7f8fa; border-radius: var(--radius); padding: 13px; margin-bottom: 13px; display: none; }
-    .car-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
-    .car-input { width: 74px; text-align: right; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #fff; }
-    .car-panel .info { font-size: 12.5px; color: var(--sub); }
-
-    /* 네이버 지도 스타일 경로 카드 */
-    .route-list { display: none; flex-direction: column; gap: 12px; margin-bottom: 13px; }
-    .route-card {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 16px;
-      background: #fff;
-      cursor: pointer;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    .route-card.selected {
-      border: 2px solid var(--accent);
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
-    }
-
-    .rc-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; flex-wrap: wrap; gap: 6px; }
-    .rc-title-left { display: flex; align-items: baseline; gap: 6px; }
-    .rc-big-time { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #111; }
-    .rc-big-time small { font-size: 14px; font-weight: 700; margin-left: 1px; }
-    .rc-walk-sum { font-size: 12px; color: var(--sub); font-weight: 500; }
-    .rc-sub-info { font-size: 12.5px; color: var(--sub); font-weight: 500; }
-
-    /* 네이버 지도 스타일 컬러 진행 바 */
-    .rc-bar {
-      display: flex;
-      width: 100%;
-      height: 16px;
-      border-radius: 8px;
-      overflow: hidden;
-      background: #e9ecef;
-      margin-bottom: 15px;
-      font-size: 10.5px;
-      font-weight: 700;
-    }
-    .rc-seg {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-      overflow: hidden;
-      color: #fff;
-      padding: 0 2px;
-    }
-    .rc-seg.seg-walk {
-      background: #e2e5e9;
-      color: #6b7684;
-    }
-
-    /* 수직 타임라인 */
-    .rc-timeline { display: flex; flex-direction: column; }
-    .rc-step { display: flex; align-items: stretch; gap: 11px; position: relative; }
-    .rc-axis {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 14px;
-      flex-shrink: 0;
-    }
-    .rc-dot {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      margin-top: 4px;
-      flex-shrink: 0;
-      background: #fff;
-      border: 3px solid var(--line-strong);
-      z-index: 1;
-    }
-    .rc-line {
-      width: 2px;
-      flex: 1;
-      background: #e1e4e8;
-      margin: 2px 0;
-    }
-    .rc-content {
-      flex: 1;
-      padding-bottom: 13px;
-      min-width: 0;
-    }
-    .rc-step:last-child .rc-content { padding-bottom: 0; }
-
-    .rc-row-main {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .rc-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 7px;
-      border-radius: 5px;
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #fff;
-      line-height: 1.3;
-      white-space: nowrap;
-    }
-    .rc-station-name {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: #191f28;
-    }
-    .rc-sub-meta {
-      margin-top: 3px;
-      font-size: 12px;
-      color: var(--sub);
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .rc-alt-buses {
-      font-size: 11.5px;
-      color: #4e5968;
-      background: #f2f4f6;
-      padding: 1px 6px;
-      border-radius: 4px;
-    }
-    .rc-interval-tag {
-      font-size: 11.5px;
-      color: #2563eb;
-      background: #eff4ff;
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-
-    .manual-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-      padding-top: 11px; border-top: 1px solid var(--line); font-size: 13.5px; font-weight: 700;
-    }
-    .manual-row input {
-      width: 68px; text-align: right; padding: 6px 8px; border: 1px solid var(--line-strong);
-      border-radius: var(--radius); background: #fff; font-size: 13.5px; font-weight: 700;
-    }
-    .unit { font-size: 13.5px; }
+    .unit { font-size: 13.5px; font-weight: 600; }
 
     #settingsView { display: none; }
     .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 8px; }
@@ -313,7 +175,7 @@
     }
 
     .saved-section { margin-top: 13px; padding-top: 11px; border-top: 1px dashed var(--line-strong); }
-    .saved-label { font-size: 12.5px; margin-bottom: 7px; }
+    .saved-label { font-size: 12.5px; margin-bottom: 7px; color: var(--sub); }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; }
     .chip {
       display: inline-flex; align-items: center; background: var(--tile); border-radius: var(--radius);
@@ -366,7 +228,7 @@
       <div class="wake-text" id="wakeUpText">당신은 <b>오전 07시 21분</b>에 준비를 시작해야 합니다</div>
       <div class="door-row">
         <span class="door-label">현관문을 나서는 시간:</span>
-        <span class="door-time" id="doorTimeText">오전 08시 36분</span>
+        <span class="door-time" id="doorTimeText">오전 08시 30분</span>
       </div>
       <div class="bus-sync-badge" id="busSyncBadge"></div>
     </div>
@@ -374,88 +236,71 @@
     <div class="summary">
       <div class="summary-head">
         <span class="title">소요 시간</span>
-        <button type="button" class="link-btn" onclick="showSettingsView()">시간 설정</button>
+        <button type="button" class="link-btn" onclick="showSettingsView()">준비 시간 설정</button>
       </div>
       <div class="stats">
-        <div class="stat"><span>이동</span><b id="sumTransit">0분</b></div>
-        <div class="stat"><span>준비</span><b id="sumPrep">0분</b></div>
-        <div class="stat"><span>그 외</span><b id="sumOther">0분</b></div>
+        <div class="stat"><span>이동</span><b id="sumTransit">30분</b></div>
+        <div class="stat"><span>준비</span><b id="sumPrep">40분</b></div>
+        <div class="stat"><span>그 외</span><b id="sumOther">10분</b></div>
       </div>
     </div>
 
     <div class="card">
-      <div class="loc-wrap">
-        <div class="loc-row">
-          <input type="text" id="startLoc" aria-label="출발지 입력" placeholder="출발지 주소 또는 장소 입력" oninput="onLocationInput('start')" onkeydown="if(event.key==='Enter') findAddress('start')">
-          <button type="button" class="btn-find" onclick="findAddress('start')">장소 찾기</button>
+      <div class="card-title">이동 시간 설정</div>
+
+      <div class="transit-main-row">
+        <label for="totalTransitInput">총 이동시간</label>
+        <div class="transit-input-wrap">
+          <input type="number" id="totalTransitInput" value="30" min="0" oninput="saveCurrentState()">
+          <span class="unit">분</span>
         </div>
-        <div class="place-dropdown" id="startDropdown"></div>
       </div>
 
-      <div class="loc-wrap">
-        <div class="loc-row">
-          <input type="text" id="endLoc" aria-label="도착지 입력" placeholder="도착지 주소 또는 장소 입력" oninput="onLocationInput('end')" onkeydown="if(event.key==='Enter') findAddress('end')">
-          <button type="button" class="btn-find" onclick="findAddress('end')">장소 찾기</button>
-        </div>
-        <div class="place-dropdown" id="endDropdown"></div>
+      <div class="quick-min-row">
+        <button type="button" class="btn-quick-min" onclick="setQuickTransit(15)">15분</button>
+        <button type="button" class="btn-quick-min" onclick="setQuickTransit(30)">30분</button>
+        <button type="button" class="btn-quick-min" onclick="setQuickTransit(45)">45분</button>
+        <button type="button" class="btn-quick-min" onclick="setQuickTransit(60)">60분</button>
+        <button type="button" class="btn-quick-min" onclick="setQuickTransit(90)">90분</button>
       </div>
 
-      <div class="mode-tabs" role="tablist">
-        <button type="button" role="tab" class="mode-tab active" onclick="switchTab('all', this)">전체 <span class="cnt" id="cntAll"></span></button>
-        <button type="button" role="tab" class="mode-tab" onclick="switchTab('bus', this)">버스 <span class="cnt" id="cntBus"></span></button>
-        <button type="button" role="tab" class="mode-tab" onclick="switchTab('subway', this)">지하철 <span class="cnt" id="cntSub"></span></button>
-        <button type="button" role="tab" class="mode-tab" onclick="switchTab('bus_sub', this)">버스+지하철 <span class="cnt" id="cntBusSub"></span></button>
-        <button type="button" role="tab" class="mode-tab" onclick="switchTab('car', this)">자동차</button>
+      <div class="map-links-label">정확한 실시간 소요시간·배차 확인이 필요하다면</div>
+      <div class="map-links-row">
+        <a href="https://map.naver.com/" target="_blank" rel="noopener noreferrer" class="btn-map-link btn-naver">
+          네이버 지도 열기 ↗
+        </a>
+        <a href="https://map.kakao.com/" target="_blank" rel="noopener noreferrer" class="btn-map-link btn-kakao">
+          카카오맵 열기 ↗
+        </a>
       </div>
 
-      <button type="button" class="btn-primary" onclick="searchRoute()">경로 검색하기</button>
-
-      <div class="status-msg" id="statusMsg"></div>
-      <div id="map"></div>
-
-      <div class="bus-arrival-panel" id="busArrivalPanel">
+      <div class="bus-arrival-panel">
         <div class="bus-panel-title">
-          <span id="firstBusTitle">첫 번째 대중교통 도착시간 맞춤</span>
+          <span>배차 대기 / 탑승 시각 맞춤</span>
           <label>
-            <input type="checkbox" id="useBusSync" onchange="calculate()"> 출발시간에 반영
+            <input type="checkbox" id="useBusSync" onchange="saveCurrentState()"> 출발시간에 반영
           </label>
         </div>
         <div class="bus-panel-row">
           <select id="busSyncMode" aria-label="대기시간 반영 방식" onchange="toggleBusSyncInput()">
-            <option value="wait">배차/대기 시간 추가</option>
-            <option value="clock">정류장/역 도착 시각 지정</option>
+            <option value="wait">배차/여유 대기시간 추가</option>
+            <option value="clock">정류장/역 탑승 시각 지정</option>
           </select>
+
           <div id="busWaitWrap" style="display:flex; align-items:center; gap:4px;">
-            <input type="number" id="busWaitMin" aria-label="대기 시간(분)" value="5" min="0" style="width:56px; text-align:right;" oninput="calculate()">
-            <span>분 대기</span>
-          </div>
-          <div id="busClockWrap" style="display:none; align-items:center; gap:4px;">
-            <input type="time" id="busTargetClock" aria-label="정류장 도착 시각" value="08:15" onchange="calculate()">
-            <span>도착 맞춤</span>
+            <input type="number" id="busWaitMin" aria-label="대기 시간(분)" value="10" min="0" style="width:60px; text-align:right;" oninput="saveCurrentState()">
+            <span>분 추가</span>
           </div>
         </div>
-        <div class="bus-panel-help" id="busPanelHelp">타는 곳까지 도보 시간을 고려해 현관문 나가는 시간을 자동 조절합니다.</div>
-      </div>
 
-      <div class="car-panel" id="carPanel">
-        <div class="car-row">
-          <span>자동차 예상 이동 시간 (추정)</span>
-          <div>
-            <input type="number" id="carTimeInput" aria-label="자동차 예상 이동 시간(분)" class="car-input" value="30" min="0" oninput="applyCarTime()">
-            <span class="unit">분</span>
-          </div>
+        <div id="busClockWrap" class="bus-clock-sub" style="display:none;">
+          <input type="time" id="busTargetClock" aria-label="정류장 탑승 시각" value="08:15" onchange="saveCurrentState()">
+          <span>탑승 · 타는 곳까지 도보</span>
+          <input type="number" id="walkToStationMin" aria-label="정류장까지 도보 시간(분)" value="5" min="0" style="width:52px; text-align:right;" oninput="saveCurrentState()">
+          <span>분</span>
         </div>
-        <div class="info" id="carDistInfo">출발지와 도착지를 검색하면 도로 주행 추정 시간이 자동 계산됩니다.</div>
-      </div>
 
-      <div class="route-list" id="routeList"></div>
-
-      <div class="manual-row">
-        <label for="totalTransitInput">선택된 총 이동시간 (직접 수정 가능)</label>
-        <div>
-          <input type="number" id="totalTransitInput" value="0" min="0" oninput="onManualTransitInput()">
-          <span class="unit">분</span>
-        </div>
+        <div class="bus-panel-help" id="busPanelHelp">버스를 놓쳐도 늦지 않도록 최대 대기시간(배차간격)을 더해 여유 있게 출발시간을 계산합니다.</div>
       </div>
     </div>
 
@@ -510,9 +355,6 @@
 </div>
 
 <script>
-  const KAKAO_KEY = 'bcda303772c79350b3e59668efedaa16';
-  const ODSAY_KEY = 'XPoPdOhl+rYG0K+qwaOcIw';
-
   function esc(s) {
     return String(s ?? '').replace(/[&<>"']/g, c => (
       { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
@@ -568,7 +410,12 @@
       if (!parsed || typeof parsed !== 'object') return deepClone(fallback);
       return {
         arrivalTime: /^\d{2}:\d{2}$/.test(parsed.arrivalTime) ? parsed.arrivalTime : fallback.arrivalTime,
-        transitMin: Math.max(0, parseInt(parsed.transitMin, 10) || 0)
+        transitMin: Math.max(0, parseInt(parsed.transitMin, 10) ?? fallback.transitMin),
+        useBusSync: Boolean(parsed.useBusSync),
+        busSyncMode: parsed.busSyncMode === 'clock' ? 'clock' : 'wait',
+        busWaitMin: Math.max(0, parseInt(parsed.busWaitMin, 10) ?? fallback.busWaitMin),
+        busTargetClock: /^\d{2}:\d{2}$/.test(parsed.busTargetClock) ? parsed.busTargetClock : fallback.busTargetClock,
+        walkToStationMin: Math.max(0, parseInt(parsed.walkToStationMin, 10) ?? fallback.walkToStationMin)
       };
     } catch (e) {
       return deepClone(fallback);
@@ -605,37 +452,32 @@
     { name: '세트3', prep: [{ name: '씻는 시간', min: 25 }, { name: '옷 고르기', min: 15 }], other: [{ name: '여유 시간', min: 10 }] }
   ]);
 
-  let selectedStart = null;
-  let selectedEnd = null;
-  let currentTab = 'all';
-  let fetchedPaths = [];
-  let firstWalkMin = 3;
-  let userModifiedTransit = false;
-
   function init() {
-    const savedState = loadStateObject('my_transit_state_v2', { arrivalTime: '09:00', transitMin: 0 });
+    const savedState = loadStateObject('my_transit_state_v3', {
+      arrivalTime: '09:00',
+      transitMin: 30,
+      useBusSync: false,
+      busSyncMode: 'wait',
+      busWaitMin: 10,
+      busTargetClock: '08:15',
+      walkToStationMin: 5
+    });
+
     document.getElementById('arrivalTime').value = savedState.arrivalTime;
     document.getElementById('totalTransitInput').value = savedState.transitMin;
+    document.getElementById('useBusSync').checked = savedState.useBusSync;
+    document.getElementById('busSyncMode').value = savedState.busSyncMode;
+    document.getElementById('busWaitMin').value = savedState.busWaitMin;
+    document.getElementById('busTargetClock').value = savedState.busTargetClock;
+    document.getElementById('walkToStationMin').value = savedState.walkToStationMin;
 
+    updateBusSyncUI();
     renderAllSettings();
     calculate();
-
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.loc-wrap')) {
-        document.getElementById('startDropdown').style.display = 'none';
-        document.getElementById('endDropdown').style.display = 'none';
-      }
-    });
   }
 
-  function onLocationInput(type) {
-    if (type === 'start') selectedStart = null;
-    else selectedEnd = null;
-    userModifiedTransit = false;
-  }
-
-  function onManualTransitInput() {
-    userModifiedTransit = true;
+  function setQuickTransit(mins) {
+    document.getElementById('totalTransitInput').value = mins;
     saveCurrentState();
   }
 
@@ -825,18 +667,39 @@
     alert(`'${customSets[idx].name}' 설정을 불러왔습니다.`);
   }
 
+  function updateBusSyncUI() {
+    const mode = document.getElementById('busSyncMode').value;
+    document.getElementById('busWaitWrap').style.display = mode === 'wait' ? 'flex' : 'none';
+    document.getElementById('busClockWrap').style.display = mode === 'clock' ? 'flex' : 'none';
+    const helpEl = document.getElementById('busPanelHelp');
+    if (mode === 'wait') {
+      helpEl.textContent = '버스를 놓쳐도 늦지 않도록 최대 대기시간(배차간격)을 더해 여유 있게 출발시간을 계산합니다.';
+    } else {
+      helpEl.textContent = '타야 하는 버스·지하철 시각과 정류장까지 걷는 시간을 기준으로 현관문 출발시간을 맞춥니다.';
+    }
+  }
+
+  function toggleBusSyncInput() {
+    updateBusSyncUI();
+    saveCurrentState();
+  }
+
   function saveCurrentState() {
     const transitInput = document.getElementById('totalTransitInput');
     const cleanTransit = Math.max(0, parseInt(transitInput.value, 10) || 0);
-    if (String(cleanTransit) !== transitInput.value && transitInput.value !== '') {
-      transitInput.value = cleanTransit;
-    }
+    const cleanWait = Math.max(0, parseInt(document.getElementById('busWaitMin').value, 10) || 0);
+    const cleanWalk = Math.max(0, parseInt(document.getElementById('walkToStationMin').value, 10) || 0);
 
     localStorage.setItem('my_prep_items', JSON.stringify(prepItems));
     localStorage.setItem('my_other_items', JSON.stringify(otherItems));
-    localStorage.setItem('my_transit_state_v2', JSON.stringify({
+    localStorage.setItem('my_transit_state_v3', JSON.stringify({
       arrivalTime: document.getElementById('arrivalTime').value || '09:00',
-      transitMin: cleanTransit
+      transitMin: cleanTransit,
+      useBusSync: document.getElementById('useBusSync').checked,
+      busSyncMode: document.getElementById('busSyncMode').value,
+      busWaitMin: cleanWait,
+      busTargetClock: document.getElementById('busTargetClock').value || '08:15',
+      walkToStationMin: cleanWalk
     }));
     calculate();
   }
@@ -860,13 +723,6 @@
     return `${prefix}${ampm} ${String(displayH).padStart(2, '0')}시 ${String(m).padStart(2, '0')}분`;
   }
 
-  function toggleBusSyncInput() {
-    const mode = document.getElementById('busSyncMode').value;
-    document.getElementById('busWaitWrap').style.display = mode === 'wait' ? 'flex' : 'none';
-    document.getElementById('busClockWrap').style.display = mode === 'clock' ? 'flex' : 'none';
-    calculate();
-  }
-
   function calculate() {
     const arrivalVal = document.getElementById('arrivalTime').value || '09:00';
     const [arrH, arrM] = arrivalVal.split(':').map(Number);
@@ -884,21 +740,21 @@
 
     let doorTime = arrivalTotal - baseTransit;
 
-    if (useBusSync && currentTab !== 'car') {
+    if (useBusSync) {
       badgeEl.style.display = 'block';
       if (syncMode === 'wait') {
-        const waitInput = document.getElementById('busWaitMin');
-        const waitMin = Math.max(0, parseInt(waitInput.value, 10) || 0);
+        const waitMin = Math.max(0, parseInt(document.getElementById('busWaitMin').value, 10) || 0);
         displayTransit = baseTransit + waitMin;
         doorTime = arrivalTotal - displayTransit;
-        badgeEl.textContent = `배차/대기 시간 ${waitMin}분 추가 반영됨`;
+        badgeEl.textContent = `배차/여유 대기시간 ${waitMin}분 추가 반영됨`;
       } else {
         const busClock = document.getElementById('busTargetClock').value || '08:15';
+        const walkMin = Math.max(0, parseInt(document.getElementById('walkToStationMin').value, 10) || 0);
         const [bH, bM] = busClock.split(':').map(Number);
         const busClockTotal = (bH || 0) * 60 + (bM || 0);
-        doorTime = busClockTotal - firstWalkMin;
+        doorTime = busClockTotal - walkMin;
 
-        const remainingTransit = Math.max(0, baseTransit - firstWalkMin);
+        const remainingTransit = Math.max(0, baseTransit - walkMin);
         const expectedArrival = busClockTotal + remainingTransit;
         const diffLate = expectedArrival - arrivalTotal;
         displayTransit = baseTransit;
@@ -910,7 +766,7 @@
           badgeEl.classList.add('warn');
           badgeEl.textContent = `⚠️ ${busClock} 탑승 시 도착 목표보다 약 ${diffLate}분 늦을 수 있습니다! (예상 도착 ${formatKoreanTime(expectedArrival)})`;
         } else {
-          badgeEl.textContent = `${busClock} 탑승 맞춤 (도보 ${firstWalkMin}분 전 출발 · 예상 도착 ${formatKoreanTime(expectedArrival)})`;
+          badgeEl.textContent = `${busClock} 탑승 맞춤 (도보 ${walkMin}분 전 출발 · 예상 도착 ${formatKoreanTime(expectedArrival)})`;
         }
       }
     } else {
@@ -927,524 +783,6 @@
 
     document.getElementById('doorTimeText').textContent = formatKoreanTime(doorTime);
     document.getElementById('wakeUpText').innerHTML = `당신은 <b>${esc(formatKoreanTime(wakeUpTime))}</b>에 준비를 시작해야 합니다`;
-  }
-
-  let kakaoLoadPromise = null;
-  function loadKakaoSdk() {
-    if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
-      return Promise.resolve();
-    }
-    if (kakaoLoadPromise) return kakaoLoadPromise;
-
-    kakaoLoadPromise = new Promise((resolve, reject) => {
-      const existing = document.getElementById('kakao-sdk-script');
-      if (existing) existing.remove();
-
-      const timer = setTimeout(() => {
-        kakaoLoadPromise = null;
-        reject(new Error('카카오 지도 초기화 시간이 초과되었습니다.'));
-      }, 8000);
-
-      const script = document.createElement('script');
-      script.id = 'kakao-sdk-script';
-      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(KAKAO_KEY)}&libraries=services&autoload=false`;
-      script.onload = () => {
-        if (!window.kakao || !window.kakao.maps) {
-          clearTimeout(timer);
-          kakaoLoadPromise = null;
-          script.remove();
-          return reject(new Error('카카오 SDK 객체를 찾을 수 없습니다.'));
-        }
-        kakao.maps.load(() => {
-          clearTimeout(timer);
-          if (!kakao.maps.services) {
-            kakaoLoadPromise = null;
-            return reject(new Error('카카오 장소 검색(services) 라이브러리를 불러오지 못했습니다.'));
-          }
-          resolve();
-        });
-      };
-      script.onerror = () => {
-        clearTimeout(timer);
-        kakaoLoadPromise = null;
-        script.remove();
-        reject(new Error('카카오 지도 로드에 실패했습니다. 도메인 등록 상태를 확인해주세요.'));
-      };
-      document.head.appendChild(script);
-    });
-
-    return kakaoLoadPromise;
-  }
-
-  async function searchAddressAndPlace(query) {
-    const geocoder = new kakao.maps.services.Geocoder();
-    const ps = new kakao.maps.services.Places();
-
-    const addrPromise = new Promise(resolve => {
-      geocoder.addressSearch(query, (data, status) => {
-        if (status === kakao.maps.services.Status.OK) {
-          resolve(data.map(d => ({
-            name: d.building_name ? `${d.address_name} (${d.building_name})` : d.address_name,
-            addr: d.road_address ? d.road_address.address_name : d.address_name,
-            x: parseFloat(d.x), y: parseFloat(d.y)
-          })));
-        } else resolve([]);
-      });
-    });
-
-    const placePromise = new Promise(resolve => {
-      ps.keywordSearch(query, (data, status) => {
-        if (status === kakao.maps.services.Status.OK) {
-          resolve(data.slice(0, 6).map(d => ({
-            name: d.place_name,
-            addr: d.road_address_name || d.address_name,
-            x: parseFloat(d.x), y: parseFloat(d.y)
-          })));
-        } else resolve([]);
-      });
-    });
-
-    const [addrRes, placeRes] = await Promise.all([addrPromise, placePromise]);
-    const seen = new Set();
-    return [...addrRes, ...placeRes].filter(r => {
-      if (isNaN(r.x) || isNaN(r.y)) return false;
-      const key = `${r.x.toFixed(4)},${r.y.toFixed(4)}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  }
-
-  function renderPlaceDropdown(type, results) {
-    const inputEl = document.getElementById(type === 'start' ? 'startLoc' : 'endLoc');
-    const dropEl = document.getElementById(type === 'start' ? 'startDropdown' : 'endDropdown');
-    dropEl.innerHTML = '';
-
-    if (results.length === 0) {
-      const emptyDiv = document.createElement('div');
-      emptyDiv.className = 'place-item';
-      emptyDiv.textContent = '검색 결과가 없습니다.';
-      dropEl.appendChild(emptyDiv);
-    } else {
-      results.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'place-item';
-
-        const nameDiv = document.createElement('div');
-        nameDiv.textContent = item.name;
-        const addrDiv = document.createElement('div');
-        addrDiv.className = 'place-addr';
-        addrDiv.textContent = item.addr;
-
-        div.append(nameDiv, addrDiv);
-        div.addEventListener('click', () => {
-          inputEl.value = item.name;
-          if (type === 'start') selectedStart = item;
-          else selectedEnd = item;
-          userModifiedTransit = false;
-          dropEl.style.display = 'none';
-        });
-        dropEl.appendChild(div);
-      });
-    }
-    dropEl.style.display = 'block';
-  }
-
-  async function findAddress(type) {
-    const inputEl = document.getElementById(type === 'start' ? 'startLoc' : 'endLoc');
-    const query = inputEl.value.trim();
-    if (!query) return alert('주소나 장소명을 입력해주세요.');
-
-    try {
-      await loadKakaoSdk();
-      const results = await searchAddressAndPlace(query);
-      renderPlaceDropdown(type, results);
-    } catch (err) {
-      alert(err.message);
-    }
-  }
-
-  function switchTab(tabName, btnEl) {
-    currentTab = tabName;
-    document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
-    btnEl.classList.add('active');
-
-    if (tabName === 'car') {
-      document.getElementById('routeList').style.display = 'none';
-      document.getElementById('busArrivalPanel').style.display = 'none';
-      document.getElementById('carPanel').style.display = 'block';
-      if (!userModifiedTransit) {
-        if (selectedStart && selectedEnd) calcCarEstimate();
-        else applyCarTime();
-      }
-    } else {
-      document.getElementById('carPanel').style.display = 'none';
-      if (fetchedPaths.length > 0) renderRouteList(true);
-    }
-  }
-
-  function getDistanceKm(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  }
-
-  function calcCarEstimate() {
-    if (!selectedStart || !selectedEnd) return;
-    const straightKm = getDistanceKm(selectedStart.y, selectedStart.x, selectedEnd.y, selectedEnd.x);
-    const roadKm = (straightKm * 1.35).toFixed(1);
-    const estMin = Math.max(5, Math.round((roadKm / 28) * 60) + 5);
-    document.getElementById('carTimeInput').value = estMin;
-    document.getElementById('carDistInfo').textContent = `추정 주행 거리 약 ${roadKm}km 기준 산출 (실제 교통상황에 따라 다르므로 직접 수정 가능)`;
-    applyCarTime();
-  }
-
-  function applyCarTime() {
-    const carMin = Math.max(0, parseInt(document.getElementById('carTimeInput').value, 10) || 0);
-    document.getElementById('totalTransitInput').value = carMin;
-    saveCurrentState();
-  }
-
-  async function fetchOdsayData(odsayUrl) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 8000);
-    try {
-      const res = await fetch(odsayUrl, { signal: controller.signal });
-      if (!res.ok) {
-        throw new Error(`대중교통 서버 연결 오류 (HTTP ${res.status})`);
-      }
-      const data = await res.json();
-      if (data.error) {
-        const msg = Array.isArray(data.error) ? data.error[0]?.message : (data.error.msg || data.error.message);
-        throw new Error(msg || '대중교통 경로 조회 중 오류가 발생했습니다.');
-      }
-      return data;
-    } catch (e) {
-      if (e.name === 'AbortError') {
-        throw new Error('경로 검색 응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.');
-      }
-      throw e;
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-
-  async function resolvePlaceSelection(type, query) {
-    const results = await searchAddressAndPlace(query);
-    if (results.length === 0) {
-      throw new Error(`'${query}'에 대한 검색 결과가 없습니다.`);
-    }
-    if (results.length === 1) {
-      if (type === 'start') selectedStart = results[0];
-      else selectedEnd = results[0];
-      document.getElementById(type === 'start' ? 'startLoc' : 'endLoc').value = results[0].name;
-      return true;
-    }
-    renderPlaceDropdown(type, results);
-    return false;
-  }
-
-  async function searchRoute() {
-    const startVal = document.getElementById('startLoc').value.trim();
-    const endVal = document.getElementById('endLoc').value.trim();
-    if (!startVal || !endVal) return alert('출발지와 도착지를 모두 입력해주세요.');
-
-    const msgEl = document.getElementById('statusMsg');
-    msgEl.style.display = 'block';
-    msgEl.textContent = '장소 및 경로를 확인하고 있습니다...';
-
-    try {
-      await loadKakaoSdk();
-
-      if (!selectedStart || selectedStart.name !== startVal) {
-        const resolved = await resolvePlaceSelection('start', startVal);
-        if (!resolved) {
-          msgEl.textContent = '출발지 검색 결과가 여러 개입니다. 목록에서 정확한 장소를 선택해주세요.';
-          return;
-        }
-      }
-      if (!selectedEnd || selectedEnd.name !== endVal) {
-        const resolved = await resolvePlaceSelection('end', endVal);
-        if (!resolved) {
-          msgEl.textContent = '도착지 검색 결과가 여러 개입니다. 목록에서 정확한 장소를 선택해주세요.';
-          return;
-        }
-      }
-
-      userModifiedTransit = false;
-
-      const mapEl = document.getElementById('map');
-      mapEl.style.display = 'block';
-      const map = new kakao.maps.Map(mapEl, {
-        center: new kakao.maps.LatLng(selectedStart.y, selectedStart.x),
-        level: 7
-      });
-      const bounds = new kakao.maps.LatLngBounds();
-      const p1 = new kakao.maps.LatLng(selectedStart.y, selectedStart.x);
-      const p2 = new kakao.maps.LatLng(selectedEnd.y, selectedEnd.x);
-      new kakao.maps.Marker({ map, position: p1 });
-      new kakao.maps.Marker({ map, position: p2 });
-      bounds.extend(p1);
-      bounds.extend(p2);
-      map.setBounds(bounds);
-
-      if (currentTab === 'car') {
-        calcCarEstimate();
-        msgEl.textContent = `${selectedStart.name} → ${selectedEnd.name} (자동차 추정 경로 반영됨)`;
-        return;
-      }
-
-      const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${encodeURIComponent(selectedStart.x)}&SY=${encodeURIComponent(selectedStart.y)}&EX=${encodeURIComponent(selectedEnd.x)}&EY=${encodeURIComponent(selectedEnd.y)}&apiKey=${encodeURIComponent(ODSAY_KEY)}`;
-      const json = await fetchOdsayData(url);
-
-      if (!json.result || !Array.isArray(json.result.path) || json.result.path.length === 0) {
-        throw new Error('검색된 대중교통 경로가 없습니다.');
-      }
-
-      fetchedPaths = json.result.path;
-      updateTabCounts();
-      msgEl.textContent = `${selectedStart.name} → ${selectedEnd.name} (원하는 경로를 클릭하세요)`;
-      renderRouteList(false);
-
-    } catch (err) {
-      msgEl.textContent = '안내: ' + err.message;
-      document.getElementById('routeList').style.display = 'none';
-    }
-  }
-
-  function updateTabCounts() {
-    document.getElementById('cntAll').textContent = fetchedPaths.length;
-    document.getElementById('cntBus').textContent = fetchedPaths.filter(p => p.pathType === 2).length;
-    document.getElementById('cntSub').textContent = fetchedPaths.filter(p => p.pathType === 1).length;
-    document.getElementById('cntBusSub').textContent = fetchedPaths.filter(p => p.pathType === 3).length;
-  }
-
-  // 네이버 지도 스타일 버스 색상 매핑
-  function getBusColorInfo(busType) {
-    if (busType === 11) return { label: '간선', color: '#386de8' };
-    if (busType === 4 || busType === 6 || busType === 14 || busType === 15 || busType === 2) {
-      return { label: '광역/좌석', color: '#e63c2e' };
-    }
-    if (busType === 3) return { label: '마을', color: '#53b332' };
-    if (busType === 12) return { label: '지선', color: '#3cc344' };
-    return { label: '버스', color: '#3cc344' };
-  }
-
-  // 네이버 지도 스타일 지하철 노선 색상 매핑
-  function getSubwayColorInfo(name) {
-    const n = String(name || '');
-    if (n.includes('인천') && n.includes('1호선')) return { label: '인천1호선', color: '#759cce' };
-    if (n.includes('인천') && n.includes('2호선')) return { label: '인천2호선', color: '#f5a251' };
-    if (n.includes('1호선')) return { label: '1호선', color: '#0052A4' };
-    if (n.includes('2호선')) return { label: '2호선', color: '#00A84D' };
-    if (n.includes('3호선')) return { label: '3호선', color: '#EF7C1C' };
-    if (n.includes('4호선')) return { label: '4호선', color: '#00A5DE' };
-    if (n.includes('5호선')) return { label: '5호선', color: '#996CAC' };
-    if (n.includes('6호선')) return { label: '6호선', color: '#CD7C2F' };
-    if (n.includes('7호선')) return { label: '7호선', color: '#747F00' };
-    if (n.includes('8호선')) return { label: '8호선', color: '#E6186C' };
-    if (n.includes('9호선')) return { label: '9호선', color: '#BDB092' };
-    if (n.includes('수인') || n.includes('분당')) return { label: '수인분당', color: '#FABE00' };
-    if (n.includes('경의') || n.includes('중앙')) return { label: '경의중앙', color: '#77C4A3' };
-    if (n.includes('공항')) return { label: '공항철도', color: '#0090D2' };
-    if (n.includes('신분당')) return { label: '신분당선', color: '#D4003B' };
-    if (n.includes('경춘')) return { label: '경춘선', color: '#0C8E72' };
-    if (n.includes('김포')) return { label: '김포골드', color: '#A17800' };
-    if (n.includes('서해')) return { label: '서해선', color: '#8FC31F' };
-    if (n.includes('신림')) return { label: '신림선', color: '#6789CA' };
-    if (n.includes('우이')) return { label: '우이신설', color: '#B0CE18' };
-    return { label: n.replace('수도권 ', ''), color: '#5c6bc0' };
-  }
-
-  function renderRouteList(preserveManual = false) {
-    const listEl = document.getElementById('routeList');
-    listEl.innerHTML = '';
-    listEl.style.display = 'flex';
-
-    const filtered = fetchedPaths.filter(p => {
-      if (currentTab === 'all') return true;
-      if (currentTab === 'bus') return p.pathType === 2;
-      if (currentTab === 'subway') return p.pathType === 1;
-      if (currentTab === 'bus_sub') return p.pathType === 3;
-      return true;
-    });
-
-    if (filtered.length === 0) {
-      listEl.innerHTML = '<div style="font-size:13.5px; padding:10px;">해당 수단의 경로가 없습니다.</div>';
-      document.getElementById('busArrivalPanel').style.display = 'none';
-      return;
-    }
-
-    filtered.forEach((path, idx) => {
-      const totalMin = Math.max(0, parseInt(path.info?.totalTime, 10) || 0);
-      const pay = path.info?.payment ? `${Number(path.info.payment).toLocaleString()}원` : '';
-      let barHtml = '';
-      let timelineHtml = '';
-      const lastEndStation = esc(path.info?.lastEndStation || '목적지');
-      let firstTransitInfo = null;
-      let walkBeforeTransit = 0;
-      let totalWalkMin = 0;
-      let foundFirstTransit = false;
-
-      (path.subPath || []).forEach(sub => {
-        const secMin = Math.max(0, parseInt(sub.sectionTime, 10) || 0);
-        if (secMin <= 0) return;
-
-        // 4분 미만 짧은 구간은 막대 내부 텍스트 생략하여 글자 겹침 방지
-        const barLabel = secMin >= 4 ? `${secMin}분` : '';
-
-        if (sub.trafficType === 3) {
-          totalWalkMin += secMin;
-          if (!foundFirstTransit) walkBeforeTransit += secMin;
-          barHtml += `<div class="rc-seg seg-walk" style="flex:${Math.max(1.5, secMin)}">${barLabel}</div>`;
-        } else if (sub.trafficType === 2) {
-          foundFirstTransit = true;
-          const lanes = sub.lane || [];
-          const firstLane = lanes[0] ? lanes[0] : { busNo: '버스', type: 1 };
-          const bColor = getBusColorInfo(firstLane.type);
-          barHtml += `<div class="rc-seg" style="flex:${Math.max(2, secMin)}; background:${bColor.color};">${barLabel}</div>`;
-
-          const mainBusNo = esc(firstLane.busNo);
-          const otherBuses = lanes.slice(1, 4).map(l => esc(l.busNo)).join(', ');
-          const extraCnt = lanes.length > 4 ? ` 외 ${lanes.length - 4}대` : '';
-          const altHtml = otherBuses ? `<span class="rc-alt-buses">대체 ${otherBuses}${extraCnt}</span>` : '';
-
-          const intervalNum = Math.max(0, parseInt(sub.intervalTime, 10) || 0);
-          const intervalHtml = intervalNum ? `<span class="rc-interval-tag">배차 ${intervalNum}분</span>` : '';
-          const endSt = sub.endName ? ` → ${esc(sub.endName)}` : '';
-
-          if (!firstTransitInfo) {
-            firstTransitInfo = {
-              type: 'bus',
-              station: String(sub.startName || '정류장'),
-              lineName: `${String(firstLane.busNo || '버스')}번 버스`,
-              interval: intervalNum || 8,
-              walkMin: walkBeforeTransit
-            };
-          }
-
-          timelineHtml += `
-            <div class="rc-step">
-              <div class="rc-axis">
-                <div class="rc-dot" style="border-color:${bColor.color}"></div>
-                <div class="rc-line" style="background:${bColor.color}55"></div>
-              </div>
-              <div class="rc-content">
-                <div class="rc-row-main">
-                  <span class="rc-badge" style="background:${bColor.color}">${esc(bColor.label)} ${mainBusNo}</span>
-                  <span class="rc-station-name">${esc(sub.startName)}</span>
-                </div>
-                <div class="rc-sub-meta">
-                  <span>${secMin}분 이동${endSt}</span>
-                  ${intervalHtml}
-                  ${altHtml}
-                </div>
-              </div>
-            </div>`;
-        } else if (sub.trafficType === 1) {
-          foundFirstTransit = true;
-          const rawName = sub.lane && sub.lane[0] ? String(sub.lane[0].name || '지하철') : '지하철';
-          const sColor = getSubwayColorInfo(rawName);
-          barHtml += `<div class="rc-seg" style="flex:${Math.max(2, secMin)}; background:${sColor.color};">${barLabel}</div>`;
-
-          const intervalNum = Math.max(0, parseInt(sub.intervalTime, 10) || 0);
-          const endSt = sub.endName ? ` → ${esc(sub.endName)}역` : '';
-
-          if (!firstTransitInfo) {
-            firstTransitInfo = {
-              type: 'subway',
-              station: `${String(sub.startName || '')}역`,
-              lineName: sColor.label,
-              interval: intervalNum || 6,
-              walkMin: walkBeforeTransit
-            };
-          }
-
-          timelineHtml += `
-            <div class="rc-step">
-              <div class="rc-axis">
-                <div class="rc-dot" style="border-color:${sColor.color}"></div>
-                <div class="rc-line" style="background:${sColor.color}55"></div>
-              </div>
-              <div class="rc-content">
-                <div class="rc-row-main">
-                  <span class="rc-badge" style="background:${sColor.color}">${esc(sColor.label)}</span>
-                  <span class="rc-station-name">${esc(sub.startName)}역</span>
-                </div>
-                <div class="rc-sub-meta">
-                  <span>${secMin}분 이동${endSt}</span>
-                </div>
-              </div>
-            </div>`;
-        }
-      });
-
-      if (!firstTransitInfo) {
-        firstTransitInfo = {
-          type: 'walk',
-          station: '출발지',
-          lineName: '대중교통',
-          interval: 6,
-          walkMin: walkBeforeTransit || 3
-        };
-      }
-
-      timelineHtml += `
-        <div class="rc-step">
-          <div class="rc-axis">
-            <div class="rc-dot" style="border-color:#4e5968; background:#4e5968;"></div>
-          </div>
-          <div class="rc-content">
-            <div class="rc-row-main">
-              <span class="rc-station-name">${lastEndStation} 하차</span>
-            </div>
-          </div>
-        </div>`;
-
-      const card = document.createElement('div');
-      card.className = 'route-card' + (idx === 0 ? ' selected' : '');
-      card.innerHTML = `
-        <div class="rc-header">
-          <div class="rc-title-left">
-            <span class="rc-big-time">${totalMin}<small>분</small></span>
-            <span class="rc-walk-sum">도보 ${totalWalkMin}분</span>
-          </div>
-          <span class="rc-sub-info">${esc(pay)}</span>
-        </div>
-        <div class="rc-bar">${barHtml}</div>
-        <div class="rc-timeline">${timelineHtml}</div>
-      `;
-
-      card.addEventListener('click', () => {
-        userModifiedTransit = false;
-        document.querySelectorAll('.route-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        selectPathCard(totalMin, firstTransitInfo, false);
-      });
-
-      listEl.appendChild(card);
-      if (idx === 0) selectPathCard(totalMin, firstTransitInfo, preserveManual);
-    });
-  }
-
-  function selectPathCard(totalMin, firstTransitInfo, preserveManual = false) {
-    if (!preserveManual || !userModifiedTransit) {
-      document.getElementById('totalTransitInput').value = totalMin;
-    }
-    const panel = document.getElementById('busArrivalPanel');
-
-    panel.style.display = 'block';
-    firstWalkMin = firstTransitInfo.walkMin || 3;
-    document.getElementById('firstBusTitle').textContent = `[${firstTransitInfo.station}] ${firstTransitInfo.lineName} 도착 맞춤`;
-    const estWait = firstTransitInfo.interval || 8;
-    document.getElementById('busWaitMin').value = estWait;
-    document.getElementById('busPanelHelp').textContent = `${firstTransitInfo.station}까지 도보 약 ${firstWalkMin}분 소요. 최대 대기시간(배차간격)을 적용했습니다. 실시간 도착시간은 별도 앱을 이용해주세요.`;
-
-    saveCurrentState();
   }
 
   init();
