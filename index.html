@@ -16,8 +16,6 @@
       --tile: #eceef2;
       --accent: #2563eb;
       --accent-soft: #eff4ff;
-      --warn-bg: #fff3cd;
-      --warn-text: #997404;
       --radius-card: 16px;
       --radius: 10px;
     }
@@ -74,7 +72,6 @@
     .door-label { font-size: 14.5px; font-weight: 500; }
     .door-time { font-size: 17px; font-weight: 700; }
     .hero .bus-sync-badge { background: rgba(255,255,255,.18); }
-    .hero .bus-sync-badge.warn { background: var(--warn-bg); color: var(--warn-text); font-weight: 700; }
     .bus-sync-badge {
       margin-top: 9px; font-size: 12.5px; background: var(--tile);
       border-radius: var(--radius); padding: 7px 10px; display: none;
@@ -136,12 +133,9 @@
       display: flex; justify-content: space-between; align-items: center; gap: 8px;
     }
     .bus-panel-title label { font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
-    .bus-panel-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13.5px; }
-    .bus-panel-row select, .bus-panel-row input {
-      border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 6px 8px; font-size: 13.5px; background: #fff; outline: none;
-    }
-    .bus-clock-sub {
-      width: 100%; display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 13px;
+    .bus-panel-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13.5px; }
+    .bus-panel-row input {
+      border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 6px 8px; font-size: 14px; font-weight: 700; background: #fff; outline: none;
     }
     .bus-panel-help { font-size: 12px; margin-top: 8px; line-height: 1.45; color: var(--sub); }
 
@@ -276,31 +270,19 @@
 
       <div class="bus-arrival-panel">
         <div class="bus-panel-title">
-          <span>배차 대기 / 탑승 시각 맞춤</span>
+          <span>배차/여유 대기시간 추가</span>
           <label>
             <input type="checkbox" id="useBusSync" onchange="saveCurrentState()"> 출발시간에 반영
           </label>
         </div>
         <div class="bus-panel-row">
-          <select id="busSyncMode" aria-label="대기시간 반영 방식" onchange="toggleBusSyncInput()">
-            <option value="wait">배차/여유 대기시간 추가</option>
-            <option value="clock">정류장/역 탑승 시각 지정</option>
-          </select>
-
-          <div id="busWaitWrap" style="display:flex; align-items:center; gap:4px;">
-            <input type="number" id="busWaitMin" aria-label="대기 시간(분)" value="10" min="0" style="width:60px; text-align:right;" oninput="saveCurrentState()">
-            <span>분 추가</span>
+          <label for="busWaitMin" style="font-weight:500;">추가할 대기·여유 시간</label>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <input type="number" id="busWaitMin" value="10" min="0" style="width:68px; text-align:right;" oninput="saveCurrentState()">
+            <span class="unit">분</span>
           </div>
         </div>
-
-        <div id="busClockWrap" class="bus-clock-sub" style="display:none;">
-          <input type="time" id="busTargetClock" aria-label="정류장 탑승 시각" value="08:15" onchange="saveCurrentState()">
-          <span>탑승 · 타는 곳까지 도보</span>
-          <input type="number" id="walkToStationMin" aria-label="정류장까지 도보 시간(분)" value="5" min="0" style="width:52px; text-align:right;" oninput="saveCurrentState()">
-          <span>분</span>
-        </div>
-
-        <div class="bus-panel-help" id="busPanelHelp">버스를 놓쳐도 늦지 않도록 최대 대기시간(배차간격)을 더해 여유 있게 출발시간을 계산합니다.</div>
+        <div class="bus-panel-help">버스를 놓쳐도 늦지 않도록 배차간격이나 여유 시간을 더해 출발시간을 계산합니다.</div>
       </div>
     </div>
 
@@ -412,10 +394,7 @@
         arrivalTime: /^\d{2}:\d{2}$/.test(parsed.arrivalTime) ? parsed.arrivalTime : fallback.arrivalTime,
         transitMin: Math.max(0, parseInt(parsed.transitMin, 10) ?? fallback.transitMin),
         useBusSync: Boolean(parsed.useBusSync),
-        busSyncMode: parsed.busSyncMode === 'clock' ? 'clock' : 'wait',
-        busWaitMin: Math.max(0, parseInt(parsed.busWaitMin, 10) ?? fallback.busWaitMin),
-        busTargetClock: /^\d{2}:\d{2}$/.test(parsed.busTargetClock) ? parsed.busTargetClock : fallback.busTargetClock,
-        walkToStationMin: Math.max(0, parseInt(parsed.walkToStationMin, 10) ?? fallback.walkToStationMin)
+        busWaitMin: Math.max(0, parseInt(parsed.busWaitMin, 10) ?? fallback.busWaitMin)
       };
     } catch (e) {
       return deepClone(fallback);
@@ -453,25 +432,18 @@
   ]);
 
   function init() {
-    const savedState = loadStateObject('my_transit_state_v3', {
+    const savedState = loadStateObject('my_transit_state_v4', {
       arrivalTime: '09:00',
       transitMin: 30,
       useBusSync: false,
-      busSyncMode: 'wait',
-      busWaitMin: 10,
-      busTargetClock: '08:15',
-      walkToStationMin: 5
+      busWaitMin: 10
     });
 
     document.getElementById('arrivalTime').value = savedState.arrivalTime;
     document.getElementById('totalTransitInput').value = savedState.transitMin;
     document.getElementById('useBusSync').checked = savedState.useBusSync;
-    document.getElementById('busSyncMode').value = savedState.busSyncMode;
     document.getElementById('busWaitMin').value = savedState.busWaitMin;
-    document.getElementById('busTargetClock').value = savedState.busTargetClock;
-    document.getElementById('walkToStationMin').value = savedState.walkToStationMin;
 
-    updateBusSyncUI();
     renderAllSettings();
     calculate();
   }
@@ -667,39 +639,18 @@
     alert(`'${customSets[idx].name}' 설정을 불러왔습니다.`);
   }
 
-  function updateBusSyncUI() {
-    const mode = document.getElementById('busSyncMode').value;
-    document.getElementById('busWaitWrap').style.display = mode === 'wait' ? 'flex' : 'none';
-    document.getElementById('busClockWrap').style.display = mode === 'clock' ? 'flex' : 'none';
-    const helpEl = document.getElementById('busPanelHelp');
-    if (mode === 'wait') {
-      helpEl.textContent = '버스를 놓쳐도 늦지 않도록 최대 대기시간(배차간격)을 더해 여유 있게 출발시간을 계산합니다.';
-    } else {
-      helpEl.textContent = '타야 하는 버스·지하철 시각과 정류장까지 걷는 시간을 기준으로 현관문 출발시간을 맞춥니다.';
-    }
-  }
-
-  function toggleBusSyncInput() {
-    updateBusSyncUI();
-    saveCurrentState();
-  }
-
   function saveCurrentState() {
     const transitInput = document.getElementById('totalTransitInput');
     const cleanTransit = Math.max(0, parseInt(transitInput.value, 10) || 0);
     const cleanWait = Math.max(0, parseInt(document.getElementById('busWaitMin').value, 10) || 0);
-    const cleanWalk = Math.max(0, parseInt(document.getElementById('walkToStationMin').value, 10) || 0);
 
     localStorage.setItem('my_prep_items', JSON.stringify(prepItems));
     localStorage.setItem('my_other_items', JSON.stringify(otherItems));
-    localStorage.setItem('my_transit_state_v3', JSON.stringify({
+    localStorage.setItem('my_transit_state_v4', JSON.stringify({
       arrivalTime: document.getElementById('arrivalTime').value || '09:00',
       transitMin: cleanTransit,
       useBusSync: document.getElementById('useBusSync').checked,
-      busSyncMode: document.getElementById('busSyncMode').value,
-      busWaitMin: cleanWait,
-      busTargetClock: document.getElementById('busTargetClock').value || '08:15',
-      walkToStationMin: cleanWalk
+      busWaitMin: cleanWait
     }));
     calculate();
   }
@@ -734,45 +685,18 @@
     let displayTransit = baseTransit;
 
     const useBusSync = document.getElementById('useBusSync').checked;
-    const syncMode = document.getElementById('busSyncMode').value;
     const badgeEl = document.getElementById('busSyncBadge');
-    badgeEl.classList.remove('warn');
-
-    let doorTime = arrivalTotal - baseTransit;
 
     if (useBusSync) {
+      const waitMin = Math.max(0, parseInt(document.getElementById('busWaitMin').value, 10) || 0);
+      displayTransit = baseTransit + waitMin;
       badgeEl.style.display = 'block';
-      if (syncMode === 'wait') {
-        const waitMin = Math.max(0, parseInt(document.getElementById('busWaitMin').value, 10) || 0);
-        displayTransit = baseTransit + waitMin;
-        doorTime = arrivalTotal - displayTransit;
-        badgeEl.textContent = `배차/여유 대기시간 ${waitMin}분 추가 반영됨`;
-      } else {
-        const busClock = document.getElementById('busTargetClock').value || '08:15';
-        const walkMin = Math.max(0, parseInt(document.getElementById('walkToStationMin').value, 10) || 0);
-        const [bH, bM] = busClock.split(':').map(Number);
-        const busClockTotal = (bH || 0) * 60 + (bM || 0);
-        doorTime = busClockTotal - walkMin;
-
-        const remainingTransit = Math.max(0, baseTransit - walkMin);
-        const expectedArrival = busClockTotal + remainingTransit;
-        const diffLate = expectedArrival - arrivalTotal;
-        displayTransit = baseTransit;
-
-        if (busClockTotal > arrivalTotal) {
-          badgeEl.classList.add('warn');
-          badgeEl.textContent = `⚠️ 지정한 탑승 시각(${busClock})이 도착 목표 시간(${arrivalVal})보다 늦습니다!`;
-        } else if (diffLate > 0) {
-          badgeEl.classList.add('warn');
-          badgeEl.textContent = `⚠️ ${busClock} 탑승 시 도착 목표보다 약 ${diffLate}분 늦을 수 있습니다! (예상 도착 ${formatKoreanTime(expectedArrival)})`;
-        } else {
-          badgeEl.textContent = `${busClock} 탑승 맞춤 (도보 ${walkMin}분 전 출발 · 예상 도착 ${formatKoreanTime(expectedArrival)})`;
-        }
-      }
+      badgeEl.textContent = `배차/여유 대기시간 ${waitMin}분 추가 반영됨`;
     } else {
       badgeEl.style.display = 'none';
     }
 
+    const doorTime = arrivalTotal - displayTransit;
     const wakeUpTime = doorTime - (prepSum + otherSum);
 
     document.getElementById('prepSumText').textContent = `${prepSum}분`;
